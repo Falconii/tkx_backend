@@ -1,4 +1,4 @@
-const uploadFotoData = require("../data/uploadFotoData");
+const uploadFotoData = require("../data/uploadfotoData");
 const erroDB = require('../util/userfunctiondb');
 
 exports.saveFoto = async ( originalname, buffer) => { 
