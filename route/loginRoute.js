@@ -28,9 +28,6 @@ try
 	  if (!user || !bcrypt.compareSync(password, user.senha)) {
          return res.status(401).send('Credenciais inválidas');
       }
-
-	  console.log("Senha valida:", user.senha);
-
 	  await tokenService.deleteTokenByUser(user.id_empresa, user.id);
 
       const accessToken = tokenService.generateAccessToken(user);
@@ -49,6 +46,7 @@ try
 				user_update: 0
 		});
 
+
 		await tokenService.insertToken({
 				id_empresa: user.id_empresa,
 				token: refreshToken,
@@ -59,6 +57,7 @@ try
 				user_insert: user.id,
 				user_update: 0
 		});
+       
 
 		res.status(200).json({"id_empresa":user.id_empresa, "id": user.id, "razao":user.razao,"accessToken": accessToken, "refreshToken": refreshToken});
 

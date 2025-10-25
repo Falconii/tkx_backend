@@ -287,7 +287,7 @@ exports.processamento = async (req, cabec,detalhes) => {
       }
       
       detalhe.status = 2;
-
+      detalhe.nome = shared.excluirCaracteres(detalhe.nome);
       detPlanilhaSrv.updateDetplanilha(detalhe);
 
       linhas_processadas++;

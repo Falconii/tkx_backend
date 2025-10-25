@@ -17,7 +17,6 @@ return [
 }; 
 /* CRUD GET */
 exports.getToken = function(id_empresa,id_usuario,token,tipo){
-	console.log(token.id_empresa,token.id_usuario,token.token,token.tipo);
 	strSql = ` select   
 			   token.id_empresa as  id_empresa  
 			,  token.token as  token  
