@@ -250,6 +250,21 @@ CREATE TABLE Public.detPlanilhas (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
+/* TABELA parametros  */
+DROP TABLE IF EXISTS parametros;
+CREATE TABLE Public.parametros (
+		id_empresa int4  NOT NULL  , 
+		modulo char(20)  NOT NULL  , 
+		assinatura char(20)  NOT NULL  , 
+		id_usuario int4  NOT NULL  , 
+		parametro text  NOT NULL  , 
+		user_insert int4  NOT NULL  , 
+		user_update int4  NOT NULL  , 
+		PRIMARY KEY(id_empresa,modulo,assinatura,id_usuario) 
+)
+ WITHOUT OIDS 
+ TABLESPACE "Producao" 
+ GO 
 /* TRUNCATE TABLES */ 
 TRUNCATE TABLE Public.empresas RESTART IDENTITY; 
 GO 
@@ -277,6 +292,8 @@ TRUNCATE TABLE Public.cabplanilhas RESTART IDENTITY;
 GO 
 TRUNCATE TABLE Public.detPlanilhas RESTART IDENTITY; 
 GO 
+TRUNCATE TABLE Public.parametros RESTART IDENTITY; 
+GO 
 /* Drop TABLES */ 
 DROP TABLE IF EXISTS Public.empresas ; 
 GO 
@@ -303,4 +320,6 @@ GO
 DROP TABLE IF EXISTS Public.cabplanilhas ; 
 GO 
 DROP TABLE IF EXISTS Public.detPlanilhas ; 
+GO 
+DROP TABLE IF EXISTS Public.parametros ; 
 GO 
