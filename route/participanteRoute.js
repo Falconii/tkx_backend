@@ -6,9 +6,9 @@ const { autenticarToken} = require('../middleware/autenticartoken');
 const participanteSrv = require('../service/participanteService');
 router.use(autenticarToken); 
 /* ROTA GETONE participante */
-router.get("/:id_empresa/:id_evento/:id_inscrito",async function(req, res) {try 
+router.get("/:id_empresa/:id_evento/:id_inscrito/:inscricao",async function(req, res) {try 
 	{
-		const lsLista = await participanteSrv.getParticipante(req.params.id_empresa,req.params.id_evento,req.params.id_inscrito);
+		const lsLista = await participanteSrv.getParticipante(req.params.id_empresa,req.params.id_evento,req.params.id_inscrito,req.params.inscricao);
 		if (lsLista == null) 
 		{
 			res.status(409).json({ message: 'Participante Não Encontrada.' });
@@ -104,9 +104,9 @@ catch (err)
 	}
 })
 /* ROTA DELETE participante */
-router.delete("/:id_empresa/:id_evento/:id_inscrito",async function(req, res) {try 
+router.delete("/:id_empresa/:id_evento/:id_inscrito/:inscricao",async function(req, res) {try 
 	{
-		await participanteSrv.deleteParticipante(req.params.id_empresa,req.params.id_evento,req.params.id_inscrito);		res.status(200).json({ message: 'Participante Excluído Com Sucesso!' });
+		await participanteSrv.deleteParticipante(req.params.id_empresa,req.params.id_evento,req.params.id_inscrito,req.params.inscricao);		res.status(200).json({ message: 'Participante Excluído Com Sucesso!' });
 }
 catch (err)
 	{

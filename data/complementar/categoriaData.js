@@ -13,6 +13,6 @@ exports.getCategoriaBySigla = function(id_empresa,sigla){
 			,  cat.user_update as  user_update    
  			FROM categorias cat 	     
 			 where cat.id_empresa = ${id_empresa} and  cat.sigla= '${sigla}' limit 1  `;
-	console.log(strSql)
+	//console.log(strSql)
 	return  db.oneOrNone(strSql);
 }

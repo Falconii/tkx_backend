@@ -101,14 +101,13 @@ exports.inclusao = async (req, res) => {
         continue;
       }
 
-      console.log(`Processando Linha: ${nro_linha} `);
       if (nro_linha % 100 === 0){
         console.log(
          `Processando Linha: ${nro_linha} `
         );
       }
 
-      console.log("campos:",campos);
+      //console.log("campos:",campos);
       try {
            const dadosComplementares = dados_complementares(campos);
            complementarModel = dadosComplementares;
@@ -130,7 +129,7 @@ exports.inclusao = async (req, res) => {
 
       try{
 
-          console.log("complementarModel.sigla_categoria:",complementarModel.sigla_categoria);
+         //console.log("complementarModel.sigla_categoria:",complementarModel.sigla_categoria);
 
           const categoria =await categoriaSrv.getCategoriaBySigla(id_empresa,complementarModel.sigla_categoria);
 
@@ -141,7 +140,7 @@ exports.inclusao = async (req, res) => {
             }
            else {          
 
-                console.log("categoria:",categoria);
+                //console.log("categoria:",categoria);
 
                 parDetalhe.id_categoria = categoria.id;
            }        
@@ -149,7 +148,6 @@ exports.inclusao = async (req, res) => {
       } catch( err){
 
          parDetalhe.id_categoria = 0;
-         //parDetalhe.mensagem_erro += '- Sigla Da Categoria Inválida!';
          parDetalhe.mensagem_erro += `- (${complementarModel.sigla_categoria} ${err.message}) `;
          parDetalhe.status = 9; 
 
@@ -185,7 +183,7 @@ exports.inclusao = async (req, res) => {
           parDetalhe.status = 9; 
       }
 
-      console.log(`Processando Inscrito: ${inscritoModel.cnpj_cpf} - ${inscritoModel.nome}`);
+      //console.log(`Processando Inscrito: ${inscritoModel.cnpj_cpf} - ${inscritoModel.nome}`);
 
    
       parDetalhe.cnpj_cpf 		=  inscritoModel.cnpj_cpf;
@@ -210,6 +208,7 @@ exports.inclusao = async (req, res) => {
           {
               parDetalhe.status = 3;
               parDetalhe.mensagem_erro += `- ${err.message}`;
+              console.log("Erro DetPlanilha:",parDetalhe);
           }
           else
           {  
@@ -243,7 +242,7 @@ exports.processamento = async (req, cabec,detalhes) => {
 
   const contador = await categoriacontadoresSrv.popula_contadores(params);
 
-  console.log("contador:",contador);
+ // console.log("contador:",contador);
 
   for await (let detalhe of detalhes) {  
     
@@ -279,7 +278,8 @@ exports.processamento = async (req, cabec,detalhes) => {
       const participante = await participanteSrv.getParticipante(
           participanteModel.id_empresa,
           participanteModel.id_evento,
-          participanteModel.id_inscrito
+          participanteModel.id_inscrito,
+          participanteModel.inscricao
       );
 
       if (participante == null){

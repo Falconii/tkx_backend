@@ -6,8 +6,8 @@ const erroDB = require('../util/userfunctiondb');
 const regras = require('../util/participanteRegra');
 const TABELA = 'PARTICIPANTES';
 /* CRUD GET SERVICE */
-exports.getParticipante = async function(id_empresa,id_evento,id_inscrito){
-	return participanteData.getParticipante(id_empresa,id_evento,id_inscrito);
+exports.getParticipante = async function(id_empresa,id_evento,id_inscrito,inscricao){
+	return participanteData.getParticipante(id_empresa,id_evento,id_inscrito,inscricao);
 };
 /* CRUD GET ALL SERVICE */
 exports.getParticipantes = async function(params){
@@ -39,10 +39,10 @@ catch (err)
 }
  };
 //* CRUD - DELETE - SERVICE */
- exports.deleteParticipante = async function(id_empresa,id_evento,id_inscrito){try 
+ exports.deleteParticipante = async function(id_empresa,id_evento,id_inscrito,inscricao){try 
 {
-	await  regras.participante_Exclusao(id_empresa,id_evento,id_inscrito);
-	return participanteData.deleteParticipante(id_empresa,id_evento,id_inscrito);
+	await  regras.participante_Exclusao(id_empresa,id_evento,id_inscrito,inscricao);
+	return participanteData.deleteParticipante(id_empresa,id_evento,id_inscrito,inscricao);
 }
 catch (err)
 { 

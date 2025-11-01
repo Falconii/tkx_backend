@@ -6,7 +6,7 @@ const shared = require('../util/shared');
 
 exports.participante_Inclusao = async function(participante) { 
 	try { 
-		const obj = await participanteSrv.getParticipante(participante.id_empresa,participante.id_evento,participante.id_inscrito);
+		const obj = await participanteSrv.getParticipante(participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.inscricao);
 		if (obj != null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTE', message: `"INCLUSÃO" Registro Já Existe Na Base De Dados.!` }]);
 		}
@@ -20,7 +20,7 @@ exports.participante_Inclusao = async function(participante) {
 
 exports.participante_Alteracao = async function(participante) { 
 	try { 
-		const obj = await participanteSrv.getParticipante(participante.id_empresa,participante.id_evento,participante.id_inscrito);
+		const obj = await participanteSrv.getParticipante(participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.inscricao);
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTE', message: `"ALTERAÇÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}
@@ -32,9 +32,9 @@ exports.participante_Alteracao = async function(participante) {
 	return; 
 } 
 
-exports.participante_Exclusao = async function(id_empresa,id_evento,id_inscrito) { 
+exports.participante_Exclusao = async function(id_empresa,id_evento,id_inscrito,inscricao) { 
 	try { 
-		const obj = await participanteSrv.getParticipante(id_empresa,id_evento,id_inscrito);
+		const obj = await participanteSrv.getParticipante(id_empresa,id_evento,id_inscrito,inscricaocd);
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTE', message: `"EXCLUSÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}

@@ -16,7 +16,7 @@ return [
  ]; 
 }; 
 /* CRUD GET */
-exports.getParticipante = function(id_empresa,id_evento,id_inscrito){
+exports.getParticipante = function(id_empresa,id_evento,id_inscrito,inscricao){
 	strSql = ` select   
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
@@ -41,7 +41,7 @@ exports.getParticipante = function(id_empresa,id_evento,id_inscrito){
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria
 				 left join links link on link.id_empresa = participante.id_empresa and link.id_evento = participante.id_evento and link.id_inscrito = participante.id_old_inscrito
 				 left join inscritos old on old.id_empresa = participante.id_empresa  and old.id  = participante.id_old_inscrito   
-			 where participante.id_empresa = ${id_empresa} and  participante.id_evento = ${id_evento} and  participante.id_inscrito = ${id_inscrito}  `;
+			 where participante.id_empresa = ${id_empresa} and  participante.id_evento = ${id_evento} and  participante.id_inscrito = ${id_inscrito} and  participante.inscricao = ${inscricao}  `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD GET ALL*/
@@ -189,7 +189,7 @@ if (params) {
 				 inner join inscritos inscrito on inscrito.id_empresa = evento.id_empresa and inscrito.id = participante.id_inscrito
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria
 				 left join links link on link.id_empresa = participante.id_empresa and link.id_evento = participante.id_evento and link.id_inscrito = participante.id_old_inscrito
-				 left join inscritos old on old.id_empresa = participante.id_empresa  and old.id  = participante.id_inscrito  `;
+				 left join inscritos old on old.id_empresa = participante.id_empresa  and old.id  = participante.id_old_inscrito  `;
 		return  db.manyOrNone(strSql);
 	}
 }
@@ -223,19 +223,18 @@ if (params) {
 /* CRUD - UPDATE */
  exports.updateParticipante = function(participante){
 	strSql = `update   participantes set  
-		     inscricao = ${participante.inscricao} 
- 		 ,   nro_peito = ${participante.nro_peito} 
+		     nro_peito = ${participante.nro_peito} 
  		 ,   id_categoria = ${participante.id_categoria} 
  		 ,   id_old_inscrito = ${participante.id_old_inscrito} 
  		 ,   user_insert = ${participante.user_insert} 
  		 ,   user_update = ${participante.user_update} 
- 		 where id_empresa = ${participante.id_empresa} and  id_evento = ${participante.id_evento} and  id_inscrito = ${participante.id_inscrito}  returning * `;
+ 		 where id_empresa = ${participante.id_empresa} and  id_evento = ${participante.id_evento} and  id_inscrito = ${participante.id_inscrito} and  inscricao = ${participante.inscricao}  returning * `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD - DELETE */
- exports.deleteParticipante = function(id_empresa,id_evento,id_inscrito){
+ exports.deleteParticipante = function(id_empresa,id_evento,id_inscrito,inscricao){
 	strSql = `delete from participantes 
-		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id_inscrito = ${id_inscrito}  `;
+		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id_inscrito = ${id_inscrito} and  inscricao = ${inscricao}  `;
  	return  db.oneOrNone(strSql);
 }
 

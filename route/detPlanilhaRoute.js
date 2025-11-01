@@ -6,9 +6,9 @@ const { autenticarToken} = require('../middleware/autenticartoken');
 const detPlanilhaSrv = require('../service/detPlanilhaService');
 router.use(autenticarToken); 
 /* ROTA GETONE detPlanilha */
-router.get("/:id_empresa/:id_evento/:id_cabec/:cnpj_cpf",async function(req, res) {try 
+router.get("/:id_empresa/:id_evento/:id_cabec/:cnpj_cpf/:inscricao",async function(req, res) {try 
 	{
-		const lsLista = await detPlanilhaSrv.getDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.cnpj_cpf);
+		const lsLista = await detPlanilhaSrv.getDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.cnpj_cpf,req.params.inscricao);
 		if (lsLista == null) 
 		{
 			res.status(409).json({ message: 'Detplanilha Não Encontrada.' });
@@ -104,9 +104,9 @@ catch (err)
 	}
 })
 /* ROTA DELETE detPlanilha */
-router.delete("/:id_empresa/:id_evento/:id_cabec/:cnpj_cpf",async function(req, res) {try 
+router.delete("/:id_empresa/:id_evento/:id_cabec/:cnpj_cpf/:inscricao",async function(req, res) {try 
 	{
-		await detPlanilhaSrv.deleteDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.cnpj_cpf);		res.status(200).json({ message: 'Detplanilha Excluído Com Sucesso!' });
+		await detPlanilhaSrv.deleteDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.cnpj_cpf,req.params.inscricao);		res.status(200).json({ message: 'Detplanilha Excluído Com Sucesso!' });
 }
 catch (err)
 	{
@@ -128,7 +128,7 @@ router.post("/detPlanilhas",async function(req, res) {/*
 		"id_cabec":0, 
 		"cnpj_cpf":"0", 
 		"nome":"", 
-		"status":"-1", 
+		"status":-1, 
 		"pagina":0, 
 		"tamPagina":50, 
 		"contador":"N", 

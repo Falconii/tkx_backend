@@ -204,7 +204,7 @@ CREATE TABLE Public.participantes (
 		id_old_inscrito int4  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_inscrito) 
+		PRIMARY KEY(id_empresa,id_evento,id_inscrito,inscricao) 
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 
@@ -245,7 +245,7 @@ CREATE TABLE Public.detPlanilhas (
 		mensagem_erro varchar(100)  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_cabec,cnpj_cpf) 
+		PRIMARY KEY(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao) 
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 

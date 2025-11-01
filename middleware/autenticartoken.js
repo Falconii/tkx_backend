@@ -7,6 +7,8 @@ const tokenService = require('../service/tokenService');
 
 exports.autenticarToken = async function (req, res, next) {
   const authHeader = req.headers['authorization'];
+  console.log('Cabeçalho de autorização:', authHeader,req.headers);
+  console.log('authorization:', req.headers.authorization);
   const token = authHeader && authHeader.split(' ')[1];
 
     console.log('Token recebido:', token);

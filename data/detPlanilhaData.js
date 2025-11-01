@@ -23,7 +23,7 @@ return [
  ]; 
 }; 
 /* CRUD GET */
-exports.getDetplanilha = function(id_empresa,id_evento,id_cabec,cnpj_cpf){
+exports.getDetplanilha = function(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao){
 	strSql = ` select   
 			   det.id_empresa as  id_empresa  
 			,  det.id_evento as  id_evento  
@@ -44,7 +44,7 @@ exports.getDetplanilha = function(id_empresa,id_evento,id_cabec,cnpj_cpf){
 			,  evento.descricao as  evento_descricao    
  			FROM detPlanilhas det 	  
 				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento   
-			 where det.id_empresa = ${id_empresa} and  det.id_evento = ${id_evento} and  det.id_cabec = ${id_cabec} and  det.cnpj_cpf = '${cnpj_cpf}'  `;
+			 where det.id_empresa = ${id_empresa} and  det.id_evento = ${id_evento} and  det.id_cabec = ${id_cabec} and  det.cnpj_cpf = '${cnpj_cpf}' and  det.inscricao = ${inscricao}  `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD GET ALL*/
@@ -54,7 +54,7 @@ if (params) {
 	orderby = "";
 	paginacao = "";
 
-	if(params.orderby == '')       orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
+	if(params.orderby == '') orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
 	if(params.orderby == '000000') orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
 	if(params.orderby == '000001') orderby = 'det.id_empresa,det.id_evento,det.nome';
 
@@ -90,7 +90,7 @@ if (params) {
 		}
 	}
 	if(params.status  !== -1 ){
-		if (where != "") where += " and ";
+		if (where != "") where += " and "; 
 		where += `det.status = ${params.status} `;
 	}
 	if (where != "") where = " where " + where;
@@ -125,7 +125,6 @@ if (params) {
 			FROM detPlanilhas det   
 				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento   
 			${where} 			${ orderby} ${ paginacao} `;
-			console.log("strSql - DetPlanilhas",strSql);
 			return  db.manyOrNone(strSql);
 		}	}  else {
 		strSql = `select   
@@ -199,7 +198,6 @@ if (params) {
  		 ,   estrangeiro = '${detPlanilha.estrangeiro}' 
  		 ,   sexo = '${detPlanilha.sexo}' 
  		 ,   data_nasc = '${detPlanilha.data_nasc}' 
- 		 ,   inscricao = ${detPlanilha.inscricao} 
  		 ,   nro_peito = ${detPlanilha.nro_peito} 
  		 ,   id_categoria = ${detPlanilha.id_categoria} 
  		 ,   id_inscrito = ${detPlanilha.id_inscrito} 
@@ -207,13 +205,13 @@ if (params) {
  		 ,   mensagem_erro = '${detPlanilha.mensagem_erro}' 
  		 ,   user_insert = ${detPlanilha.user_insert} 
  		 ,   user_update = ${detPlanilha.user_update} 
- 		 where id_empresa = ${detPlanilha.id_empresa} and  id_evento = ${detPlanilha.id_evento} and  id_cabec = ${detPlanilha.id_cabec} and  cnpj_cpf = '${detPlanilha.cnpj_cpf}'  returning * `;
+ 		 where id_empresa = ${detPlanilha.id_empresa} and  id_evento = ${detPlanilha.id_evento} and  id_cabec = ${detPlanilha.id_cabec} and  cnpj_cpf = '${detPlanilha.cnpj_cpf}' and  inscricao = ${detPlanilha.inscricao}  returning * `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD - DELETE */
- exports.deleteDetplanilha = function(id_empresa,id_evento,id_cabec,cnpj_cpf){
+ exports.deleteDetplanilha = function(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao){
 	strSql = `delete from detPlanilhas 
-		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id_cabec = ${id_cabec} and  cnpj_cpf = '${cnpj_cpf}'  `;
+		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id_cabec = ${id_cabec} and  cnpj_cpf = '${cnpj_cpf}' and  inscricao = ${inscricao}  `;
  	return  db.oneOrNone(strSql);
 }
 

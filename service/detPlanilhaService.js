@@ -6,8 +6,8 @@ const erroDB = require('../util/userfunctiondb');
 const regras = require('../util/detPlanilhaRegra');
 const TABELA = 'DETPLANILHAS';
 /* CRUD GET SERVICE */
-exports.getDetplanilha = async function(id_empresa,id_evento,id_cabec,cnpj_cpf){
-	return detPlanilhaData.getDetplanilha(id_empresa,id_evento,id_cabec,cnpj_cpf);
+exports.getDetplanilha = async function(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao){
+	return detPlanilhaData.getDetplanilha(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao);
 };
 /* CRUD GET ALL SERVICE */
 exports.getDetplanilhas = async function(params){
@@ -39,10 +39,10 @@ catch (err)
 }
  };
 //* CRUD - DELETE - SERVICE */
- exports.deleteDetplanilha = async function(id_empresa,id_evento,id_cabec,cnpj_cpf){try 
+ exports.deleteDetplanilha = async function(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao){try 
 {
-	await  regras.detPlanilha_Exclusao(id_empresa,id_evento,id_cabec,cnpj_cpf);
-	return detPlanilhaData.deleteDetplanilha(id_empresa,id_evento,id_cabec,cnpj_cpf);
+	await  regras.detPlanilha_Exclusao(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao);
+	return detPlanilhaData.deleteDetplanilha(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao);
 }
 catch (err)
 { 

@@ -1594,6 +1594,8 @@
                     "key": "id_evento"
                 }, {
                     "key": "id_inscrito"
+                },{
+                    "key": "inscricao"
                 }
             ],
     "variables": {
@@ -2078,6 +2080,8 @@
                     "key": "id_cabec"
                 }, {
                     "key": "cnpj_cpf"
+                },{
+                    "key": "inscricao"
                 }
             ],
     "variables": {
@@ -2171,12 +2175,118 @@
 
             ],
             "tablespace": "Producao"
-        }
-    ],
+        },
+            {
+                    "name": "parametros",
+                    "fields": [{
+                            "name": "id_empresa",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "modulo",
+                            "type": "char",
+                            "length": 20,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "assinatura",
+                            "type": "char",
+                            "length": 20,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "id_usuario",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "parametro",
+                            "type": "text",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "user_insert",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "user_update",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        }
+                    ],
+                    "inner_join": [],
+                    "left_join": [],
+                    "primaryKey": [{
+                            "key": "id_empresa"
+                        },
+                        {
+                            "key": "modulo"
+                        },
+                        {
+                            "key": "assinatura"
+                        },
+                        {
+                            "key": "id_usuario"
+                        }
+                    ],
+                    "variables": {
+                        "getone": "parametro",
+                        "getall": "parametros",
+                        "alias": "param"
+                    },
+                    "where": {
+                        "parametro_01": [
+                            { "name": "id_empresa", "filtro": "S", "atividador": " !== 0 ", "tipo": "number", "padrao": 0 },
+                            { "name": "modulo", "filtro": "S", "atividador": " !== ''", "tipo": "string", "padrao": "" },
+                            { "name": "assinatura", "filtro": "S", "atividador": " !== ''", "tipo": "string", "padrao": "" },
+                            { "name": "id_usuario", "filtro": "S", "atividador": " !== 0 ", "tipo": "number", "padrao": 0 },
+                            { "name": "pagina", "filtro": "N", "atividador": "", "tipo": "number", "padrao": 0 },
+                            { "name": "tamPagina", "filtro": "N", "atividador": "", "tipo": "number", "padrao": 50 },
+                            { "name": "contador", "filtro": "N", "atividador": "", "tipo": "string", "padrao": "N" },
+                            { "name": "orderby", "filtro": "N", "atividador": "", "tipo": "string", "padrao": "" },
+                            { "name": "sharp", "filtro": "N", "atividador": "", "tipo": "boolean", "padrao": "false" }
+                        ]
+                    },
+                    "orderby": [
+                        { "label": "", "comparativo": " != '' ", "key": "param.id_empresa" },
+                        { "label": "Módulo", "comparativo": " != '' ", "key": "param.id_empresa,param.modulo" },
+                        { "label": "Usuário", "comparativo": " != 0 ", "key": "param.id_empresa,param.id_usuario" }
+                    ],
+                    "tablespace": "Producao"
+                }
+            ],
             "parametros": []
           },
         "frontend": {
-            "src": "C://Repositorios//Marcos//tkx//tkx_frontend2//src//app",
+            "src": "C://Repositorios//Marcos//tkx//tkx_frontend//src//app",
             "server": {
                 "includes": [{
                         "variable": "express",

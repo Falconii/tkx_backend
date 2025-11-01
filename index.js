@@ -1,11 +1,17 @@
-
+const cors = require("cors");
 const express = require("express");
 const app = express();
 
 const PORT =  3000;
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 app.use(express.json());
-
+/*
 const allowCors = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // colocar os dominios permitidos | ex: 127.0.0.1:3000
 
@@ -23,7 +29,10 @@ const allowCors = (req, res, next) => {
     next();
 };
 
-app.use(allowCors);
+app.use(allowCors); 
+
+app.options('/*', allowCors);
+*/
 
 app.use("/api/login", require('./route/loginRoute'));
 app.use("/api/empresa", require('./route/empresaRoute'));
