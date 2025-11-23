@@ -1,156 +1,165 @@
 /* ROUTE credenciais */
-const express = require('express');
-const router = express.Router(); 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const usuarioService = require('../service/usuarioService');
-const tokenService = require('../service/tokenService');
-
+const express = require("express");
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const usuarioService = require("../service/usuarioService");
+const tokenService = require("../service/tokenService");
 
 /* Login */
-router.post("/",async function(req, res) {
-try 
-	{
-	   const { id_empresa,codigo, password } = req.body;
+router.post("/", async function (req, res) {
+  try {
+    const { id_empresa, codigo, password } = req.body;
 
-       console.log("Login:", codigo, password);
+    console.log("Login:", codigo, password);
 
-	   user = await usuarioService.getUsuario(id_empresa,codigo);
+    user = await usuarioService.getUsuario(id_empresa, codigo);
 
-	   console.log("User:", user);
+    console.log("User:", user);
 
+    if (!user) {
+      return res.status(403).send("Credenciais inválidas");
+    }
 
-	  if (!user) {
-		  return res.status(403).send('Credenciais inválidas');
-	  }
+    if (!user || !bcrypt.compareSync(password, user.senha)) {
+      return res.status(401).send("Credenciais inválidas");
+    }
+    await tokenService.deleteTokenByUser(user.id_empresa, user.id);
 
+    const accessToken = tokenService.generateAccessToken(user);
 
-	  if (!user || !bcrypt.compareSync(password, user.senha)) {
-         return res.status(401).send('Credenciais inválidas');
-      }
-	  await tokenService.deleteTokenByUser(user.id_empresa, user.id);
+    const refreshToken = tokenService.generateRefreshToken(user);
 
-      const accessToken = tokenService.generateAccessToken(user);
+    await tokenService.insertToken({
+      id_empresa: user.id_empresa,
+      token: accessToken,
+      tipo: "A",
+      validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+      id_usuario: user.id,
+      status: 1,
+      user_insert: user.id,
+      user_update: 0,
+    });
 
-	   const refreshToken = tokenService.generateRefreshToken(user);
+    await tokenService.insertToken({
+      id_empresa: user.id_empresa,
+      token: refreshToken,
+      tipo: "R",
+      validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+      id_usuario: user.id,
+      status: 1,
+      user_insert: user.id,
+      user_update: 0,
+    });
 
+    res
+      .status(200)
+      .json({
+        id_empresa: user.id_empresa,
+        id: user.id,
+        razao: user.razao,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      });
+  } catch (err) {
+    res.status(500).json({ erro: "BAK-END", message: err.message });
+  }
+});
 
-		await tokenService.insertToken({
-				id_empresa: user.id_empresa,
-				token: accessToken,
-				tipo: 'A',
-				validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
-				id_usuario: user.id,
-				status: 1,
-				user_insert: user.id,
-				user_update: 0
-		});
+router.post("refresh/", async function (req, res) {
+  try {
+    const { codigo, password } = req.body;
 
+    user = await usuarioService.getUsuario(1, codigo);
 
-		await tokenService.insertToken({
-				id_empresa: user.id_empresa,
-				token: refreshToken,
-				tipo: 'R',
-				validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
-				id_usuario: user.id,
-				status: 1,
-				user_insert: user.id,
-				user_update: 0
-		});
-       
+    if (!user) {
+      return res.status(403).send("Credenciais inválidas");
+    }
 
-		res.status(200).json({"id_empresa":user.id_empresa, "id": user.id, "razao":user.razao,"accessToken": accessToken, "refreshToken": refreshToken});
+    if (!user || !bcrypt.compareSync(password, user.senha)) {
+      return res.status(401).send("Credenciais inválidas");
+    }
 
-	}
-catch (err)
-	{
-	   res.status(500).json({ erro: 'BAK-END',  message: err.message});
-	}
-})
+    await tokenService.deleteTokenByUser(user.id_empresa, user.id);
 
-router.post("refresh/",async function(req, res) {
-try 
-	{
-	   const { codigo, password } = req.body;
+    const accessToken = tokenService.generateAccessToken(user);
 
-	   user = await usuarioService.getUsuario(1,codigo);
+    const refreshToken = tokenService.generateRefreshToken(user);
 
-	   if (!user) {
-		  return res.status(403).send('Credenciais inválidas');
-	   }
+    await tokenService.insertToken({
+      id_empresa: user.id_empresa,
+      token: accessToken,
+      tipo: "A",
+      validade: new Date(Date.now() + 15 * 60 * 1000), // 15 minutos
+      id_usuario: user.id,
+      status: 1,
+      user_insert: user.id,
+      user_update: 0,
+    });
 
-	   if (!user || !bcrypt.compareSync(password, user.senha)) {
-          return res.status(401).send('Credenciais inválidas');
-       }
+    await tokenService.insertToken({
+      id_empresa: user.id_empresa,
+      token: refreshToken,
+      tipo: "R",
+      validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+      id_usuario: user.id,
+      status: 1,
+      user_insert: user.id,
+      user_update: 0,
+    });
 
-	   await tokenService.deleteTokenByUser(user.id_empresa, user.id);
+    res
+      .status(200)
+      .json({
+        id_empresa: user.id_empresa,
+        id_usuario: user.id,
+        razao: user.razao,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      });
+  } catch (err) {
+    res.status(500).json({ erro: "BAK-END", message: err.message });
+  }
+});
 
-       const accessToken = tokenService.generateAccessToken(user);
+router.post("link/", async function (req, res) {
+  try {
+    const { id_empresa, id_evento, id_userlink, datalink } = req.body;
 
-	   const refreshToken = tokenService.generateRefreshToken(user);
+    userlink = await usuarioService.getUsuario(id_empresa, id_userlink);
 
-		await tokenService.insertToken({
-				id_empresa: user.id_empresa,
-				token: accessToken,
-				tipo: 'A',
-				validade: new Date(Date.now() + 15 * 60 * 1000), // 15 minutos
-				id_usuario: user.id,
-				status: 1,
-				user_insert: user.id,
-				user_update: 0
-		});
+    if (!user) {
+      return res.status(403).send("Usuário do link inválido!");
+    }
 
-		await tokenService.insertToken({
-				id_empresa: user.id_empresa,
-				token: refreshToken,
-				tipo: 'R',
-				validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
-				id_usuario: user.id,
-				status: 1,
-				user_insert: user.id,
-				user_update: 0
-		});
+    const eventoToken = tokenService.createTokenByDate(
+      id_empresa,
+      id_evento,
+      id_userlink,
+      datalink
+    );
 
-		res.status(200).json({"id_empresa":user.id_empresa,"id_usuario": user.id, "razao":user.razao,"accessToken": accessToken, "refreshToken": refreshToken});
+    await tokenService.insertToken({
+      id_empresa: user.id_empresa,
+      token: accessToken,
+      tipo: "E",
+      validade: new Date(datalink),
+      id_usuario: user.id,
+      status: 1,
+      user_insert: user.id,
+      user_update: 0,
+    });
 
-	}
-catch (err)
-	{
-	   res.status(500).json({ erro: 'BAK-END',  message: err.message });
-	}
-})
-
-
-router.post("link/",async function(req, res) {
-try 
-	{
-	   const {id_empresa,id_evento,id_userlink,datalink } = req.body;
-
-	   userlink  = await usuarioService.getUsuario(id_empresa,id_userlink);
-
-	   if (!user) {
-		  return res.status(403).send('Usuário do link inválido!');
-	   }
-
-       const eventoToken = tokenService.createTokenByDate(id_empresa, id_evento, id_userlink, datalink);
-
-		await tokenService.insertToken({
-				id_empresa: user.id_empresa,
-				token: accessToken,
-				tipo: 'E',
-				validade: new Date(datalink), 
-				id_usuario: user.id,
-				status: 1,
-				user_insert: user.id,
-				user_update: 0
-		});
-
-		res.status(200).json({"id_empresa":user.id_empresa,"id_usuario": user.id, "razao":user.razao,"eventoToken": eventoToken});
-
-	}
-catch (err)
-	{
-	   res.status(500).json({ erro: 'BAK-END',  message: err.message });
-	}
-})
+    res
+      .status(200)
+      .json({
+        id_empresa: user.id_empresa,
+        id_usuario: user.id,
+        razao: user.razao,
+        eventoToken: eventoToken,
+      });
+  } catch (err) {
+    res.status(500).json({ erro: "BAK-END", message: err.message });
+  }
+});
 module.exports = router;
