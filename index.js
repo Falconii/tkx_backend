@@ -53,7 +53,7 @@ app.use("/api/token", require("./route/tokenRoute"));
 //app.use("/api/importacao", require("./route/ImportacaoRoutte.js"));
 app.use("/api/cabplanilha", require("./route/cabplanilhaRoute.js"));
 app.use("/api/detplanilha", require("./route/detPlanilhaRoute.js"));
-app.use("/api/uploadfoto", require("./route/fotoRoute.js"));
+//app.use("/api/uploadfoto", require("./route/fotoRoute.js"));
 app.use("/api/categoriacontador", require("./route/categoriacontadorRoute.js"));
 app.use(
   "/api/categoria_complementar",
