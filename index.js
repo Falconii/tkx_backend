@@ -50,7 +50,7 @@ app.use("/api/categoria", require("./route/categoriaRoute"));
 app.use("/api/entrega", require("./route/entregaRoute"));
 app.use("/api/link", require("./route/linkRoute"));
 app.use("/api/token", require("./route/tokenRoute"));
-app.use("/api/importacao", require("./route/ImportacaoRoute.js"));
+//app.use("/api/importacao", require("./route/ImportacaoRoute.js"));
 app.use("/api/cabplanilha", require("./route/cabplanilhaRoute.js"));
 app.use("/api/detplanilha", require("./route/detPlanilhaRoute.js"));
 app.use("/api/uploadfoto", require("./route/fotoRoute.js"));
