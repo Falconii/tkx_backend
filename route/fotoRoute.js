@@ -1,5 +1,5 @@
 const db = require("../infra/database");
-const uploadFoto = require("../uploadconfig/uploadfoto.js");
+const uploadFoto = require("../uploadconfig/uploadfoto");
 const fotoUploadSrv = require("../service/uploadFotoService");
 const express = require("express");
 const router = express.Router();
@@ -53,13 +53,11 @@ router.post("/foto", async function (req, res) {
     if (err.name == "MyExceptionDB") {
       res.status(409).json(err);
     } else {
-      res
-        .status(500)
-        .json({
-          erro: "BAK-END",
-          tabela: "GETFOTO-Foto",
-          message: err.message,
-        });
+      res.status(500).json({
+        erro: "BAK-END",
+        tabela: "GETFOTO-Foto",
+        message: err.message,
+      });
     }
   }
 });
@@ -91,13 +89,11 @@ router.post(
       if (err.name == "MyExceptionDB") {
         res.status(409).json(err);
       } else {
-        res
-          .status(500)
-          .json({
-            erro: "BAK-END",
-            tabela: "UPLOAD-Foto",
-            message: err.message,
-          });
+        res.status(500).json({
+          erro: "BAK-END",
+          tabela: "UPLOAD-Foto",
+          message: err.message,
+        });
       }
     }
   },
@@ -139,13 +135,11 @@ router.post("/fotoV2", async function (req, res) {
     if (err.name == "MyExceptionDB") {
       res.status(409).json(err);
     } else {
-      res
-        .status(500)
-        .json({
-          erro: "BAK-END",
-          tabela: "GETFOTO-Foto",
-          message: err.message,
-        });
+      res.status(500).json({
+        erro: "BAK-END",
+        tabela: "GETFOTO-Foto",
+        message: err.message,
+      });
     }
   }
 });
@@ -178,13 +172,11 @@ router.post("/fotoV2", uploadFoto.single("foto"), async function (req, res) {
     if (err.name == "MyExceptionDB") {
       res.status(409).json(err);
     } else {
-      res
-        .status(500)
-        .json({
-          erro: "BAK-END",
-          tabela: "GETFOTO-Foto",
-          message: err.message,
-        });
+      res.status(500).json({
+        erro: "BAK-END",
+        tabela: "GETFOTO-Foto",
+        message: err.message,
+      });
     }
   }
 });
