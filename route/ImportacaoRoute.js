@@ -5,7 +5,7 @@ const router = express.Router();
 const cabPlanilhaSrv = require("../service/cabplanilhaService.js");
 const detPlanilhaSrv = require("../service/detPlanilhaService.js");
 const eventoSrv = require("../service/eventoService.js");
-const uploadPlanilha = require("../uploadConfig/uploadPlanilha.js");
+const uploadPlanilha = require("../uploadconfig/uploadplanilha.js");
 const uploadPlanilhaSrv = require("../service/uploadPlanilhaService.js");
 const shared = require("../util/shared.js");
 const { autenticarToken } = require("../middleware/autenticartoken");
@@ -47,12 +47,10 @@ router.post(
       } else {
         const linhas_processadas = await uploadPlanilhaSrv.inclusao(req, res);
 
-        res
-          .status(200)
-          .json({
-            message: "Planilha Importada com Sucesso!",
-            linhas_processadas: linhas_processadas,
-          });
+        res.status(200).json({
+          message: "Planilha Importada com Sucesso!",
+          linhas_processadas: linhas_processadas,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -60,13 +58,11 @@ router.post(
       if (err.name == "MyExceptionDB") {
         res.status(409).json(err);
       } else {
-        res
-          .status(500)
-          .json({
-            erro: "BAK-END",
-            tabela: "Importacao",
-            message: err.message,
-          });
+        res.status(500).json({
+          erro: "BAK-END",
+          tabela: "Importacao",
+          message: err.message,
+        });
       }
     }
   },
@@ -108,11 +104,9 @@ router.post("/processamento", async function (req, res) {
     const detalhes = await detPlanilhaSrv.getDetplanilhas(par);
 
     if (detalhes.length == 0) {
-      res
-        .status(401)
-        .json({
-          message: "Planilha Não Contém Linhas Para Serem Processadas!",
-        });
+      res.status(401).json({
+        message: "Planilha Não Contém Linhas Para Serem Processadas!",
+      });
       return;
     }
 
