@@ -1,5 +1,5 @@
 const db = require("../infra/database");
-const uploadFoto = require("../uploadConfig/uploadFoto");
+const uploadFoto = require("../config_multer/config_multer_foto");
 const fotoUploadSrv = require("../service/uploadFotoService");
 const express = require("express");
 const router = express.Router();
