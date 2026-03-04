@@ -1,35 +1,36 @@
 /* DATA usuarios */
-const db = require('../infra/database');
+const db = require("../infra/database");
 
 /* GET CAMPOS */
-exports.getCampos = function(Usuario){
-return [ 
-			Usuario.id_empresa, 
-			Usuario.id, 
-			Usuario.cnpj_cpf, 
-			Usuario.razao, 
-			Usuario.cadastr, 
-			Usuario.rua, 
-			Usuario.nro, 
-			Usuario.complemento, 
-			Usuario.bairro, 
-			Usuario.cidade, 
-			Usuario.uf, 
-			Usuario.cep, 
-			Usuario.tel1, 
-			Usuario.tel2, 
-			Usuario.email, 
-			Usuario.obs, 
-			Usuario.senha, 
-			Usuario.grupo, 
-			Usuario.ativo, 
-			Usuario.user_insert, 
-			Usuario.user_update, 
- ]; 
-}; 
+exports.getCampos = function(Usuario) {
+    return [
+        Usuario.id_empresa,
+        Usuario.id,
+        Usuario.cnpj_cpf,
+        Usuario.razao,
+        Usuario.cadastr,
+        Usuario.rua,
+        Usuario.nro,
+        Usuario.complemento,
+        Usuario.bairro,
+        Usuario.cidade,
+        Usuario.uf,
+        Usuario.cep,
+        Usuario.tel1,
+        Usuario.tel2,
+        Usuario.email,
+        Usuario.obs,
+        Usuario.senha,
+        Usuario.grupo,
+        Usuario.ativo,
+        Usuario.trocarsenha,
+        Usuario.user_insert,
+        Usuario.user_update,
+    ];
+};
 /* CRUD GET */
-exports.getUsuario = function(id_empresa,id){
-	strSql = ` select   
+exports.getUsuario = function(id_empresa, id) {
+    strSql = ` select   
 			   usu.id_empresa as  id_empresa  
 			,  usu.id as  id  
 			,  usu.cnpj_cpf as  cnpj_cpf  
@@ -49,70 +50,71 @@ exports.getUsuario = function(id_empresa,id){
 			,  usu.senha as  senha  
 			,  usu.grupo as  grupo  
 			,  usu.ativo as  ativo  
+			,  usu.trocarsenha as  trocarsenha  
 			,  usu.user_insert as  user_insert  
 			,  usu.user_update as  user_update  
 			,  gru.descricao as  grupo_descricao    
  			FROM usuarios usu 	  
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo   
 			 where usu.id_empresa = ${id_empresa} and  usu.id = ${id}  `;
-	return  db.oneOrNone(strSql);
-}
+    return db.oneOrNone(strSql);
+};
 /* CRUD GET ALL*/
-exports.getUsuarios = function(params){
-if (params) {
-	where = "";
-	orderby = "";
-	paginacao = "";
+exports.getUsuarios = function(params) {
+    if (params) {
+        where = "";
+        orderby = "";
+        paginacao = "";
 
-	if(params.orderby == '') orderby = 'usu.id_empresa,usu.id';
-	if(params.orderby == '000000') orderby = 'usu.id_empresa,usu.id';
-	if(params.orderby == '000001') orderby = 'usu.id_empresa,usu.razao';
-	if(params.orderby == '000002') orderby = 'usu.id_empresa,usu.grupo,usu.razao';
-	if(params.orderby == '000003') orderby = 'usu.id_empresa,usu.id,usu.cnpj_cpf';
+        if (params.orderby == "") orderby = "usu.id_empresa,usu.id";
+        if (params.orderby == "Código") orderby = "usu.id_empresa,usu.id";
+        if (params.orderby == "Razão") orderby = "usu.id_empresa,usu.razao";
+        if (params.orderby == "Grupo")
+            orderby = "usu.id_empresa,usu.grupo,usu.razao";
+        if (params.orderby == "CNPJ/CPF")
+            orderby = "usu.id_empresa,usu.id,usu.cnpj_cpf";
 
-	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
-		if (where != "") where += " and "; 
-		where += `usu.id_empresa = ${params.id_empresa} `;
-	}
-	if(params.id  !== 0 ){
-		if (where != "") where += " and "; 
-		where += `usu.id = ${params.id} `;
-	}
-	if(params.razao.trim()  !== ''){
-		if (where != "") where += " and ";
-		if (params.sharp) { 
-			 where +=  `usu.razao = '${params.razao}' `;
-		} else 
-		{
-			where += `usu.razao like '%${params.razao.trim()}%' `;
-		}
-	}
-	if(params.cnpj_cpf.trim()  !== ''){
-		if (where != "") where += " and ";
-		if (params.sharp) { 
-			 where +=  `usu.cnpj_cpf = '${params.cnpj_cpf}' `;
-		} else 
-		{
-			where += `usu.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
-		}
-	}
-	if(params.grupo  !== 0 ){
-		if (where != "") where += " and "; 
-		where += `usu.grupo = ${params.grupo} `;
-	}
-	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
-		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
-	}
-	if (params.contador == 'S') {
-		sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
+        if (orderby != "") orderby = " order by " + orderby;
+        if (params.id_empresa !== 0) {
+            if (where != "") where += " and ";
+            where += `usu.id_empresa = ${params.id_empresa} `;
+        }
+        if (params.id !== 0) {
+            if (where != "") where += " and ";
+            where += `usu.id = ${params.id} `;
+        }
+        if (params.razao.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `usu.razao = '${params.razao}' `;
+            } else {
+                where += `usu.razao like '%${params.razao.trim()}%' `;
+            }
+        }
+        if (params.cnpj_cpf.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `usu.cnpj_cpf = '${params.cnpj_cpf}' `;
+            } else {
+                where += `usu.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
+            }
+        }
+        if (params.grupo !== 0) {
+            if (where != "") where += " and ";
+            where += `usu.grupo = ${params.grupo} `;
+        }
+        if (where != "") where = " where " + where;
+        if (params.pagina != 0) {
+            paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
+        }
+        if (params.contador == "S") {
+            sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
 				  FROM usuarios usu   
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo   
-				  ${ where} `;
-		return db.one(sqlStr);
-	}  else {
-		strSql = `select   
+				  ${where} `;
+            return db.one(sqlStr);
+        } else {
+            strSql = `select   
 			   usu.id_empresa as  id_empresa  
 			,  usu.id as  id  
 			,  usu.cnpj_cpf as  cnpj_cpf  
@@ -132,15 +134,17 @@ if (params) {
 			,  usu.senha as  senha  
 			,  usu.grupo as  grupo  
 			,  usu.ativo as  ativo  
+			,  usu.trocarsenha as  trocarsenha  
 			,  usu.user_insert as  user_insert  
 			,  usu.user_update as  user_update  
 			,  gru.descricao as  grupo_descricao     
 			FROM usuarios usu   
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo   
-			${where} 			${ orderby} ${ paginacao} `;
-			return  db.manyOrNone(strSql);
-		}	}  else {
-		strSql = `select   
+			${where} 			${orderby} ${paginacao} `;
+            return db.manyOrNone(strSql);
+        }
+    } else {
+        strSql = `select   
 			   usu.id_empresa as  id_empresa  
 			,  usu.id as  id  
 			,  usu.cnpj_cpf as  cnpj_cpf  
@@ -160,17 +164,18 @@ if (params) {
 			,  usu.senha as  senha  
 			,  usu.grupo as  grupo  
 			,  usu.ativo as  ativo  
+			,  usu.trocarsenha as  trocarsenha  
 			,  usu.user_insert as  user_insert  
 			,  usu.user_update as  user_update  
 			,  gru.descricao as  grupo_descricao    
 			FROM usuarios usu			   
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo  `;
-		return  db.manyOrNone(strSql);
-	}
-}
+        return db.manyOrNone(strSql);
+    }
+};
 /* CRUD - INSERT */
- exports.insertUsuario = function(usuario){
-	strSql = `insert into usuarios (
+exports.insertUsuario = function(usuario) {
+    strSql = `insert into usuarios (
 		     id_empresa 
 		 ,   cnpj_cpf 
 		 ,   razao 
@@ -189,6 +194,7 @@ if (params) {
 		 ,   senha 
 		 ,   grupo 
 		 ,   ativo 
+		 ,   trocarsenha 
 		 ,   user_insert 
 		 ,   user_update 
 		 ) 
@@ -211,15 +217,16 @@ if (params) {
 		 ,   '${usuario.senha}' 
 		 ,   ${usuario.grupo} 
 		 ,   '${usuario.ativo}' 
+		 ,   '${usuario.trocarsenha}' 
 		 ,   ${usuario.user_insert} 
 		 ,   ${usuario.user_update} 
 		 ) 
  returning * `;
-	return db.oneOrNone(strSql);
+    return db.oneOrNone(strSql);
 };
 /* CRUD - UPDATE */
- exports.updateUsuario = function(usuario){
-	strSql = `update   usuarios set  
+exports.updateUsuario = function(usuario) {
+    strSql = `update   usuarios set  
 		     cnpj_cpf = '${usuario.cnpj_cpf}' 
  		 ,   razao = '${usuario.razao}' 
  		 ,   cadastr = '${usuario.cadastr}' 
@@ -237,16 +244,23 @@ if (params) {
  		 ,   senha = '${usuario.senha}' 
  		 ,   grupo = ${usuario.grupo} 
  		 ,   ativo = '${usuario.ativo}' 
+ 		 ,   trocarsenha = '${usuario.trocarsenha}' 
  		 ,   user_insert = ${usuario.user_insert} 
  		 ,   user_update = ${usuario.user_update} 
  		 where id_empresa = ${usuario.id_empresa} and  id = ${usuario.id}  returning * `;
-	return  db.oneOrNone(strSql);
-}
+    return db.oneOrNone(strSql);
+};
 /* CRUD - DELETE */
- exports.deleteUsuario = function(id_empresa,id){
-	strSql = `delete from usuarios 
+exports.deleteUsuario = function(id_empresa, id) {
+    strSql = `delete from usuarios 
 		 where id_empresa = ${id_empresa} and  id = ${id}  `;
- 	return  db.oneOrNone(strSql);
-}
+    return db.oneOrNone(strSql);
+};
 
-
+exports.updatesenhaUsuario = function(id_empresa, id_usuario, senha) {
+    strSql = `update   usuarios set  
+		     senha = '${senha}' 
+			 ,   trocarsenha = 'N' 
+			 where id_empresa = ${id_empresa} and  id = ${id_usuario}  returning * `;
+    return db.oneOrNone(strSql);
+};
