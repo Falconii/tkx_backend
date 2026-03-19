@@ -6,3 +6,4 @@ conexoes.json
 conexoes_local.json
 conexoes_nuvem.json
 *.zip
+*.csv
