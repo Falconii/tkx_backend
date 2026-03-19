@@ -179,7 +179,7 @@ exports.getParticipantes = function (params) {
 			,  evento.descricao as  evento_descricao  
 			,  inscrito.nome as  inscrito_nome  
 			,  inscrito.cnpj_cpf as  inscrito_cpf 
-      ,  inscrito.data_nasc as  inscrito_dt_nascimento
+      ,  to_char(inscrito.data_nasc,'DD-MM-YYYY') as  inscrito_dt_nascimento
       ,  inscrito.sexo      as  inscrito_sexo  
 			,  categoria.descricao as  categoria_descricao  
 			,  coalesce(link.token,'') as  link_token  
