@@ -344,8 +344,7 @@ function _inscrito(campos) {
     }
     if (
       inscritoModel.cnpj_cpf == null ||
-      inscritoModel.cnpj_cpf.trim() === "" ||
-      inscritoModel.cnpj_cpf.length < 11
+      inscritoModel.cnpj_cpf.trim() === ""
     ) {
       inscritoModel.cnpj_cpf = "";
       inscritoModel.mensagem_erro += " -CNPJ/CPF Inválido";

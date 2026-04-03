@@ -74,13 +74,11 @@ exports.getParticipantes = function (params) {
     if (params.orderby == "000002")
       orderby =
         "participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.id_categoria";
-    if (params.orderby == "000002")
-      orderby =
-        "participante.id_empresa,participante.id_evento,particpante.inscrito_nome";
     if (params.orderby == "000003")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.inscriot_cpf";
-    if (params.orderby == "000003")
+      orderby = "participante.id_empresa,participante.id_evento,inscrito_nome";
+    if (params.orderby == "000004")
+      orderby = "participante.id_empresa,participante.id_evento,inscriot_cpf";
+    if (params.orderby == "000005")
       orderby =
         "participante.id_empresa,participante.id_evento,participante.categoria_participante";
 
