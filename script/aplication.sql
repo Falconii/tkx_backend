@@ -1,3 +1,12 @@
+CREATE DATABASE nao_usado 
+		WITH 
+		OWNER = postgres 
+		ENCODING = 'UTF8' 
+		LC_COLLATE = 'Portuguese_Brazil.1252' 
+		LC_CTYPE = 'Portuguese_Brazil.1252' 
+		TABLESPACE = "Producao" 
+		CONNECTION LIMIT = -1; 
+GO 
 /* Script Tabelas */
 /* TABELA empresas  */
 DROP TABLE IF EXISTS empresas;
@@ -85,6 +94,8 @@ CREATE TABLE Public.eventos (
 		inicio timestamp  NOT NULL  , 
 		final timestamp  NOT NULL  , 
 		obs varchar(200)  NOT NULL  , 
+		qtd_participantes int4  NOT NULL  , 
+		qtd_kits int4  NOT NULL  , 
 		status char(1)  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
@@ -209,6 +220,27 @@ CREATE TABLE Public.participantes (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
+/* TABELA participantesv2  */
+DROP TABLE IF EXISTS participantesv2;
+CREATE TABLE Public.participantesv2 (
+		id_empresa int4  NOT NULL  , 
+		id_evento int4  NOT NULL  , 
+		id serial  NOT NULL  , 
+		inscricao int4  NOT NULL  , 
+		nro_peito int4  NOT NULL  , 
+		id_categoria int4  NOT NULL  , 
+		cnpj_cpf varchar(14)  NOT NULL  , 
+		nome varchar(60)  NOT NULL  , 
+		sexo char(1)  NOT NULL  , 
+		data_nasc date  NOT NULL  , 
+		origem char(1)  NOT NULL  , 
+		user_insert int4  NOT NULL  , 
+		user_update int4  NOT NULL  , 
+		PRIMARY KEY(id_empresa,id_evento,id) 
+)
+ WITHOUT OIDS 
+ TABLESPACE "Producao" 
+ GO 
 /* TABELA cabplanilhas  */
 DROP TABLE IF EXISTS cabplanilhas;
 CREATE TABLE Public.cabplanilhas (
@@ -288,6 +320,8 @@ TRUNCATE TABLE Public.tokens RESTART IDENTITY;
 GO 
 TRUNCATE TABLE Public.participantes RESTART IDENTITY; 
 GO 
+TRUNCATE TABLE Public.participantesv2 RESTART IDENTITY; 
+GO 
 TRUNCATE TABLE Public.cabplanilhas RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.detPlanilhas RESTART IDENTITY; 
@@ -316,6 +350,8 @@ GO
 DROP TABLE IF EXISTS Public.tokens ; 
 GO 
 DROP TABLE IF EXISTS Public.participantes ; 
+GO 
+DROP TABLE IF EXISTS Public.participantesv2 ; 
 GO 
 DROP TABLE IF EXISTS Public.cabplanilhas ; 
 GO 

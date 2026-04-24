@@ -45,6 +45,7 @@ app.use("/api/usuario", require("./route/usuarioRoute"));
 app.use("/api/grupousuario", require("./route/grupousuarioRoute"));
 app.use("/api/evento", require("./route/eventoRoute"));
 app.use("/api/participante", require("./route/participanteRoute"));
+app.use("/api/participantev2", require("./route/participantev2Route"));
 app.use("/api/inscrito", require("./route/inscritoRoute"));
 app.use("/api/categoria", require("./route/categoriaRoute"));
 app.use("/api/entrega", require("./route/entregaRoute"));
@@ -60,6 +61,12 @@ app.use(
   require("./route/complementar/categoriaRoute"),
 );
 app.use("/api/trocaParticipante", require("./route/trocaparticipanteRoute.js"));
+
+app.use("/api/parametro", require("./route/parametroRoute.js"));
+app.use(
+  "/api/parametro/complementar",
+  require("./route/complementar/parametroRoute.js"),
+);
 
 app.listen(PORT, () => {
   console.log(`Servidor No Ar. Porta ${PORT}`);
