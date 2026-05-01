@@ -18,9 +18,10 @@ let complementarModel = {};
 let inscritoModel = {};
 
 exports.inclusao = async (req, res) => {
-  ((id_empresa = req.id_empresa),
-    (id_evento = req.body.id_evento),
-    (id_usuario = req.id_usuario));
+  id_empresa = req.id_empresa;
+  id_evento = req.body.id_evento;
+  id_usuario = req.id_usuario;
+  console.log("inclusao id_evento", id_evento);
   let ct = 0;
   let nro_linha = 0;
   let result = { message: "Processamento OK" };
@@ -30,10 +31,6 @@ exports.inclusao = async (req, res) => {
   let campos = "";
   const { name } = req.body;
   const file = req.file;
-
-  const evento = eventoSrv.getEvento(id_empresa, id_evento);
-
-  //fazer trativa de não exsiste o evento
 
   const cab = {
     id_empresa: id_empresa,
@@ -198,9 +195,10 @@ exports.inclusao = async (req, res) => {
 };
 
 exports.processamento = async (req, cabec, detalhes) => {
-  ((id_empresa = req.id_empresa),
-    (id_evento = req.body.id_evento),
-    (id_usuario = req.id_usuario));
+  id_empresa = req.id_empresa;
+  id_evento = req.body.id_evento;
+  id_usuario = req.id_usuario;
+
   linhas_processadas = 0;
 
   const params = {
@@ -380,11 +378,13 @@ async function _incluirInscrito(inscrito) {
     throw new Error("Nome do inscrito não pode ser vazio");
   }
   try {
-    const result = await inscritoComplementarSrv.getInscritoByCpf(
-      inscrito.id_empresa,
-      inscrito.cnpj_cpf,
-    );
-
+    const result = null;
+    /*
+        const result = await inscritoComplementarSrv.getInscritoByCpf(
+            inscrito.id_empresa,
+            inscrito.cnpj_cpf,
+        );
+*/
     if (result == null) {
       const inscritoModel = await inscritoSrv.insertInscrito(inscrito);
 
