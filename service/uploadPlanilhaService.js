@@ -5,6 +5,7 @@ const inscritoSrv = require("../service/inscritoService.js");
 const inscritoComplementarSrv = require("../service/complementar/inscritoService.js");
 const eventoSrv = require("../service/eventoService.js");
 const participanteSrv = require("../service/participanteService.js");
+const participantev2Srv = require("../service/participantev2Service.js");
 const cabPlanilhaSrv = require("../service/cabplanilhaService.js");
 const detPlanilhaSrv = require("../service/detPlanilhaService.js");
 const categoriaSrv = require("../service/complementar/categoriaService.js");
@@ -162,7 +163,7 @@ exports.inclusao = async (req, res) => {
     //console.log(`Processando Inscrito: ${inscritoModel.cnpj_cpf} - ${inscritoModel.nome}`);
 
     parDetalhe.cnpj_cpf = inscritoModel.cnpj_cpf;
-    parDetalhe.nome = inscritoModel.nome;
+    parDetalhe.nome = shared.excluirCaracteres(inscritoModel.nome);
     parDetalhe.estrangeiro = inscritoModel.estrangeiro;
     parDetalhe.sexo = inscritoModel.sexo;
     parDetalhe.data_nasc = inscritoModel.data_nasc;
@@ -256,6 +257,60 @@ exports.processamento = async (req, cabec, detalhes) => {
       detalhe.nome = shared.excluirCaracteres(detalhe.nome);
       detPlanilhaSrv.updateDetplanilha(detalhe);
 
+      linhas_processadas++;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  cabec.linhas_processadas = linhas_processadas;
+
+  cabec = await cabPlanilhaSrv.updateCabplanilha(cabec);
+
+  return cabec;
+};
+
+exports.processamentov2 = async (req, cabec, detalhes) => {
+  id_empresa = req.id_empresa;
+  id_evento = req.body.id_evento;
+  id_usuario = req.id_usuario;
+
+  linhas_processadas = 0;
+
+  const params = {
+    id_empresa: id_empresa,
+    id_evento: id_evento,
+    id_planilha: cabec.id,
+  };
+
+  console.log("detalhes", detalhes);
+
+  const contador = await categoriacontadoresSrv.popula_contadores(params);
+
+  // console.log("contador:",contador);
+
+  for await (let detalhe of detalhes) {
+    try {
+      const participantev2Model = {
+        id_empresa: params.id_empresa,
+        id_evento: params.id_evento,
+        id: 0,
+        inscricao: detalhe.inscricao,
+        nro_peito: detalhe.nro_peito,
+        id_categoria: detalhe.id_categoria,
+        cnpj_cpf: detalhe.cnpj_cpf,
+        nome: shared.excluirCaracteres(detalhe.nome),
+        sexo: detalhe.sexo,
+        data_nasc: detalhe.data_nasc,
+        origem: "P",
+        user_insert: id_usuario,
+        user_update: 0,
+      };
+      const participanteIncluido =
+        await participantev2Srv.insertParticipantev2(participantev2Model);
+
+      detalhe.status = 2;
+      detPlanilhaSrv.updateDetplanilha(detalhe);
       linhas_processadas++;
     } catch (err) {
       console.log(err);

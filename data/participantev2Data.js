@@ -71,6 +71,9 @@ exports.getParticipantesv2 = function (params) {
         "participante.id_empresa,participante.id_evento,participante.cnpj_cpf";
 
     if (orderby != "") orderby = " order by " + orderby;
+
+    console.log("orderby", orderby);
+
     if (params.id_empresa !== 0) {
       if (where != "") where += " and ";
       where += `participante.id_empresa = ${params.id_empresa} `;
@@ -158,7 +161,8 @@ exports.getParticipantesv2 = function (params) {
 			FROM participantesv2 participante   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
-			${where} 			${orderby} ${paginacao} `;
+			${where} 	${orderby} ${paginacao} `;
+      console.log("getParticipantesv2", strSql);
       return db.manyOrNone(strSql);
     }
   } else {
@@ -186,6 +190,7 @@ exports.getParticipantesv2 = function (params) {
 };
 /* CRUD - INSERT */
 exports.insertParticipantev2 = function (participantev2) {
+  console.log("objeto para inlcuir", participantev2);
   strSql = `insert into participantesv2 (
 		     id_empresa 
 		 ,   id_evento 
@@ -215,6 +220,7 @@ exports.insertParticipantev2 = function (participantev2) {
 		 ,   ${participantev2.user_update} 
 		 ) 
  returning * `;
+  console.log("Incluindo", strSql);
   return db.oneOrNone(strSql);
 };
 /* CRUD - UPDATE */
