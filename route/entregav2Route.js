@@ -3,15 +3,15 @@ const db = require('../infra/database');
 const express = require('express');
 const router = express.Router(); 
 const { autenticarToken} = require('../middleware/autenticartoken');
-const entregaSrv = require('../service/entregaService');
+const entregav2Srv = require('../service/entregav2Service');
 router.use(autenticarToken); 
-/* ROTA GETONE entrega */
+/* ROTA GETONE entregav2 */
 router.get("/:id_empresa/:id_evento/:id",async function(req, res) {try 
 	{
-		const lsLista = await entregaSrv.getEntrega(req.params.id_empresa,req.params.id_evento,req.params.id);
+		const lsLista = await entregav2Srv.getEntregav2(req.params.id_empresa,req.params.id_evento,req.params.id);
 		if (lsLista == null) 
 		{
-			res.status(409).json({ message: 'Entrega Não Encontrada.' });
+			res.status(409).json({ message: 'Entregav2 Não Encontrada.' });
 		}
 	else
 		{
@@ -26,14 +26,14 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'entregav2', message: err.message });
 		}
 	}
 })
-/* ROTA GETALL entrega */
+/* ROTA GETALL entregav2 */
 router.get("/",async function(req, res) {try 
 	{
-		const lsLista = await entregaSrv.getEntregas();
+		const lsLista = await entregav2Srv.getEntregasv2();
 		if (lsLista.length == 0) 
 		{
 			res.status(409).json({ message: 'Nehuma Informação Para Esta Consulta.'} );
@@ -51,16 +51,16 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'entregav2', message: err.message });
 		}
 	}
 })
-/* ROTA INSERT entrega */
+/* ROTA INSERT entregav2 */
 router.post("/",async function(req, res) {try 
 	{
-		const entrega = req.body;
-		const registro = await entregaSrv.insertEntrega(entrega);		if (registro == null)
-		{			res.status(409).json({ message: 'Entrega Cadastrado!' });
+		const entregav2 = req.body;
+		const registro = await entregav2Srv.insertEntregav2(entregav2);		if (registro == null)
+		{			res.status(409).json({ message: 'Entregav2 Cadastrado!' });
 		}
 		else
 		{
@@ -75,16 +75,16 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'Entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'Entregav2', message: err.message });
 		}
 	}
 })
-/* ROTA UPDATE entrega */
+/* ROTA UPDATE entregav2 */
 router.put("/",async function(req, res) {try 
 	{
-		const entrega = req.body;
-		const registro = await entregaSrv.updateEntrega(entrega);		if (registro == null)
-		{			res.status(409).json({ message: 'Entrega Alterado Com Sucesso!' });
+		const entregav2 = req.body;
+		const registro = await entregav2Srv.updateEntregav2(entregav2);		if (registro == null)
+		{			res.status(409).json({ message: 'Entregav2 Alterado Com Sucesso!' });
 		}
 		else
 		{
@@ -99,14 +99,14 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'Entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'Entregav2', message: err.message });
 		}
 	}
 })
-/* ROTA DELETE entrega */
+/* ROTA DELETE entregav2 */
 router.delete("/:id_empresa/:id_evento/:id",async function(req, res) {try 
 	{
-		await entregaSrv.deleteEntrega(req.params.id_empresa,req.params.id_evento,req.params.id);		res.status(200).json({ message: 'Entrega Excluído Com Sucesso!' });
+		await entregav2Srv.deleteEntregav2(req.params.id_empresa,req.params.id_evento,req.params.id);		res.status(200).json({ message: 'Entregav2 Excluído Com Sucesso!' });
 }
 catch (err)
 	{
@@ -116,12 +116,12 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'Entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'Entregav2', message: err.message });
 		}
 	}
 })
 /* ROTA CONSULTA POST entregasv2 */
-router.post("/entregas",async function(req, res) {/*
+router.post("/entregasv2",async function(req, res) {/*
 	{
 		"id_empresa":0, 
 		"id_evento":0, 
@@ -139,8 +139,8 @@ router.post("/entregas",async function(req, res) {/*
 try 
 	{
 		const params = req.body;
-		const lsRegistros = await entregaSrv.getEntregas(params);		if (lsRegistros.length == 0)
-		{			res.status(409).json({ message: 'Entrega Nenhum Registro Encontrado!' });
+		const lsRegistros = await entregav2Srv.getEntregasv2(params);		if (lsRegistros.length == 0)
+		{			res.status(409).json({ message: 'Entregav2 Nenhum Registro Encontrado!' });
 		}
 		else
 		{
@@ -155,7 +155,7 @@ catch (err)
 		}
 		else
 		{
-			res.status(500).json({ erro: 'BAK-END', tabela: 'Entrega', message: err.message });
+			res.status(500).json({ erro: 'BAK-END', tabela: 'Entregav2', message: err.message });
 		}
 	}
 })

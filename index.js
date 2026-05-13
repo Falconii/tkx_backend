@@ -55,6 +55,7 @@ app.use("/api/participantev2", require("./route/participantev2Route"));
 app.use("/api/inscrito", require("./route/inscritoRoute"));
 app.use("/api/categoria", require("./route/categoriaRoute"));
 app.use("/api/entrega", require("./route/entregaRoute"));
+app.use("/api/entregav2", require("./route/entregav2Route"));
 app.use("/api/link", require("./route/linkRoute"));
 app.use("/api/token", require("./route/tokenRoute"));
 app.use("/api/importacao", require("./route/ImportacaoRoute.js"));

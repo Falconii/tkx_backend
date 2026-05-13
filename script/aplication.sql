@@ -168,6 +168,26 @@ CREATE TABLE Public.entregas (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
+/* TABELA entregasv2  */
+DROP TABLE IF EXISTS entregasv2;
+CREATE TABLE Public.entregasv2 (
+		id_empresa int4  NOT NULL  , 
+		id_evento int4  NOT NULL  , 
+		id serial  NOT NULL  , 
+		rg_retirada varchar(11)  NOT NULL  , 
+		nome_retirada varchar(60)  NOT NULL  , 
+		tam_camisa varchar(10)  NOT NULL  , 
+		data_retirada timestamp  NOT NULL  , 
+		id_recepcao int4  NOT NULL  , 
+		id_entrega int4  NOT NULL  , 
+		id_kit int4  NOT NULL  , 
+		user_insert int4  NOT NULL  , 
+		user_update int4  NOT NULL  , 
+		PRIMARY KEY(id_empresa,id_evento,id) 
+)
+ WITHOUT OIDS 
+ TABLESPACE "Producao" 
+ GO 
 /* TABELA links  */
 DROP TABLE IF EXISTS links;
 CREATE TABLE Public.links (
@@ -229,6 +249,7 @@ CREATE TABLE Public.participantesv2 (
 		inscricao int4  NOT NULL  , 
 		nro_peito int4  NOT NULL  , 
 		id_categoria int4  NOT NULL  , 
+		id_entrega int4  NOT NULL  , 
 		cnpj_cpf varchar(14)  NOT NULL  , 
 		nome varchar(60)  NOT NULL  , 
 		sexo char(1)  NOT NULL  , 
@@ -251,6 +272,7 @@ CREATE TABLE Public.cabplanilhas (
 		total_linhas int4  NOT NULL  , 
 		linhas_processadas int4  NOT NULL  , 
 		total_linhas_erro int4  NOT NULL  , 
+		status char(1)  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
 		PRIMARY KEY(id_empresa,id_evento,id) 
@@ -314,6 +336,8 @@ TRUNCATE TABLE Public.categoriacontadores RESTART IDENTITY;
 GO 
 TRUNCATE TABLE Public.entregas RESTART IDENTITY; 
 GO 
+TRUNCATE TABLE Public.entregasv2 RESTART IDENTITY; 
+GO 
 TRUNCATE TABLE Public.links RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.tokens RESTART IDENTITY; 
@@ -344,6 +368,8 @@ GO
 DROP TABLE IF EXISTS Public.categoriacontadores ; 
 GO 
 DROP TABLE IF EXISTS Public.entregas ; 
+GO 
+DROP TABLE IF EXISTS Public.entregasv2 ; 
 GO 
 DROP TABLE IF EXISTS Public.links ; 
 GO 

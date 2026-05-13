@@ -26,6 +26,7 @@ exports.getParticipantev2 = function (id_empresa, id_evento, id) {
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
+      ,  participante.id_entrega as  id_entrega
 			,  participante.inscricao as  inscricao  
 			,  participante.nro_peito as  nro_peito  
 			,  participante.id_categoria as  id_categoria  
@@ -38,9 +39,13 @@ exports.getParticipantev2 = function (id_empresa, id_evento, id) {
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
 			,  categoria.descricao as  categoria_descricao    
+      ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
+      ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
+      , coalesce(entrega.tam_camisa,'') as entrega_tam_camisa
  			FROM participantesv2 participante 	  
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
+         left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
 			 where participante.id_empresa = ${id_empresa} and  participante.id_evento = ${id_evento} and  participante.id = ${id}  `;
   return db.oneOrNone(strSql);
 };
@@ -138,7 +143,8 @@ exports.getParticipantesv2 = function (params) {
       sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
 				  FROM participantesv2 participante   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
-				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
+				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria  
+         left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega 
 				  ${where} `;
       return db.one(sqlStr);
     } else {
@@ -146,6 +152,7 @@ exports.getParticipantesv2 = function (params) {
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
+      ,  participante.id_entrega as  id_entrega  
 			,  participante.inscricao as  inscricao  
 			,  participante.nro_peito as  nro_peito  
 			,  participante.id_categoria as  id_categoria  
@@ -157,10 +164,15 @@ exports.getParticipantesv2 = function (params) {
 			,  participante.user_insert as  user_insert  
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
-			,  categoria.descricao as  categoria_descricao     
+			,  categoria.descricao as  categoria_descricao   
+      ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
+      ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
+      , coalesce(entrega.tam_camisa,'') as entrega_tam_camisa
+
 			FROM participantesv2 participante   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
+         left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
 			${where} 	${orderby} ${paginacao} `;
       console.log("getParticipantesv2", strSql);
       return db.manyOrNone(strSql);
@@ -194,6 +206,7 @@ exports.insertParticipantev2 = function (participantev2) {
   strSql = `insert into participantesv2 (
 		     id_empresa 
 		 ,   id_evento 
+     ,   id_entrega
 		 ,   inscricao 
 		 ,   nro_peito 
 		 ,   id_categoria 
@@ -208,6 +221,7 @@ exports.insertParticipantev2 = function (participantev2) {
 		 values(
 		     ${participantev2.id_empresa} 
 		 ,   ${participantev2.id_evento} 
+		 ,   ${participantev2.id_entrega}
 		 ,   ${participantev2.inscricao} 
 		 ,   ${participantev2.nro_peito} 
 		 ,   ${participantev2.id_categoria} 
@@ -234,6 +248,7 @@ exports.updateParticipantev2 = function (participantev2) {
  		 ,   sexo = '${participantev2.sexo}' 
  		 ,   data_nasc = '${shared.formatDateYYYYMMDD(participantev2.data_nasc)}'
  		 ,   origem = '${participantev2.origem}' 
+ 		 ,   id_entrega = ${participantev2.id_entrega}
  		 ,   user_insert = ${participantev2.user_insert} 
  		 ,   user_update = ${participantev2.user_update} 
  		 where id_empresa = ${participantev2.id_empresa} and  id_evento = ${participantev2.id_evento} and  id = ${participantev2.id}  returning * `;
