@@ -1,5 +1,6 @@
 /* DATA eventos */
 const db = require("../infra/database");
+const shared = require("../util/shared");
 
 /* GET CAMPOS */
 exports.getCampos = function (Evento) {
@@ -198,8 +199,8 @@ exports.insertEvento = function (evento) {
 		 ,   '${evento.cidade}' 
 		 ,   '${evento.uf}' 
 		 ,   '${evento.cep}' 
-		 ,   '${evento.inicio.replace("GMT-0300", "").replace("T", " ").replace("Z", "")}' 
-		 ,   '${evento.final.replace("GMT-0300", "").replace("T", " ").replace("Z", "")}' 
+		 ,   '${shared.formatDateYYYYMMDD(evento.inicio)}' 		 
+		 ,   '${shared.formatDateYYYYMMDD(evento.final)}' 
 		 ,   '${evento.obs}' 
 		 ,   ${evento.qtd_participantes} 
 		 ,   ${evento.qtd_kits} 
@@ -222,8 +223,8 @@ exports.updateEvento = function (evento) {
  		 ,   cidade = '${evento.cidade}' 
  		 ,   uf = '${evento.uf}' 
  		 ,   cep = '${evento.cep}' 
- 		 ,   inicio = '${evento.inicio.replace("GMT-0300", "").replace("T", " ").replace("Z", "")}' 
- 		 ,   final = '${evento.final.replace("GMT-0300", "").replace("T", " ").replace("Z", "")}' 
+ 		 ,   inicio = '${shared.formatDateYYYYMMDD(evento.inicio)}' 		 
+ 		 ,   final = '${shared.formatDateYYYYMMDD(evento.final)}' 
  		 ,   obs = '${evento.obs}' 
  		 ,   status = '${evento.status}' 
  		 ,   user_insert = ${evento.user_insert} 

@@ -91,6 +91,14 @@ exports.getParticipantesv2 = function (params) {
       if (where != "") where += " and ";
       where += `participante.id = ${params.id} `;
     }
+    if (params.id_entrega !== 0) {
+      if (where != "") where += " and ";
+      where += `participante.id_entrega = ${params.id_entrega} `;
+    }
+    if (params.kit !== false) {
+      if (where != "") where += " and ";
+      where += `participante.id_entrega > 0 `;
+    }
     if (params.inscricao !== 0) {
       if (where != "") where += " and ";
       where += `participante.inscricao = ${params.inscricao} `;

@@ -295,6 +295,7 @@ exports.processamentov2 = async (req, cabec, detalhes) => {
         id_empresa: params.id_empresa,
         id_evento: params.id_evento,
         id: 0,
+        id_entrega: 0,
         inscricao: detalhe.inscricao,
         nro_peito: detalhe.nro_peito,
         id_categoria: detalhe.id_categoria,
