@@ -146,6 +146,7 @@ exports.updateCabplanilha = function (cabplanilha) {
 		     arquivo = '${cabplanilha.arquivo}' 
  		 ,   total_linhas = ${cabplanilha.total_linhas} 
  		 ,   linhas_processadas = ${cabplanilha.linhas_processadas} 
+		 ,   status = '${cabplanilha.status}'
  		 ,   total_linhas_erro = ${cabplanilha.total_linhas_erro} 
  		 ,   user_insert = ${cabplanilha.user_insert} 
  		 ,   user_update = ${cabplanilha.user_update} 

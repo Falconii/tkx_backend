@@ -17,6 +17,7 @@ let id_local = 0;
 let id_evento = 0;
 let complementarModel = {};
 let inscritoModel = {};
+let limite_Erros = 10;
 
 exports.inclusao = async (req, res) => {
   id_empresa = req.id_empresa;
@@ -30,6 +31,7 @@ exports.inclusao = async (req, res) => {
   let linhas_processadas = 0;
   let total_linhas_erro = 0;
   let campos = "";
+  let erros_tam_invalido = 0;
   const { name } = req.body;
   const file = req.file;
 
@@ -84,10 +86,18 @@ exports.inclusao = async (req, res) => {
     }
 
     if (campos.length != 6) {
+      erros_tam_invalido++;
       console.log(
         `Quantidade De Colunas Deferente Do Padrão (7)! Linha:Linha: ${nro_linha} Campos: ${campos.length}}`,
       );
-      continue;
+      if (erros_tam_invalido > limite_Erros) {
+        console.log(
+          `Quantidade De Colunas Deferente Do Padrão (7)! Linha:Linha: ${nro_linha} Campos: ${campos.length}} - Limite De Erros Excedido! Interrompendo Processamento!`,
+        );
+        break;
+      } else {
+        continue;
+      }
     }
 
     if (nro_linha % 100 === 0) {
@@ -125,8 +135,6 @@ exports.inclusao = async (req, res) => {
         parDetalhe.mensagem_erro += `- (${complementarModel.sigla_categoria}) Categoria Não Cadastrada!`;
         parDetalhe.status = 9;
       } else {
-        //console.log("categoria:",categoria);
-
         parDetalhe.id_categoria = categoria.id;
       }
     } catch (err) {
@@ -188,6 +196,12 @@ exports.inclusao = async (req, res) => {
         parDetalhe.mensagem_erro += `- ${err.message}`;
       }
     }
+  }
+
+  if (cabPlanilha.total_linhas_erro > 0) {
+    cabPlanilha.status = "3";
+  } else {
+    cabPlanilha.status = "1";
   }
 
   await cabPlanilhaSrv.updateCabplanilha(cabPlanilha);
@@ -320,6 +334,8 @@ exports.processamentov2 = async (req, cabec, detalhes) => {
 
   cabec.linhas_processadas = linhas_processadas;
 
+  cabec.status = "2";
+
   cabec = await cabPlanilhaSrv.updateCabplanilha(cabec);
 
   return cabec;
@@ -335,15 +351,16 @@ function dados_complementares(campos) {
       mensagem_erro: "",
     };
 
-    if (
-      complementarModel.inscricao == null ||
-      complementarModel.inscricao.trim() === "" ||
-      isNaN(complementarModel.inscricao) ||
-      complementarModel.inscricao <= 0
-    ) {
-      complementarModel.inscricao = 0;
-      complementarModel.mensagem_erro += " -Inscrição Inválida";
-    }
+    /* Desabilitada Validação da Inscrição
+                 if (
+                    complementarModel.inscricao == null ||
+                    complementarModel.inscricao.trim() === "" ||
+                    isNaN(complementarModel.inscricao) ||
+                    complementarModel.inscricao <= 0
+                ) {
+                    complementarModel.inscricao = 0;
+                    complementarModel.mensagem_erro += " -Inscrição Inválida";
+                } */
 
     if (
       complementarModel.nro_peito == null ||
@@ -402,10 +419,6 @@ function _inscrito(campos) {
     ) {
       inscritoModel.cnpj_cpf = "";
       inscritoModel.mensagem_erro += " -CNPJ/CPF Inválido";
-    }
-    if (inscritoModel.nome == null || inscritoModel.nome.trim() === "") {
-      inscritoModel.nome = "";
-      inscritoModel.mensagem_erro += " -Nome Inválido";
     }
     if (
       inscritoModel.sexo == null ||

@@ -3,26 +3,26 @@ const db = require("../infra/database");
 const shared = require("../util/shared.js");
 
 /* GET CAMPOS */
-exports.getCampos = function (Participantev2) {
-  return [
-    Participantev2.id_empresa,
-    Participantev2.id_evento,
-    Participantev2.id,
-    Participantev2.inscricao,
-    Participantev2.nro_peito,
-    Participantev2.id_categoria,
-    Participantev2.cnpj_cpf,
-    Participantev2.nome,
-    Participantev2.sexo,
-    Participantev2.data_nasc,
-    Participantev2.origem,
-    Participantev2.user_insert,
-    Participantev2.user_update,
-  ];
+exports.getCampos = function(Participantev2) {
+    return [
+        Participantev2.id_empresa,
+        Participantev2.id_evento,
+        Participantev2.id,
+        Participantev2.inscricao,
+        Participantev2.nro_peito,
+        Participantev2.id_categoria,
+        Participantev2.cnpj_cpf,
+        Participantev2.nome,
+        Participantev2.sexo,
+        Participantev2.data_nasc,
+        Participantev2.origem,
+        Participantev2.user_insert,
+        Participantev2.user_update,
+    ];
 };
 /* CRUD GET */
-exports.getParticipantev2 = function (id_empresa, id_evento, id) {
-  strSql = ` select   
+exports.getParticipantev2 = function(id_empresa, id_evento, id) {
+    strSql = ` select   
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
@@ -47,116 +47,116 @@ exports.getParticipantev2 = function (id_empresa, id_evento, id) {
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
          left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
 			 where participante.id_empresa = ${id_empresa} and  participante.id_evento = ${id_evento} and  participante.id = ${id}  `;
-  return db.oneOrNone(strSql);
+    return db.oneOrNone(strSql);
 };
 /* CRUD GET ALL*/
-exports.getParticipantesv2 = function (params) {
-  if (params) {
-    where = "";
-    orderby = "";
-    paginacao = "";
+exports.getParticipantesv2 = function(params) {
+    if (params) {
+        where = "";
+        orderby = "";
+        paginacao = "";
 
-    if (params.orderby == "")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.inscricao";
-    if (params.orderby == "000000")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.inscricao";
-    if (params.orderby == "000001")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.nro_peito";
-    if (params.orderby == "000002")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.id_categoria,participante.nome";
-    if (params.orderby == "000003")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.nome";
-    if (params.orderby == "000004")
-      orderby =
-        "participante.id_empresa,participante.id_evento,participante.cnpj_cpf";
+        if (params.orderby == "")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.inscricao";
+        if (params.orderby == "000000")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.inscricao";
+        if (params.orderby == "000001")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.nro_peito";
+        if (params.orderby == "000002")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.id_categoria,participante.nome";
+        if (params.orderby == "000003")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.nome";
+        if (params.orderby == "000004")
+            orderby =
+            "participante.id_empresa,participante.id_evento,participante.cnpj_cpf";
 
-    if (orderby != "") orderby = " order by " + orderby;
+        if (orderby != "") orderby = " order by " + orderby;
 
-    console.log("orderby", orderby);
+        console.log("orderby", orderby);
 
-    if (params.id_empresa !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.id_empresa = ${params.id_empresa} `;
-    }
-    if (params.id_evento !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.id_evento = ${params.id_evento} `;
-    }
-    if (params.id !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.id = ${params.id} `;
-    }
-    if (params.id_entrega !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.id_entrega = ${params.id_entrega} `;
-    }
-    if (params.kit !== false) {
-      if (where != "") where += " and ";
-      where += `participante.id_entrega > 0 `;
-    }
-    if (params.inscricao !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.inscricao = ${params.inscricao} `;
-    }
-    if (params.nro_peito !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.nro_peito = ${params.nro_peito} `;
-    }
-    if (params.id_categoria !== 0) {
-      if (where != "") where += " and ";
-      where += `participante.id_categoria = ${params.id_categoria} `;
-    }
-    if (params.nome.trim() !== "") {
-      if (where != "") where += " and ";
-      if (params.sharp) {
-        where += `participante.nome = '${params.nome}' `;
-      } else {
-        where += `participante.nome like '%${params.nome.trim()}%' `;
-      }
-    }
-    if (params.cnpj_cpf.trim() !== "") {
-      if (where != "") where += " and ";
-      if (params.sharp) {
-        where += `participante.cnpj_cpf = '${params.cnpj_cpf}' `;
-      } else {
-        where += `participante.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
-      }
-    }
-    if (params.evento_descricao.trim() !== "") {
-      if (where != "") where += " and ";
-      if (params.sharp) {
-        where += `participante.evento_descricao = '${params.evento_descricao}' `;
-      } else {
-        where += `participante.evento_descricao like '%${params.evento_descricao.trim()}%' `;
-      }
-    }
-    if (params.categoria_descricao.trim() !== "") {
-      if (where != "") where += " and ";
-      if (params.sharp) {
-        where += `participante.categoria_descricao = '${params.categoria_descricao}' `;
-      } else {
-        where += `participante.categoria_descricao like '%${params.categoria_descricao.trim()}%' `;
-      }
-    }
-    if (where != "") where = " where " + where;
-    if (params.pagina != 0) {
-      paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
-    }
-    if (params.contador == "S") {
-      sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
+        if (params.id_empresa !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.id_empresa = ${params.id_empresa} `;
+        }
+        if (params.id_evento !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.id_evento = ${params.id_evento} `;
+        }
+        if (params.id !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.id = ${params.id} `;
+        }
+        if (params.id_entrega !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.id_entrega = ${params.id_entrega} `;
+        }
+        if (params.kit !== false) {
+            if (where != "") where += " and ";
+            where += `participante.id_entrega > 0 `;
+        }
+        if (params.inscricao !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.inscricao = ${params.inscricao} `;
+        }
+        if (params.nro_peito !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.nro_peito = ${params.nro_peito} `;
+        }
+        if (params.id_categoria !== 0) {
+            if (where != "") where += " and ";
+            where += `participante.id_categoria = ${params.id_categoria} `;
+        }
+        if (params.nome.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `unaccent(participante.nome) = '${shared.semAcentoparams.nome}' `;
+            } else {
+                where += `unaccent(participante.nome) like '%${shared.semAcento(params.nome.trim())}%' `;
+            }
+        }
+        if (params.cnpj_cpf.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `participante.cnpj_cpf = '${params.cnpj_cpf}' `;
+            } else {
+                where += `participante.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
+            }
+        }
+        if (params.evento_descricao.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `participante.evento_descricao = '${params.evento_descricao}' `;
+            } else {
+                where += `participante.evento_descricao like '%${params.evento_descricao.trim()}%' `;
+            }
+        }
+        if (params.categoria_descricao.trim() !== "") {
+            if (where != "") where += " and ";
+            if (params.sharp) {
+                where += `participante.categoria_descricao = '${params.categoria_descricao}' `;
+            } else {
+                where += `participante.categoria_descricao like '%${params.categoria_descricao.trim()}%' `;
+            }
+        }
+        if (where != "") where = " where " + where;
+        if (params.pagina != 0) {
+            paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
+        }
+        if (params.contador == "S") {
+            sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
 				  FROM participantesv2 participante   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria  
          left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega 
 				  ${where} `;
-      return db.one(sqlStr);
-    } else {
-      strSql = `select   
+            return db.one(sqlStr);
+        } else {
+            strSql = `select   
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
@@ -182,11 +182,11 @@ exports.getParticipantesv2 = function (params) {
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
          left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
 			${where} 	${orderby} ${paginacao} `;
-      console.log("getParticipantesv2", strSql);
-      return db.manyOrNone(strSql);
-    }
-  } else {
-    strSql = `select   
+            console.log("getParticipantesv2", strSql);
+            return db.manyOrNone(strSql);
+        }
+    } else {
+        strSql = `select   
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
@@ -205,13 +205,13 @@ exports.getParticipantesv2 = function (params) {
 			FROM participantesv2 participante			   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria  `;
-    return db.manyOrNone(strSql);
-  }
+        return db.manyOrNone(strSql);
+    }
 };
 /* CRUD - INSERT */
-exports.insertParticipantev2 = function (participantev2) {
-  console.log("objeto para inlcuir", participantev2);
-  strSql = `insert into participantesv2 (
+exports.insertParticipantev2 = function(participantev2) {
+    console.log("objeto para inlcuir", participantev2);
+    strSql = `insert into participantesv2 (
 		     id_empresa 
 		 ,   id_evento 
      ,   id_entrega
@@ -242,12 +242,12 @@ exports.insertParticipantev2 = function (participantev2) {
 		 ,   ${participantev2.user_update} 
 		 ) 
  returning * `;
-  console.log("Incluindo", strSql);
-  return db.oneOrNone(strSql);
+    console.log("Incluindo", strSql);
+    return db.oneOrNone(strSql);
 };
 /* CRUD - UPDATE */
-exports.updateParticipantev2 = function (participantev2) {
-  strSql = `update   participantesv2 set  
+exports.updateParticipantev2 = function(participantev2) {
+    strSql = `update   participantesv2 set  
 		     inscricao = ${participantev2.inscricao} 
  		 ,   nro_peito = ${participantev2.nro_peito} 
  		 ,   id_categoria = ${participantev2.id_categoria} 
@@ -260,11 +260,11 @@ exports.updateParticipantev2 = function (participantev2) {
  		 ,   user_insert = ${participantev2.user_insert} 
  		 ,   user_update = ${participantev2.user_update} 
  		 where id_empresa = ${participantev2.id_empresa} and  id_evento = ${participantev2.id_evento} and  id = ${participantev2.id}  returning * `;
-  return db.oneOrNone(strSql);
+    return db.oneOrNone(strSql);
 };
 /* CRUD - DELETE */
-exports.deleteParticipantev2 = function (id_empresa, id_evento, id) {
-  strSql = `delete from participantesv2 
+exports.deleteParticipantev2 = function(id_empresa, id_evento, id) {
+    strSql = `delete from participantesv2 
 		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id = ${id}  `;
-  return db.oneOrNone(strSql);
+    return db.oneOrNone(strSql);
 };
