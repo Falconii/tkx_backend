@@ -1,5 +1,6 @@
 const eventoSrv = require("../service/eventoService");
 const usuarioSrv = require("../service/usuarioService");
+const tokenSrv = require("../service/tokenService");
 
 const fs = require("fs");
 const path = require("path");
@@ -99,7 +100,7 @@ function htmlEventoLiberacao(evento) {
   `;
 }
 
-function htmlEventoLiberacaoEx01(evento) {
+function htmlEventoLiberacaoEx01(evento, url) {
     return ` <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -194,7 +195,7 @@ function htmlEventoLiberacaoEx01(evento) {
     ${htmlEventoLiberacao(evento)}
     
     <div class="button-area">
-      <a class="btn btn-aprovar" href="https://seusistema.com/aprovar-evento/${evento.id}">
+      <a class="btn btn-aprovar" href="${url}">
         APROVAR EVENTO
       </a>
    
@@ -475,7 +476,7 @@ exports.htmlEventoLiberacaoEx03 = function(
 </html>`;
 };
 
-async function enviarEmailLiberacaoEvento(evento, destinatario) {
+async function enviarEmailLiberacaoEvento(evento, usuario, token) {
     // Caminho do logo no seu projeto
     //const caminhoLogo = path.join(__dirname, "../tkx_backend/logo/logo-tkx.jpg");
 
@@ -484,7 +485,22 @@ async function enviarEmailLiberacaoEvento(evento, destinatario) {
 
     // Monta o HTML com o logo embutido
 
-    const htmlAprovacao = htmlEventoLiberacaoEx01(evento);
+     const destinatario = usuario.email;
+
+     console.log("Destinatário do email de liberação:", destinatario);
+
+  let url = "";
+
+  if (process.env.APP_URL) {
+    url = process.env.APP_URL.concat(`liberaevento?token=${token}&id_evento=${evento.id}`);
+    console.log("URL", url);
+  } else {
+    url = fs.readFileSync("./app_url.txt", "utf8");
+    url = url.concat(`liberaevento?token=${token}&id_evento=${evento.id}`);
+    console.log("URL - Arquivo", url);
+  }
+
+    const htmlAprovacao = htmlEventoLiberacaoEx01(evento,url);
 
     try {
         const resposta = await resend.emails.send({
@@ -520,7 +536,9 @@ exports.preparaEmailLiberacao = async function(id_empresa, id_evento) {
 
     const usuario = await usuarioSrv.getUsuarios(par);
 
-    const destinatario = usuario[0].email;
+    console.log("usuario email", usuario[0]);
 
-    await enviarEmailLiberacaoEvento(evento, destinatario);
+    const token = tokenSrv.generateTempoToken(usuario[0]);
+
+    await enviarEmailLiberacaoEvento(evento, usuario[0], token);
 };

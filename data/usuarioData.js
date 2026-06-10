@@ -1,6 +1,8 @@
 /* DATA usuarios */
 const db = require("../infra/database");
 
+const shared = require("../util/shared.js");
+
 /* GET CAMPOS */
 exports.getCampos = function (Usuario) {
   return [
@@ -201,8 +203,8 @@ exports.insertUsuario = function (usuario) {
 		 values(
 		     ${usuario.id_empresa} 
 		 ,   '${usuario.cnpj_cpf}' 
-		 ,   '${usuario.razao}' 
-		 ,   '${usuario.cadastr}' 
+		,    '${usuario.razao}'
+		 ,   '${shared.formatDateYYYYMMDD(usuario.cadastr)}' 
 		 ,   '${usuario.rua}' 
 		 ,   '${usuario.nro}' 
 		 ,   '${usuario.complemento}' 
@@ -229,7 +231,7 @@ exports.updateUsuario = function (usuario) {
   strSql = `update   usuarios set  
 		     cnpj_cpf = '${usuario.cnpj_cpf}' 
  		 ,   razao = '${usuario.razao}' 
- 		 ,   cadastr = '${usuario.cadastr}' 
+ 		 ,   cadastr = '${shared.formatDateYYYYMMDD(usuario.cadastr)}'
  		 ,   rua = '${usuario.rua}' 
  		 ,   nro = '${usuario.nro}' 
  		 ,   complemento = '${usuario.complemento}' 
@@ -253,7 +255,7 @@ exports.updateUsuario = function (usuario) {
 
 exports.updateUsuarioAtivo = function (usuario) {
   strSql = `update   usuarios set  
- 		 ,   ativo = '${usuario.ativo}' 
+ 		     ativo = '${usuario.ativo}' 
  		 ,   user_update = ${usuario.user_update} 
  		 where id_empresa = ${usuario.id_empresa} and  id = ${usuario.id}  returning * `;
   return db.oneOrNone(strSql);
@@ -266,10 +268,17 @@ exports.deleteUsuario = function (id_empresa, id) {
   return db.oneOrNone(strSql);
 };
 
-exports.updatesenhaUsuario = function (id_empresa, id_usuario, senha) {
+exports.updatesenhaUsuario = function (
+  id_empresa,
+  id_usuario,
+  senha,
+  reciclar,
+) {
   strSql = `update   usuarios set  
 		     senha = '${senha}' 
-			 ,   trocarsenha = 'N' 
+			 ,   trocarsenha = '${reciclar}' 
 			 where id_empresa = ${id_empresa} and  id = ${id_usuario}  returning * `;
+  console.log("updatesenhaUsuario", strSql);
+
   return db.oneOrNone(strSql);
 };

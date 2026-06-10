@@ -133,3 +133,11 @@ exports.createTokenByDate = function(id_empresa, id_usuario, date) {
 
     return token;
 };
+
+exports.generateTempoToken = function (user) {
+  return jwt.sign(
+    { id_empresa: user.id_empresa, id_usuario: user.id },
+    ACCESS_SECRET,
+    { expiresIn: "15m" },
+  );
+};

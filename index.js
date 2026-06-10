@@ -75,6 +75,11 @@ app.use(
   require("./route/complementar/parametroRoute.js"),
 );
 
+app.use(
+  "/api/public",
+  require("./route/publicRoute.js"),
+);
+
 app.listen(PORT, () => {
   console.log(`Servidor No Ar. Porta ${PORT}`);
 });
