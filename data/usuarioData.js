@@ -59,6 +59,7 @@ exports.getUsuario = function (id_empresa, id) {
  			FROM usuarios usu 	  
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo   
 			 where usu.id_empresa = ${id_empresa} and  usu.id = ${id}  `;
+			 console.log("getUsuario", strSql);
   return db.oneOrNone(strSql);
 };
 /* CRUD GET ALL*/
@@ -133,7 +134,7 @@ exports.getUsuarios = function (params) {
 			,  usu.tel2 as  tel2  
 			,  usu.email as  email  
 			,  usu.obs as  obs  
-			,  usu.senha as  senha  
+			,  '' as  senha  
 			,  usu.grupo as  grupo  
 			,  usu.ativo as  ativo  
 			,  usu.trocarsenha as  trocarsenha  
@@ -243,7 +244,6 @@ exports.updateUsuario = function (usuario) {
  		 ,   tel2 = '${usuario.tel2}' 
  		 ,   email = '${usuario.email}' 
  		 ,   obs = '${usuario.obs}' 
- 		 ,   senha = '${usuario.senha}' 
  		 ,   grupo = ${usuario.grupo} 
  		 ,   ativo = '${usuario.ativo}' 
  		 ,   trocarsenha = '${usuario.trocarsenha}' 

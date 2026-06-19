@@ -17,7 +17,7 @@ if (process.env.FRASE_ACCESS) {
     console.log("Frase Access Do Parametro: FRASE_ACCESS");
 } else {
     ACCESS_SECRET = fs.readFileSync("./frase_access.txt", "utf8");
-    console.log("Frase Access do arquivo frase_access.txt");
+    console.log("Frase Access do arquivo frase_access.txt",ACCESS_SECRET);
 }
 
 if (process.env.FRASE_REFRESH) {

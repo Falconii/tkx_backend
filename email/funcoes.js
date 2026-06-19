@@ -542,3 +542,82 @@ exports.preparaEmailLiberacao = async function(id_empresa, id_evento) {
 
     await enviarEmailLiberacaoEvento(evento, usuario[0], token);
 };
+
+
+exports.enviarEmailNovaSenha = async function (usuario, token) {
+  const destinatario = usuario.email;
+
+  let url = "";
+
+  if (process.env.APP_URL) {
+    url = process.env.APP_URL.concat(`redefine_senha?token=${token}`);
+    console.log("URL", url);
+  } else {
+    url = fs.readFileSync("./app_url.txt", "utf8");
+    url = url.concat(`redefine_senha?token=${token}`);
+    console.log("URL - Arquivo", url);
+    console.log("Conexão configurada Para Local!! -conexoes_local.json");
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>  
+  <meta charset="UTF-8" />
+  <title>Link Para Troca De Senha</title>
+  <style>     
+    body {        
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;        
+      padding: 0;    
+    }    
+    .container {      
+
+      max-width: 640px;      
+      margin: 20px auto;      
+      background-color: #ffffff;    
+      border-radius: 6px;      
+      border: 1px solid #e0e0e0;      
+      padding: 20px 24px;
+
+    }
+      </style>
+</head>
+<body>  
+  <div class="container">    
+    <h1>Solicitação de Troca De Senha</h1>    
+    <p>${usuario.razao},</p>  
+    <p>Para redefinir sua senha, clique no link abaixo:</p>
+    <p><a href="${url}" target="_blank">Redefinir minha senha</a></p>
+    <p>Recomendamos que você altere essa senha após o primeiro acesso para garantir a segurança da sua conta.</p> 
+    <p>Se você não solicitou essa alteração, por favor, entre em contato com o suporte imediatamente.</p>    
+    <p>Atenciosamente,<br>Equipe de Suporte</p>  
+  </div>
+</body>
+</html>`;
+
+  try {
+    const resposta = await resend.emails.send({
+      from: "Sistema <notificacoes@falconi-iot.com.br>",
+      to: destinatario,
+      subject: `Link Para Troca De Senha`,
+      html: html,
+    });
+
+    console.log("Email enviado:", resposta);
+    return resposta;
+  } catch (erro) {
+    console.error("Erro ao enviar email:", erro);
+    throw erro;
+  }
+};
+
+exports.preparaEmailNovaSenha = async function (id_empresa, id_usuario) {
+  const usuario = await usuarioSrv.getUsuario(id_empresa, id_usuario);
+
+  const token = tokenSrv.generateTempoToken(usuario);
+
+  console.log(usuario, token);
+
+  await exports.enviarEmailNovaSenha(usuario, token);
+};
