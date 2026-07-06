@@ -3450,10 +3450,7 @@
               "key": "id_cabec"
             },
             {
-              "key": "cnpj_cpf"
-            },
-            {
-              "key": "inscricao"
+              "key": "nro_peito"
             }
           ],
           "variables": {
@@ -3485,10 +3482,24 @@
                 "padrao": 0
               },
               {
+                "name": "nro_peito",
+                "filtro": "S",
+                "atividador": " !== 0 ",
+                "tipo": "number",
+                "padrao": 0
+              },
+              {
                 "name": "cnpj_cpf",
                 "filtro": "S",
                 "atividador": " !== '' ",
                 "tipo": "string",
+                "padrao": ""
+              },
+              {
+                "name": "inscricao",
+                "filtro": "S",
+                "atividador": " !== 0 ",
+                "tipo": "number",
                 "padrao": 0
               },
               {

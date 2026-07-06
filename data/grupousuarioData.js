@@ -53,6 +53,12 @@ if (params) {
 			where += `grupo.descricao like '%${params.descricao.trim()}%' `;
 		}
 	}
+    if(params.hierarquia !== 0 ){
+		if ( params.hierarquia < 90) {
+		if (where != "") where += " and ";
+		    where +=  `( grupo.codigo >= ${params.hierarquia} and grupo.codigo < 90) `;
+		}
+	}
 	if (where != "") where = " where " + where;
 	 if (params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
@@ -71,6 +77,7 @@ if (params) {
 			,  grupo.user_update as  user_update     
 			FROM gruposusuarios grupo      
 			${where} 			${ orderby} ${ paginacao} `;
+			console.log("strSql",strSql);
 			return  db.manyOrNone(strSql);
 		}	}  else {
 		strSql = `select   

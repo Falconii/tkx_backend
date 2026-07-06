@@ -47,7 +47,7 @@ exports.inclusao = async (req, res) => {
     user_update: 0,
   };
 
-  const cabPlanilha = await cabPlanilhaSrv.insertCabplanilha(cab);
+  let cabPlanilha = await cabPlanilhaSrv.insertCabplanilha(cab);
 
   var dadosPlanilha = readline.createInterface({
     input: fs.createReadStream(file.path),
@@ -123,7 +123,6 @@ exports.inclusao = async (req, res) => {
     }
 
     try {
-      //console.log("complementarModel.sigla_categoria:",complementarModel.sigla_categoria);
 
       const categoria = await categoriaSrv.getCategoriaBySigla(
         id_empresa,
@@ -168,8 +167,6 @@ exports.inclusao = async (req, res) => {
       parDetalhe.status = 9;
     }
 
-    //console.log(`Processando Inscrito: ${inscritoModel.cnpj_cpf} - ${inscritoModel.nome}`);
-
     parDetalhe.cnpj_cpf = inscritoModel.cnpj_cpf;
     parDetalhe.nome = shared.excluirCaracteres(inscritoModel.nome);
     parDetalhe.estrangeiro = inscritoModel.estrangeiro;
@@ -177,12 +174,7 @@ exports.inclusao = async (req, res) => {
     parDetalhe.data_nasc = inscritoModel.data_nasc;
     parDetalhe.inscricao = complementarModel.inscricao;
     parDetalhe.nro_peito = complementarModel.nro_peito;
-
-    if (parDetalhe.mensagem_erro.trim() !== "") {
-      cabPlanilha.total_linhas_erro = cabPlanilha.total_linhas_erro + 1;
-    }
-
-    cabPlanilha.total_linhas++;
+   
 
     try {
       await detPlanilhaSrv.insertDetplanilha(parDetalhe);
@@ -197,16 +189,16 @@ exports.inclusao = async (req, res) => {
       }
     }
   }
+ 
+  
+  cabPlanilha = await cabPlanilhaSrv.getCabplanilha(cabPlanilha.id_empresa, cabPlanilha.id_evento, cabPlanilha.id);
 
-  if (cabPlanilha.total_linhas_erro > 0) {
-    cabPlanilha.status = "3";
-  } else {
-    cabPlanilha.status = "1";
-  }
+  cabPlanilha.status =  1;
 
-  await cabPlanilhaSrv.updateCabplanilha(cabPlanilha);
+  cabPlanilha =await cabPlanilhaSrv.updateCabplanilha(cabPlanilha);
 
   return cabPlanilha;
+
 };
 
 exports.processamento = async (req, cabec, detalhes) => {
@@ -331,8 +323,6 @@ exports.processamentov2 = async (req, cabec, detalhes) => {
       console.log(err);
     }
   }
-
-  cabec.linhas_processadas = linhas_processadas;
 
   cabec.status = "2";
 

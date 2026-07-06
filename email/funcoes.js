@@ -1,8 +1,7 @@
 const eventoSrv = require("../service/eventoService");
 const usuarioSrv = require("../service/usuarioService");
 const tokenSrv = require("../service/tokenService");
-
-const fs = require("fs");
+const fs = require('fs');
 const path = require("path");
 const resend = require("../email/email");
 
@@ -620,4 +619,81 @@ exports.preparaEmailNovaSenha = async function (id_empresa, id_usuario) {
   console.log(usuario, token);
 
   await exports.enviarEmailNovaSenha(usuario, token);
+};
+
+
+exports.enviarEmailRelatorioEvento = async function (usuario, evento, arquivo) {
+
+  const destinatario = usuario.email;
+
+  // Lê o arquivo e converte para base64
+  const arquivoBase64 = fs.readFileSync(arquivo).toString('base64');
+
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>  
+  <meta charset="UTF-8" />
+  <title>Relatorio De Evento</title>
+  <style>     
+    body {        
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;        
+      padding: 0;    
+    }    
+    .container {      
+      max-width: 640px;      
+      margin: 20px auto;      
+      background-color: #ffffff;    
+      border-radius: 6px;      
+      border: 1px solid #e0e0e0;      
+      padding: 20px 24px;
+    }
+  </style>
+</head>
+<body>  
+  <div class="container">    
+    <h1>Relatório do Evento</h1>    
+    <p>${evento.descricao}</p>  
+    <p>Segue em anexo o relatório solicitado.</p>
+    <p>Atenciosamente,<br>Equipe de Suporte</p>  
+  </div>
+</body>
+</html>`;
+
+  try {
+
+    const resposta = await resend.emails.send({
+      from: "Sistema <notificacoes@falconi-iot.com.br>",
+      to: destinatario,
+      subject: `Relatório do Evento ${evento.descricao}`,
+      html: html,
+      attachments: [
+        {
+          filename: path.basename(arquivo),
+          content: arquivoBase64,
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+      ]
+    });
+
+    console.log("Email enviado:", resposta);
+
+    if (resposta.error !== null){
+       return {message: `Falha: ${resposta.error.message}`};
+    } else {
+      return {message: "E-Mail Enviado Com Sucesso!"};
+    }
+    
+  } catch (erro) {
+    console.error(erro);
+    return {message: "Falha Ao Enviar E-Mail!"};
+  }
+};
+
+
+exports.preparaEmailRelatorioEvento = async function (usuario,evento, arquivo) {
+
+  return  await exports.enviarEmailRelatorioEvento(usuario,evento,arquivo);
+
 };

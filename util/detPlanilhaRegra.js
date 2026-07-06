@@ -5,7 +5,7 @@ const shared = require('../util/shared');
 
 exports.detPlanilha_Inclusao = async function(detPlanilha) { 
 	try { 
-		const obj = await detPlanilhaSrv.getDetplanilha(detPlanilha.id_empresa,detPlanilha.id_evento,detPlanilha.id_cabec,detPlanilha.cnpj_cpf,detPlanilha.inscricao);
+		const obj = await detPlanilhaSrv.getDetplanilha(detPlanilha.id_empresa,detPlanilha.id_evento,detPlanilha.id_cabec,detPlanilha.nro_peito);
 		if (obj != null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'DETPLANILHA', message: `"INCLUSÃO" Registro Já Existe Na Base De Dados.!` }]);
 		}
@@ -19,7 +19,7 @@ exports.detPlanilha_Inclusao = async function(detPlanilha) {
 
 exports.detPlanilha_Alteracao = async function(detPlanilha) { 
 	try { 
-		const obj = await detPlanilhaSrv.getDetplanilha(detPlanilha.id_empresa,detPlanilha.id_evento,detPlanilha.id_cabec,detPlanilha.cnpj_cpf,detPlanilha.inscricao);
+		const obj = await detPlanilhaSrv.getDetplanilha(detPlanilha.id_empresa,detPlanilha.id_evento,detPlanilha.id_cabec,detPlanilha.nro_peito);
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'DETPLANILHA', message: `"ALTERAÇÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}
@@ -31,9 +31,9 @@ exports.detPlanilha_Alteracao = async function(detPlanilha) {
 	return; 
 } 
 
-exports.detPlanilha_Exclusao = async function(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao) { 
+exports.detPlanilha_Exclusao = async function(id_empresa,id_evento,id_cabec,nro_peito) { 
 	try { 
-		const obj = await detPlanilhaSrv.getDetplanilha(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao);
+		const obj = await detPlanilhaSrv.getDetplanilha(id_empresa,id_evento,id_cabec,nro_peito);
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'DETPLANILHA', message: `"EXCLUSÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}

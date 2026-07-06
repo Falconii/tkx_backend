@@ -127,6 +127,7 @@ router.post("/cabplanilhas",async function(req, res) {/*
 		"id_evento":0, 
 		"id":0, 
 		"arquivo":"", 
+		"status":"", 
 		"pagina":0, 
 		"tamPagina":50, 
 		"contador":"N", 

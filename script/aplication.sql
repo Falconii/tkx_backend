@@ -299,7 +299,7 @@ CREATE TABLE Public.detPlanilhas (
 		mensagem_erro varchar(100)  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_cabec,cnpj_cpf,inscricao) 
+		PRIMARY KEY(id_empresa,id_evento,id_cabec,nro_peito) 
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 

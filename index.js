@@ -46,10 +46,7 @@ app.use("/api/empresa", require("./route/empresaRoute"));
 app.use("/api/usuario", require("./route/usuarioRoute"));
 app.use("/api/grupousuario", require("./route/grupousuarioRoute"));
 app.use("/api/evento", require("./route/eventoRoute"));
-app.use(
-  "/api/evento_complementar",
-  require("./route/complementar/eventoRoute.js"),
-);
+app.use("/api/evento_complementar",require("./route/complementar/eventoRoute.js"));
 app.use("/api/participante", require("./route/participanteRoute"));
 app.use("/api/participantev2", require("./route/participantev2Route"));
 app.use("/api/inscrito", require("./route/inscritoRoute"));
