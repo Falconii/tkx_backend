@@ -41,6 +41,7 @@ exports.inclusao = async (req, res) => {
     id: 0,
     arquivo: file.originalname,
     total_linhas: 0,
+    status:1,
     linhas_processadas: 0,
     total_linhas_erro: 0,
     user_insert: id_usuario,

@@ -141,6 +141,7 @@ exports.verfica_planilha = async function (id_empresa, id_evento, fileName) {
     id_evento: id_evento,
     id: 0,
     arquivo: fileName,
+    status:'',
     pagina: 0,
     tamPagina: 50,
     contador: "N",

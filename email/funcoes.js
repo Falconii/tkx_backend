@@ -612,11 +612,10 @@ exports.enviarEmailNovaSenha = async function (usuario, token) {
 };
 
 exports.preparaEmailNovaSenha = async function (id_empresa, id_usuario) {
+
   const usuario = await usuarioSrv.getUsuario(id_empresa, id_usuario);
 
   const token = tokenSrv.generateTempoToken(usuario);
-
-  console.log(usuario, token);
 
   await exports.enviarEmailNovaSenha(usuario, token);
 };

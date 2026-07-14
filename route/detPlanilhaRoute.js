@@ -6,7 +6,8 @@ const { autenticarToken} = require('../middleware/autenticartoken');
 const detPlanilhaSrv = require('../service/detPlanilhaService');
 router.use(autenticarToken); 
 /* ROTA GETONE detPlanilha */
-router.get("/:id_empresa/:id_evento/:id_cabec/:nro_peito",async function(req, res) {try 
+router.get("/:id_empresa/:id_evento/:id_cabec/:nro_peito",async function(req, res) {
+try 
 	{
 		const lsLista = await detPlanilhaSrv.getDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.nro_peito);
 		if (lsLista == null) 
@@ -31,7 +32,8 @@ catch (err)
 	}
 })
 /* ROTA GETALL detPlanilha */
-router.get("/",async function(req, res) {try 
+router.get("/",async function(req, res) {
+try 
 	{
 		const lsLista = await detPlanilhaSrv.getDetplanilhas();
 		if (lsLista.length == 0) 
@@ -56,11 +58,14 @@ catch (err)
 	}
 })
 /* ROTA INSERT detPlanilha */
-router.post("/",async function(req, res) {try 
+router.post("/",async function(req, res) {
+try 
 	{
 		const detPlanilha = req.body;
-		const registro = await detPlanilhaSrv.insertDetplanilha(detPlanilha);		if (registro == null)
-		{			res.status(409).json({ message: 'Detplanilha Cadastrado!' });
+		const registro = await detPlanilhaSrv.insertDetplanilha(detPlanilha);
+		if (registro == null)
+		{
+			res.status(409).json({ message: 'Detplanilha Cadastrado!' });
 		}
 		else
 		{
@@ -80,11 +85,14 @@ catch (err)
 	}
 })
 /* ROTA UPDATE detPlanilha */
-router.put("/",async function(req, res) {try 
+router.put("/",async function(req, res) {
+try 
 	{
 		const detPlanilha = req.body;
-		const registro = await detPlanilhaSrv.updateDetplanilha(detPlanilha);		if (registro == null)
-		{			res.status(409).json({ message: 'Detplanilha Alterado Com Sucesso!' });
+		const registro = await detPlanilhaSrv.updateDetplanilha(detPlanilha);
+		if (registro == null)
+		{
+			res.status(409).json({ message: 'Detplanilha Alterado Com Sucesso!' });
 		}
 		else
 		{
@@ -104,9 +112,11 @@ catch (err)
 	}
 })
 /* ROTA DELETE detPlanilha */
-router.delete("/:id_empresa/:id_evento/:id_cabec/:nro_peito",async function(req, res) {try 
+router.delete("/:id_empresa/:id_evento/:id_cabec/:nro_peito",async function(req, res) {
+try 
 	{
-		await detPlanilhaSrv.deleteDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.nro_peito);		res.status(200).json({ message: 'Detplanilha Excluído Com Sucesso!' });
+		await detPlanilhaSrv.deleteDetplanilha(req.params.id_empresa,req.params.id_evento,req.params.id_cabec,req.params.nro_peito);
+		res.status(200).json({ message: 'Detplanilha Excluído Com Sucesso!' });
 }
 catch (err)
 	{
@@ -121,13 +131,14 @@ catch (err)
 	}
 })
 /* ROTA CONSULTA POST detPlanilhas */
-router.post("/detPlanilhas",async function(req, res) {/*
+router.post("/detPlanilhas",async function(req, res) {
+/*
 	{
 		"id_empresa":0, 
 		"id_evento":0, 
 		"id_cabec":0, 
 		"nro_peito":0, 
-		"cnpj_cpf":"0", 
+		"cnpj_cpf":"", 
 		"inscricao":0, 
 		"nome":"", 
 		"status":-1, 
@@ -141,8 +152,10 @@ router.post("/detPlanilhas",async function(req, res) {/*
 try 
 	{
 		const params = req.body;
-		const lsRegistros = await detPlanilhaSrv.getDetplanilhas(params);		if (lsRegistros.length == 0)
-		{			res.status(409).json({ message: 'Detplanilha Nenhum Registro Encontrado!' });
+		const lsRegistros = await detPlanilhaSrv.getDetplanilhas(params);
+		if (lsRegistros.length == 0)
+		{
+			res.status(409).json({ message: 'Detplanilha Nenhum Registro Encontrado!' });
 		}
 		else
 		{
@@ -151,6 +164,7 @@ try
 }
 catch (err)
 	{
+		console.log(err);
 		if(err.name == 'MyExceptionDB')
 		{
 			res.status(409).json(err);

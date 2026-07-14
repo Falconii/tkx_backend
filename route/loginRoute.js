@@ -200,6 +200,7 @@ router.post("/refreshpassword", async function (req, res) {
     if (registro == null) {
       res.status(409).json({ message: "Falha ao Atualizar Senha!" });
     } else {
+      await funcoes.preparaEmailNovaSenha(registro.id_empresa,registro.id);
       res.status(200).json(registro);
     }
   } catch (err) {

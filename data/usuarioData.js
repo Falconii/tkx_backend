@@ -70,12 +70,12 @@ exports.getUsuarios = function (params) {
     paginacao = "";
 
     if (params.orderby == "") orderby = "usu.id_empresa,usu.id";
-    if (params.orderby == "Código") orderby = "usu.id_empresa,usu.id";
-    if (params.orderby == "Razão") orderby = "usu.id_empresa,usu.razao";
-    if (params.orderby == "Grupo")
+    if (params.orderby == "000000") orderby = "usu.id_empresa,usu.id";
+    if (params.orderby == "000001") orderby = "usu.id_empresa,usu.razao";
+    if (params.orderby == "000002")
       orderby = "usu.id_empresa,usu.grupo,usu.razao";
-    if (params.orderby == "CNPJ/CPF")
-      orderby = "usu.id_empresa,usu.id,usu.cnpj_cpf";
+    if (params.orderby == "000003")
+      orderby = "usu.id_empresa,usu.cnpj_cpf";
 
     if (orderby != "") orderby = " order by " + orderby;
     if (params.id_empresa !== 0) {

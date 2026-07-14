@@ -54,9 +54,11 @@ if (params) {
 	orderby = "";
 	paginacao = "";
 
-	if(params.orderby == '') orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
-	if(params.orderby == '000000') orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
-	if(params.orderby == '000001') orderby = 'det.id_empresa,det.id_evento,det.nome';
+	if(params.orderby == '') orderby = 'det.id_empresa,det.id_evento,det.nome';
+	if(params.orderby == '000000') orderby = 'det.id_empresa,det.id_evento,det.nome';
+	if(params.orderby == '000001') orderby = 'det.id_empresa,det.id_evento,det.cnpj_cpf';
+	if(params.orderby == '000002') orderby = 'det.id_empresa,det.id_evento,det.nro_peito';
+	if(params.orderby == '000003') orderby = 'det.id_empresa,det.id_evento,det.inscricao';
 
 	if (orderby != "") orderby = " order by " + orderby;
 	if(params.id_empresa  !== 0 ){
@@ -97,7 +99,7 @@ if (params) {
 			where += `det.nome like '%${params.nome.trim()}%' `;
 		}
 	}
-	if(params.status  !== -1 ){
+	if(params.status  !== 0 ){
 		if (where != "") where += " and "; 
 		where += `det.status = ${params.status} `;
 	}
@@ -133,6 +135,7 @@ if (params) {
 			FROM detPlanilhas det   
 				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento   
 			${where} 			${ orderby} ${ paginacao} `;
+			console.log("getDetplanilhas->",strSql);
 			return  db.manyOrNone(strSql);
 		}	}  else {
 		strSql = `select   
