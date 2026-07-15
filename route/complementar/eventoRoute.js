@@ -11,7 +11,7 @@ const response = require("../../util/respostaPadrao");
 const funcoes = require("../../email/funcoes");
 const path = require('path');
 const fs = require('fs');
-const { gerarRelatorioParticipantes } = require('../../excel/eventorelatorio01');
+const { gerarRelatorioParticipantes } = require('../../excel/eventorelatorio01.js');
 
 
 
