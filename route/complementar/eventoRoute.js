@@ -13,8 +13,6 @@ const path = require('path');
 const fs = require('fs');
 const { gerarRelatorioParticipantes } = require('../../excel/eventorelatorio01.js');
 
-
-
 router.use(autenticarToken);
 /* ROTA UPDATE evento */
 

@@ -1,5 +1,6 @@
 /* DATA empresas */
 const db = require('../infra/database');
+const shared = require("../util/shared.js");
 
 /* GET CAMPOS */
 exports.getCampos = function(Empresa){
@@ -171,7 +172,7 @@ if (params) {
 		 ,   '${empresa.razao}' 
 		 ,   '${empresa.fantasi}' 
 		 ,   '${empresa.inscri}' 
-		 ,   '${empresa.cadastr}' 
+		 ,   '${shared.formatDateYYYYMMDD(empresa.cadastr)}' 
 		 ,   '${empresa.ruaf}' 
 		 ,   '${empresa.nrof}' 
 		 ,   '${empresa.complementof}' 
@@ -196,7 +197,7 @@ if (params) {
  		 ,   razao = '${empresa.razao}' 
  		 ,   fantasi = '${empresa.fantasi}' 
  		 ,   inscri = '${empresa.inscri}' 
- 		 ,   cadastr = '${empresa.cadastr}' 
+ 		 ,   cadastr = '${shared.formatDateYYYYMMDD(empresa.cadastr)}' 
  		 ,   ruaf = '${empresa.ruaf}' 
  		 ,   nrof = '${empresa.nrof}' 
  		 ,   complementof = '${empresa.complementof}' 
