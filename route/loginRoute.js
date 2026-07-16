@@ -4,8 +4,10 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const usuarioService = require("../service/usuarioService");
+const usuarioComplementarService = require("../service/complementar/usuarioService");
 const tokenService = require("../service/tokenService");
 const funcoes = require("../email/funcoes");
+const shared = require("../util/shared.js");
 
 /* Login */
 router.post("/", async function(req, res) {
@@ -13,6 +15,68 @@ router.post("/", async function(req, res) {
         const { id_empresa, codigo, password } = req.body;
 
         user = await usuarioService.getUsuario(id_empresa, codigo);
+
+
+        if (!user) {
+            
+            return res.status(403).send("Credenciais inválidas");
+
+        }
+        
+        if (!user || !bcrypt.compareSync(password, user.senha)) {
+            
+            return res.status(401).send("Credenciais inválidas");
+        }
+
+         console.log(password, user.senha);
+        
+        await tokenService.deleteTokenByUser(user.id_empresa, user.id);
+
+        const accessToken = tokenService.generateAccessToken(user);
+
+        const refreshToken = tokenService.generateRefreshToken(user);
+
+        await tokenService.insertToken({
+            id_empresa: user.id_empresa,
+            token: accessToken,
+            tipo: "A",
+            validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+            id_usuario: user.id,
+            status: 1,
+            user_insert: user.id,
+            user_update: 0,
+        });
+
+        await tokenService.insertToken({
+            id_empresa: user.id_empresa,
+            token: refreshToken,
+            tipo: "R",
+            validade: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+            id_usuario: user.id,
+            status: 1,
+            user_insert: user.id,
+            user_update: 0,
+        });
+
+        res.status(200).json({
+            id_empresa: user.id_empresa,
+            id: user.id,
+            razao: user.razao,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+        });
+    } catch (err) {
+        res.status(500).json({ erro: "BAK-END", message: err.message });
+    }
+});
+
+router.post("/loginbycpf", async function(req, res) {
+    try {
+        const { id_empresa, cnpj_cpf, password } = req.body;
+
+        const cpf = shared.limparCnpj_Cpf(cnpj_cpf);
+
+        user = await usuarioComplementarService.getUsuarioByCpf(id_empresa, cpf);
 
         console.log("User:", user);
 
@@ -72,6 +136,7 @@ router.post("/", async function(req, res) {
         res.status(500).json({ erro: "BAK-END", message: err.message });
     }
 });
+
 
 router.post("refresh/", async function(req, res) {
     try {

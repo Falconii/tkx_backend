@@ -71,6 +71,10 @@ app.use(
   "/api/parametro/complementar",
   require("./route/complementar/parametroRoute.js"),
 );
+app.use(
+  "/api/usuario/complementar",
+  require("./route/complementar/usuarioRoute.js"),
+);
 
 app.use(
   "/api/public",
