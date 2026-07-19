@@ -1,5 +1,6 @@
 /* DATA detPlanilhas */
 const db = require('../infra/database');
+const shared = require("../util/shared.js");
 
 /* GET CAMPOS */
 exports.getCampos = function(Detplanilha){
@@ -41,14 +42,17 @@ exports.getDetplanilha = function(id_empresa,id_evento,id_cabec,nro_peito){
 			,  det.mensagem_erro as  mensagem_erro  
 			,  det.user_insert as  user_insert  
 			,  det.user_update as  user_update  
-			,  evento.descricao as  evento_descricao    
+			,  evento.descricao as  evento_descricao   
+			,  coalesce(cat.descricao,'') as cat_descricao    
  			FROM detPlanilhas det 	  
-				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento   
+				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento  
+				 left  join categorias cat on cat.id_empresa = det.id_empresa and cat.id = id_categoria
 			 where det.id_empresa = ${id_empresa} and  det.id_evento = ${id_evento} and  det.id_cabec = ${id_cabec} and  det.nro_peito = ${nro_peito}  `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD GET ALL*/
 exports.getDetplanilhas = function(params){
+console.log("getDetplanilhas",params);	
 if (params) {
 	where = "";
 	orderby = "";
@@ -73,7 +77,7 @@ if (params) {
 		if (where != "") where += " and "; 
 		where += `det.id_cabec = ${params.id_cabec} `;
 	}
-	if(params.nro_peito  !== 0 ){
+	if(params.nro_peito  !== -1 ){
 		if (where != "") where += " and "; 
 		where += `det.nro_peito = ${params.nro_peito} `;
 	}
@@ -86,20 +90,20 @@ if (params) {
 			where += `det.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
 		}
 	}
-	if(params.inscricao  !== 0 ){
+	if(params.inscricao  !== -1 ){
 		if (where != "") where += " and "; 
 		where += `det.inscricao = ${params.inscricao} `;
 	}
 	if(params.nome.trim()  !== '' ){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
-			 where +=  `det.nome = '${params.nome}' `;
+			 where +=  `unaccent(det.nome) = '${shared.semAcento(params.nome.trim())}' `
 		} else 
 		{
-			where += `det.nome like '%${params.nome.trim()}%' `;
+			where += `unaccent(det.nome) like '%${shared.semAcento(params.nome.trim())}%' `;
 		}
 	}
-	if(params.status  !== 0 ){
+	if(params.status  !== -1 ){
 		if (where != "") where += " and "; 
 		where += `det.status = ${params.status} `;
 	}
@@ -131,9 +135,11 @@ if (params) {
 			,  det.mensagem_erro as  mensagem_erro  
 			,  det.user_insert as  user_insert  
 			,  det.user_update as  user_update  
-			,  evento.descricao as  evento_descricao     
+			,  evento.descricao as  evento_descricao  
+			,  coalesce(cat.descricao,'') as cat_descricao   
 			FROM detPlanilhas det   
 				 inner join eventos evento on evento.id_empresa = det.id_empresa and evento.id = det.id_evento   
+				 left  join categorias cat on cat.id_empresa = det.id_empresa and cat.id = id_categoria
 			${where} 			${ orderby} ${ paginacao} `;
 			console.log("getDetplanilhas->",strSql);
 			return  db.manyOrNone(strSql);

@@ -108,7 +108,7 @@ exports.getUsuarios = function (params) {
     }
 	 if (params.nivel !== 0) {
       if (where != "") where += " and ";
-      where += `usu.grupo >= ${params.grupo} and  usu.grupo < 99} `;
+      where += `usu.grupo >= ${params.grupo} and  usu.grupo < 99 `;
     }
     if (where != "") where = " where " + where;
     if (params.pagina != 0) {

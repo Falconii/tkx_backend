@@ -342,16 +342,14 @@ function dados_complementares(campos) {
       mensagem_erro: "",
     };
 
-    /* Desabilitada Validação da Inscrição
-                 if (
-                    complementarModel.inscricao == null ||
-                    complementarModel.inscricao.trim() === "" ||
-                    isNaN(complementarModel.inscricao) ||
-                    complementarModel.inscricao <= 0
-                ) {
-                    complementarModel.inscricao = 0;
-                    complementarModel.mensagem_erro += " -Inscrição Inválida";
-                } */
+    if (
+          complementarModel.inscricao == null ||
+          complementarModel.inscricao.trim() === "" ||
+          isNaN(complementarModel.inscricao) ||
+          complementarModel.inscricao <= 0
+      ) {
+          complementarModel.inscricao = 0;
+    } 
 
     if (
       complementarModel.nro_peito == null ||
@@ -363,7 +361,7 @@ function dados_complementares(campos) {
       complementarModel.mensagem_erro += " -Nro Do Peito Inválido";
     }
   } catch (err) {
-    throw new Error(`Incrição Ou Nº Do Peito Com Problema: ${err.message}`);
+    throw new Error(`Nº Do Peito Com Problema: ${err.message}`);
   }
   return complementarModel;
 }

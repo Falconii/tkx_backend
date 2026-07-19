@@ -51,6 +51,7 @@ exports.getParticipantev2 = function(id_empresa, id_evento, id) {
 };
 /* CRUD GET ALL*/
 exports.getParticipantesv2 = function(params) {
+    console.log("getParticipantesv2",params);
     if (params) {
         where = "";
         orderby = "";
@@ -99,11 +100,11 @@ exports.getParticipantesv2 = function(params) {
             if (where != "") where += " and ";
             where += `participante.id_entrega > 0 `;
         }
-        if (params.inscricao !== 0) {
+        if (params.inscricao !== -1) {
             if (where != "") where += " and ";
             where += `participante.inscricao = ${params.inscricao} `;
         }
-        if (params.nro_peito !== 0) {
+        if (params.nro_peito !== -1) {
             if (where != "") where += " and ";
             where += `participante.nro_peito = ${params.nro_peito} `;
         }
