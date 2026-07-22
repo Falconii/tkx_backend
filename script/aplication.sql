@@ -319,6 +319,21 @@ CREATE TABLE Public.parametros (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
+/* TABELA usuarios_eventos  */
+DROP TABLE IF EXISTS usuarios_eventos;
+CREATE TABLE Public.usuarios_eventos (
+		id_empresa int4  NOT NULL  , 
+		id_evento int4  NOT NULL  , 
+		id_usuario int4  NOT NULL  , 
+		link text  NOT NULL  , 
+		ativo char(1)  NOT NULL  , 
+		user_insert int4  NOT NULL  , 
+		user_update int4  NOT NULL  , 
+		PRIMARY KEY(id_empresa,id_evento,id_usuario) 
+)
+ WITHOUT OIDS 
+ TABLESPACE "Producao" 
+ GO 
 /* TRUNCATE TABLES */ 
 TRUNCATE TABLE Public.empresas RESTART IDENTITY; 
 GO 
@@ -352,6 +367,8 @@ TRUNCATE TABLE Public.detPlanilhas RESTART IDENTITY;
 GO 
 TRUNCATE TABLE Public.parametros RESTART IDENTITY; 
 GO 
+TRUNCATE TABLE Public.usuarios_eventos RESTART IDENTITY; 
+GO 
 /* Drop TABLES */ 
 DROP TABLE IF EXISTS Public.empresas ; 
 GO 
@@ -384,4 +401,6 @@ GO
 DROP TABLE IF EXISTS Public.detPlanilhas ; 
 GO 
 DROP TABLE IF EXISTS Public.parametros ; 
+GO 
+DROP TABLE IF EXISTS Public.usuarios_eventos ; 
 GO 

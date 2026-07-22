@@ -382,4 +382,42 @@ router.post("/esqueceusenha", async function (req, res) {
   }
 });
 
+
+router.post("/esqueceusenhacpf", async function (req, res) {
+  try {
+    /*
+                        {
+                            "id_empresa":1,
+                            "cpf": 025.000.000,
+                        }
+                        */
+
+    const { id_empresa, cpf } = req.body;
+
+    console.log("params", id_empresa, cpf);
+
+    const senhaNova = "mudarsenha";
+
+    user = await usuarioComplementarService.getUsuarioByCpf(id_empresa, cpf);
+
+    if (!user) {
+      return res.status(403).send("Credenciais Inválidas !");
+    }
+
+    await funcoes.preparaEmailNovaSenha(user.id_empresa, user.id);
+
+    res.status(200).json({ message: "E-Mail Foi Enviado!" });
+  } catch (err) {
+    if (err.name == "MyExceptionDB") {
+      res.status(409).json(err);
+    } else {
+      res
+        .status(500)
+        .json({ erro: "BAK-END", tabela: "Usuario", message: err.message });
+    }
+  }
+});
+
+
+
 module.exports = router;

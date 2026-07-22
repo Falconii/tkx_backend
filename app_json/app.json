@@ -3745,6 +3745,188 @@
             }
           ],
           "tablespace": "Producao"
+        },
+        {
+          "name": "usuarios_eventos",
+          "fields": [
+            {
+              "name": "id_empresa",
+              "type": "int4",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "id_evento",
+              "type": "int4",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "id_usuario",
+              "type": "int4",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "link",
+              "type": "text",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "ativo",
+              "type": "char",
+              "length": 1,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "user_insert",
+              "type": "int4",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            },
+            {
+              "name": "user_update",
+              "type": "int4",
+              "length": 0,
+              "precision": 0,
+              "nulo": "N",
+              "padrao": "",
+              "validacao": []
+            }
+          ],
+          "inner_join": [ {
+              "name": "usuarios",
+              "inner_alias": "usuario",
+              "inner_on": "usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.id_usuario = usuario.id",
+              "inner_fields": [
+                {
+                  "name": "razao",
+                  "as_col": "usuario_razao",
+                  "tipo": "char"
+                },
+                  {
+                  "name": "cnpj_cpf",
+                  "as_col": "usuario_cnpj_cpf",
+                  "tipo": "char"
+                }
+              ]
+            }],
+          "left_join": [],
+          "primaryKey": [
+            {
+              "key": "id_empresa"
+            },
+            {
+              "key": "id_evento"
+            },
+            {
+              "key": "id_usuario"
+            }
+          ],
+          "variables": {
+            "getone": "usuario_evento",
+            "getall": "usuarios_eventos",
+            "alias": "usuario_evento"
+          },
+          "where": {
+            "parametro_01": [
+              {
+                "name": "id_empresa",
+                "filtro": "S",
+                "atividador": " !== 0 ",
+                "tipo": "number",
+                "padrao": 0
+              },
+              {
+                "name": "id_evento",
+                "filtro": "S",
+                "atividador": " !== 0 ",
+                "tipo": "number",
+                "padrao": 0
+              },
+              {
+                "name": "id_usuario",
+                "filtro": "S",
+                "atividador": " !== 0 ",
+                "tipo": "number",
+                "padrao": 0
+              },
+              {
+                "name": "ativo",
+                "filtro": "S",
+                "atividador": " !== '' ",
+                "tipo": "string",
+                "padrao": ""
+              },
+              {
+                "name": "pagina",
+                "filtro": "N",
+                "atividador": "",
+                "tipo": "number",
+                "padrao": 0
+              },
+              {
+                "name": "tamPagina",
+                "filtro": "N",
+                "atividador": "",
+                "tipo": "number",
+                "padrao": 50
+              },
+              {
+                "name": "contador",
+                "filtro": "N",
+                "atividador": "",
+                "tipo": "string",
+                "padrao": "N"
+              },
+              {
+                "name": "orderby",
+                "filtro": "N",
+                "atividador": "",
+                "tipo": "string",
+                "padrao": ""
+              },
+              {
+                "name": "sharp",
+                "filtro": "N",
+                "atividador": "",
+                "tipo": "boolean",
+                "padrao": "false"
+              }
+            ]
+          },
+          "orderby": [
+            {
+              "label": "",
+              "comparativo": " != '' ",
+              "key": "usuario_evento.id_empresa,usuario_evento.id_evento"
+            },
+            {
+              "label": "000001",
+              "comparativo": " != '' ",
+              "key": "usuario_evento.id_empresa,usuario_evento.id_evento"
+            }
+          ],
+          "tablespace": "Producao"
         }
       ],
       "parametros": []
