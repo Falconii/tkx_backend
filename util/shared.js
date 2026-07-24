@@ -58,6 +58,14 @@ Date.prototype.yyyymmdd = function () {
   ].join("-");
 };
 
+Date.prototype.ddmmyyyy = function () {
+  const dd = String(this.getDate()).padStart(2, '0');
+  const mm = String(this.getMonth() + 1).padStart(2, '0');
+  const yyyy = this.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
+
 exports.formatDateHour = function (date) {
   return date;
 };

@@ -6,6 +6,8 @@ exports.getCampos = function(Usuario_Evento){
 return [ 
 			Usuario_Evento.id_empresa, 
 			Usuario_Evento.id_evento, 
+			Usuario_Evento.cnpj_cpf, 
+			Usuario_Evento.razao, 
 			Usuario_Evento.id_usuario, 
 			Usuario_Evento.link, 
 			Usuario_Evento.ativo, 
@@ -14,10 +16,12 @@ return [
  ]; 
 }; 
 /* CRUD GET */
-exports.getUsuario_Evento = function(id_empresa,id_evento,id_usuario){
+exports.getUsuario_Evento = function(id_empresa,id_evento,cnpj_cpf){
 	strSql = ` select   
 			   usuario_evento.id_empresa as  id_empresa  
 			,  usuario_evento.id_evento as  id_evento  
+			,  usuario_evento.cnpj_cpf as  cnpj_cpf  
+			,  usuario_evento.razao as  razao  
 			,  usuario_evento.id_usuario as  id_usuario  
 			,  usuario_evento.link as  link  
 			,  usuario_evento.ativo as  ativo  
@@ -26,8 +30,8 @@ exports.getUsuario_Evento = function(id_empresa,id_evento,id_usuario){
 			,  usuario.razao as  usuario_razao  
 			,  usuario.cnpj_cpf as  usuario_cnpj_cpf    
  			FROM usuarios_eventos usuario_evento 	  
-				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.id_usuario = usuario.id   
-			 where usuario_evento.id_empresa = ${id_empresa} and  usuario_evento.id_evento = ${id_evento} and  usuario_evento.id_usuario = ${id_usuario}  `;
+				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.cnpj_cpf = usuario.cnpj_cpf   
+			 where usuario_evento.id_empresa = ${id_empresa} and  usuario_evento.id_evento = ${id_evento} and  usuario_evento.cnpj_cpf = '${cnpj_cpf}'  `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD GET ALL*/
@@ -37,8 +41,8 @@ if (params) {
 	orderby = "";
 	paginacao = "";
 
-	if(params.orderby == '') orderby = 'usuario_evento.id_empresa,usuario_evento.id_evento,usuario.razao';
-	if(params.orderby == '000001') orderby = 'usuario_evento.id_empresa,usuario_evento.id_evento,usuario.razao';
+	if(params.orderby == '') orderby = 'usuario_evento.id_empresa,usuario_evento.id_evento,usuario_evento.razao';
+	if(params.orderby == '000001') orderby = 'usuario_evento.id_empresa,usuario_evento.id_evento,usuario_evento.razao';
 
 	if (orderby != "") orderby = " order by " + orderby;
 	if(params.id_empresa  !== 0 ){
@@ -48,6 +52,24 @@ if (params) {
 	if(params.id_evento  !== 0 ){
 		if (where != "") where += " and "; 
 		where += `usuario_evento.id_evento = ${params.id_evento} `;
+	}
+	if(params.cnpj_cpf.trim()  !== '' ){
+		if (where != "") where += " and ";
+		if (params.sharp) { 
+			 where +=  `usuario_evento.cnpj_cpf = '${params.cnpj_cpf}' `;
+		} else 
+		{
+			where += `usuario_evento.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
+		}
+	}
+	if(params.razao.trim()  !== '' ){
+		if (where != "") where += " and ";
+		if (params.sharp) { 
+			 where +=  `usuario_evento.razao = '${params.razao}' `;
+		} else 
+		{
+			where += `usuario_evento.razao like '%${params.razao.trim()}%' `;
+		}
 	}
 	if(params.id_usuario  !== 0 ){
 		if (where != "") where += " and "; 
@@ -69,13 +91,15 @@ if (params) {
 	if (params.contador == 'S') {
 		sqlStr = `SELECT COALESCE(COUNT(*),0) as total 
 				  FROM usuarios_eventos usuario_evento   
-				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.id_usuario = usuario.id   
+				inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.cnpj_cpf = usuario.cnpj_cpf 
 				  ${ where} `;
 		return db.one(sqlStr);
 	}  else {
 		strSql = `select   
 			   usuario_evento.id_empresa as  id_empresa  
 			,  usuario_evento.id_evento as  id_evento  
+			,  usuario_evento.cnpj_cpf as  cnpj_cpf  
+			,  usuario_evento.razao as  razao  
 			,  usuario_evento.id_usuario as  id_usuario  
 			,  usuario_evento.link as  link  
 			,  usuario_evento.ativo as  ativo  
@@ -84,13 +108,15 @@ if (params) {
 			,  usuario.razao as  usuario_razao  
 			,  usuario.cnpj_cpf as  usuario_cnpj_cpf     
 			FROM usuarios_eventos usuario_evento   
-				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.id_usuario = usuario.id   
+				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.cnpj_cpf = usuario.cnpj_cpf   
 			${where} 			${ orderby} ${ paginacao} `;
 			return  db.manyOrNone(strSql);
 		}	}  else {
 		strSql = `select   
 			   usuario_evento.id_empresa as  id_empresa  
 			,  usuario_evento.id_evento as  id_evento  
+			,  usuario_evento.cnpj_cpf as  cnpj_cpf  
+			,  usuario_evento.razao as  razao  
 			,  usuario_evento.id_usuario as  id_usuario  
 			,  usuario_evento.link as  link  
 			,  usuario_evento.ativo as  ativo  
@@ -99,7 +125,7 @@ if (params) {
 			,  usuario.razao as  usuario_razao  
 			,  usuario.cnpj_cpf as  usuario_cnpj_cpf    
 			FROM usuarios_eventos usuario_evento			   
-				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.id_usuario = usuario.id  `;
+				 inner join usuarios usuario on usuario_evento.id_empresa = usuario.id_empresa and usuario_evento.cnpj_cpf = usuario.cnpj_cpf `;
 		return  db.manyOrNone(strSql);
 	}
 }
@@ -108,6 +134,8 @@ if (params) {
 	strSql = `insert into usuarios_eventos (
 		     id_empresa 
 		 ,   id_evento 
+		 ,   cnpj_cpf 
+		 ,   razao 
 		 ,   id_usuario 
 		 ,   link 
 		 ,   ativo 
@@ -117,6 +145,8 @@ if (params) {
 		 values(
 		     ${usuario_evento.id_empresa} 
 		 ,   ${usuario_evento.id_evento} 
+		 ,   '${usuario_evento.cnpj_cpf}' 
+		 ,   '${usuario_evento.razao}' 
 		 ,   ${usuario_evento.id_usuario} 
 		 ,   '${usuario_evento.link}' 
 		 ,   '${usuario_evento.ativo}' 
@@ -129,17 +159,19 @@ if (params) {
 /* CRUD - UPDATE */
  exports.updateUsuario_Evento = function(usuario_evento){
 	strSql = `update   usuarios_eventos set  
-		     link = '${usuario_evento.link}' 
+		     razao = '${usuario_evento.razao}' 
+ 		 ,   id_usuario = ${usuario_evento.id_usuario} 
+ 		 ,   link = '${usuario_evento.link}' 
  		 ,   ativo = '${usuario_evento.ativo}' 
  		 ,   user_insert = ${usuario_evento.user_insert} 
  		 ,   user_update = ${usuario_evento.user_update} 
- 		 where id_empresa = ${usuario_evento.id_empresa} and  id_evento = ${usuario_evento.id_evento} and  id_usuario = ${usuario_evento.id_usuario}  returning * `;
+ 		 where id_empresa = ${usuario_evento.id_empresa} and  id_evento = ${usuario_evento.id_evento} and  cnpj_cpf = '${usuario_evento.cnpj_cpf}'  returning * `;
 	return  db.oneOrNone(strSql);
 }
 /* CRUD - DELETE */
- exports.deleteUsuario_Evento = function(id_empresa,id_evento,id_usuario){
+ exports.deleteUsuario_Evento = function(id_empresa,id_evento,cnpj_cpf){
 	strSql = `delete from usuarios_eventos 
-		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  id_usuario = ${id_usuario}  `;
+		 where id_empresa = ${id_empresa} and  id_evento = ${id_evento} and  cnpj_cpf = '${cnpj_cpf}'  `;
  	return  db.oneOrNone(strSql);
 }
 

@@ -324,12 +324,14 @@ DROP TABLE IF EXISTS usuarios_eventos;
 CREATE TABLE Public.usuarios_eventos (
 		id_empresa int4  NOT NULL  , 
 		id_evento int4  NOT NULL  , 
+		cnpj_cpf varchar(14)  NOT NULL  , 
+		razao varchar(40)  NOT NULL  , 
 		id_usuario int4  NOT NULL  , 
 		link text  NOT NULL  , 
 		ativo char(1)  NOT NULL  , 
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_usuario) 
+		PRIMARY KEY(id_empresa,id_evento,cnpj_cpf) 
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 

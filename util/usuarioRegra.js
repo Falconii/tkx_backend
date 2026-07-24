@@ -1,11 +1,12 @@
 const usuarioSrv = require('../service/usuarioService');
 const erroDB = require('../util/userfunctiondb');
 const shared = require('../util/shared');
+const usuarioComplentarSrv = require('../service/complementar/usuarioService')
 /* REGRA DE NEGOCIO usuarios */
 
 exports.usuario_Inclusao = async function(usuario) { 
 	try { 
-		const obj = await usuarioSrv.getUsuario(usuario.id_empresa,usuario.id);
+		const obj = await usuarioComplentarSrv.getUsuarioByCpf(usuario.id_empresa,usuario.cnpj_cpf);
 		if (obj != null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'USUARIO', message: `"INCLUSÃO" Registro Já Existe Na Base De Dados.!` }]);
 		}

@@ -229,6 +229,7 @@ exports.insertUsuario = function (usuario) {
 		 ,   ${usuario.user_update} 
 		 ) 
  returning * `;
+  console.log("insert",strSql);
   return db.oneOrNone(strSql);
 };
 /* CRUD - UPDATE */
@@ -254,6 +255,7 @@ exports.updateUsuario = function (usuario) {
  		 ,   user_insert = ${usuario.user_insert} 
  		 ,   user_update = ${usuario.user_update} 
  		 where id_empresa = ${usuario.id_empresa} and  id = ${usuario.id}  returning * `;
+		 console.log("update usuario",strSql)
   return db.oneOrNone(strSql);
 };
 
