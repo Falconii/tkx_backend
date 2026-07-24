@@ -70,6 +70,19 @@ try
 		const usuario_evento = req.body;
 		const id_usuario     = req.id_usuario;
 
+		let usu = await usuarioComplentarSrv.getUsuarioByCpf(usuario_evento.id_empresa,usuario_evento.cnpj_cpf);
+
+		if (usu !== null) {
+
+           if (usu.grupo !== 4){
+
+			   res.status(500).json({ erro: 'BAK-END', tabela: 'Usuario_Evento', message: 'Usuário Já Existem E Não É Do Grupo De Operadores' });
+
+			   return ;
+		   }
+
+		}
+
 		const user = await usuario_eventoSrv.insertUsuario_Evento(usuario_evento);
 
 		if (user == null)
@@ -78,13 +91,10 @@ try
 		}
 		else
 		{
-			let usu = await usuarioComplentarSrv.getUsuarioByCpf(user.id_empresa,user.cnpj_cpf);
-
 			const senhaNova = "mudarsenha";
 			
 			const hashedPassword = await bcrypt.hash(senhaNova, 10);
 			
-
 			if (usu == null) {
 					const hoje = new Date();
 					const userModel = {
