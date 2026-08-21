@@ -224,6 +224,7 @@ if (params) {
  		 ,   user_insert = ${detPlanilha.user_insert} 
  		 ,   user_update = ${detPlanilha.user_update} 
  		 where id_empresa = ${detPlanilha.id_empresa} and  id_evento = ${detPlanilha.id_evento} and  id_cabec = ${detPlanilha.id_cabec} and  nro_peito = ${detPlanilha.nro_peito}  returning * `;
+	console.log("updateDetplanilha",strSql);	 
 	return  db.oneOrNone(strSql);
 }
 /* CRUD - DELETE */

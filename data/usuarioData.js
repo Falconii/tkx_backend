@@ -108,7 +108,7 @@ exports.getUsuarios = function (params) {
     }
 	 if (params.nivel !== 0) {
       if (where != "") where += " and ";
-      where += `usu.grupo >= ${params.grupo} and  usu.grupo < 99 `;
+      where += ` ( usu.grupo >= ${params.grupo} and  usu.grupo < 99 ) `;
     }
     if (where != "") where = " where " + where;
     if (params.pagina != 0) {
@@ -148,6 +148,7 @@ exports.getUsuarios = function (params) {
 			FROM usuarios usu   
 				 inner join gruposusuarios gru on gru.id_empresa = usu.id_empresa and gru.codigo = usu.grupo   
 			${where} 			${orderby} ${paginacao} `;
+			console.log("getUsuarios", strSql);
       return db.manyOrNone(strSql);
     }
   } else {

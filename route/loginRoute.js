@@ -78,15 +78,14 @@ router.post("/loginbycpf", async function(req, res) {
 
         user = await usuarioComplementarService.getUsuarioByCpf(id_empresa, cpf);
 
-        console.log("User:", user);
 
         if (!user) {
+           
+           console.log("Usuario Não Encontrado NO DB");
             
             return res.status(403).send("Credenciais inválidas");
 
         }
-
-        console.log(password, user.senha);
         
         if (!user || !bcrypt.compareSync(password, user.senha)) {
 
@@ -94,8 +93,6 @@ router.post("/loginbycpf", async function(req, res) {
             
             return res.status(401).send("Credenciais inválidas");
         }
-
-         console.log(password, user.senha);
         
         await tokenService.deleteTokenByUser(user.id_empresa, user.id);
 

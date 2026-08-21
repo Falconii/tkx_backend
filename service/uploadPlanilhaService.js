@@ -12,6 +12,8 @@ const categoriaSrv = require("../service/complementar/categoriaService.js");
 const categoriacontadoresSrv = require("../service/categoriacontadorService.js");
 const fs = require("fs");
 const readline = require("readline");
+const iconv = require('iconv-lite');
+
 let id_empresa = 0;
 let id_local = 0;
 let id_evento = 0;
@@ -32,16 +34,15 @@ exports.inclusao = async (req, res) => {
   let total_linhas_erro = 0;
   let campos = "";
   let erros_tam_invalido = 0;
-  const { name } = req.body;
   const file = req.file;
 
   const cab = {
     id_empresa: id_empresa,
     id_evento: id_evento,
     id: 0,
-    arquivo: file.originalname,
+    arquivo:iconv.decode(Buffer.from(file.originalname, 'latin1'), 'utf8'),
     total_linhas: 0,
-    status:1,
+    status:9,
     linhas_processadas: 0,
     total_linhas_erro: 0,
     user_insert: id_usuario,
@@ -86,14 +87,15 @@ exports.inclusao = async (req, res) => {
       continue;
     }
 
-    if (campos.length != 6) {
+
+    if (campos.length < 6) {
       erros_tam_invalido++;
       console.log(
-        `Quantidade De Colunas Deferente Do Padrão (7)! Linha:Linha: ${nro_linha} Campos: ${campos.length}}`,
+        `Quantidade De Colunas Deferente Do Padrão (6)! Linha:Linha: ${nro_linha} Campos: ${campos.length}}`,
       );
       if (erros_tam_invalido > limite_Erros) {
         console.log(
-          `Quantidade De Colunas Deferente Do Padrão (7)! Linha:Linha: ${nro_linha} Campos: ${campos.length}} - Limite De Erros Excedido! Interrompendo Processamento!`,
+          `Quantidade De Colunas Deferente Do Padrão (6)! Linha:Linha: ${nro_linha} Campos: ${campos.length}} - Limite De Erros Excedido! Interrompendo Processamento!`,
         );
         break;
       } else {
@@ -202,80 +204,6 @@ exports.inclusao = async (req, res) => {
 
 };
 
-exports.processamento = async (req, cabec, detalhes) => {
-  id_empresa = req.id_empresa;
-  id_evento = req.body.id_evento;
-  id_usuario = req.id_usuario;
-
-  linhas_processadas = 0;
-
-  const params = {
-    id_empresa: id_empresa,
-    id_evento: id_evento,
-    id_planilha: cabec.id,
-  };
-
-  const contador = await categoriacontadoresSrv.popula_contadores(params);
-
-  // console.log("contador:",contador);
-
-  for await (let detalhe of detalhes) {
-    try {
-      const inscritoModel = {
-        id_empresa: detalhe.id_empresa,
-        id: 0,
-        cnpj_cpf: detalhe.cnpj_cpf,
-        nome: shared.excluirCaracteres(detalhe.nome),
-        estrangeiro: detalhe.estrangeiro,
-        sexo: detalhe.sexo,
-        data_nasc: shared.formatDateYYYYMMDD(detalhe.data_nasc),
-        origem: "P",
-        user_insert: id_usuario,
-        user_update: 0,
-      };
-
-      const inscrito = await _incluirInscrito(inscritoModel);
-
-      const participanteModel = {
-        id_empresa: detalhe.id_empresa,
-        id_evento: detalhe.id_evento,
-        id_inscrito: inscrito.id,
-        inscricao: detalhe.inscricao,
-        nro_peito: detalhe.nro_peito,
-        id_categoria: detalhe.id_categoria,
-        id_old_inscrito: 0,
-        user_insert: id_usuario,
-        user_update: 0,
-      };
-
-      const participante = await participanteSrv.getParticipante(
-        participanteModel.id_empresa,
-        participanteModel.id_evento,
-        participanteModel.id_inscrito,
-        participanteModel.inscricao,
-      );
-
-      if (participante == null) {
-        const participanteIncluido =
-          await participanteSrv.insertParticipante(participanteModel);
-      }
-
-      detalhe.status = 2;
-      detalhe.nome = shared.excluirCaracteres(detalhe.nome);
-      detPlanilhaSrv.updateDetplanilha(detalhe);
-
-      linhas_processadas++;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  cabec.linhas_processadas = linhas_processadas;
-
-  cabec = await cabPlanilhaSrv.updateCabplanilha(cabec);
-
-  return cabec;
-};
 
 exports.processamentov2 = async (req, cabec, detalhes) => {
   id_empresa = req.id_empresa;
@@ -381,6 +309,10 @@ function _inscrito(campos) {
       user_update: 0,
       mensagem_erro: "",
     };
+    if (inscritoModel.cnpj_cpf.trim() == 10) 
+        {
+          inscritoModel.cnpj_cpf = "0" + inscritoModel.cnpj_cpf;
+        }
     if (
       inscritoModel.nome == null ||
       inscritoModel.nome.trim() === "" ||
@@ -404,7 +336,8 @@ function _inscrito(campos) {
     }
     if (
       inscritoModel.cnpj_cpf == null ||
-      inscritoModel.cnpj_cpf.trim() === ""
+      inscritoModel.cnpj_cpf.trim() === "" ||
+      !shared.isValidCnpjCpf(inscritoModel.cnpj_cpf)
     ) {
       inscritoModel.cnpj_cpf = "";
       inscritoModel.mensagem_erro += " -CNPJ/CPF Inválido";

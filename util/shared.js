@@ -293,3 +293,59 @@ exports.verifyToken = async function (token, ACCESS_SECRET) {
     });
   });
 };
+
+
+exports.isValidCnpjCpf = function(doc) {
+  const apenasNumeros = doc.replace(/\D/g, "");
+
+  if (apenasNumeros.length === 11) {
+    return validarCPF(apenasNumeros);
+  } else if (apenasNumeros.length === 14) {
+    return validarCNPJ(apenasNumeros);
+  }
+
+  return false;
+}
+
+function validarCPF(cpf) {
+  if (/^(\d)\1+$/.test(cpf)) return false;
+
+  let soma = 0;
+  for (let i = 0; i < 9; i++) {
+    soma += parseInt(cpf[i]) * (10 - i);
+  }
+
+  let digito1 = (soma * 10) % 11;
+  digito1 = digito1 === 10 ? 0 : digito1;
+  if (digito1 !== parseInt(cpf[9])) return false;
+
+  soma = 0;
+  for (let i = 0; i < 10; i++) {
+    soma += parseInt(cpf[i]) * (11 - i);
+  }
+
+  let digito2 = (soma * 10) % 11;
+  digito2 = digito2 === 10 ? 0 : digito2;
+  return digito2 === parseInt(cpf[10]);
+}
+
+function validarCNPJ(cnpj) {
+  if (/^(\d)\1+$/.test(cnpj)) return false;
+
+  const pesos1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const pesos2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+
+  function calcularDigito(base, pesos) {
+    let soma = 0;
+    for (let i = 0; i < pesos.length; i++) {
+      soma += parseInt(base[i]) * pesos[i];
+    }
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
+  const digito1 = calcularDigito(cnpj, pesos1);
+  const digito2 = calcularDigito(cnpj, pesos2);
+
+  return digito1 === parseInt(cnpj[12]) && digito2 === parseInt(cnpj[13]);
+}

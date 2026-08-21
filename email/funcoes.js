@@ -522,10 +522,10 @@ exports.preparaEmailLiberacao = async function(id_empresa, id_evento) {
 
     const par = {
         id_empresa: id_empresa,
-        id: 999,
+        id: 0,
         razao: "",
         cnpj_cpf: "",
-        grupo: 0,
+        grupo: 1,
         pagina: 0,
         tamPagina: 50,
         contador: "N",
@@ -533,13 +533,24 @@ exports.preparaEmailLiberacao = async function(id_empresa, id_evento) {
         sharp: false,
     };
 
-    const usuario = await usuarioSrv.getUsuarios(par);
+    const usuarios = await usuarioSrv.getUsuarios(par)
 
-    console.log("usuario email", usuario[0]);
 
-    const token = tokenSrv.generateTempoToken(usuario[0]);
 
-    await enviarEmailLiberacaoEvento(evento, usuario[0], token);
+const promessas = usuarios.map(async (user) => {
+    try {
+        const token = tokenSrv.generateTempoToken(user);
+        await enviarEmailLiberacaoEvento(evento, user, token);
+        return { user, status: 'ok' };
+    } catch (err) {
+        return { user, status: 'erro', detalhe: err.message };
+    }
+});
+
+const resultados = await Promise.all(promessas);
+
+console.log(resultados);
+
 };
 
 

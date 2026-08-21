@@ -9,6 +9,8 @@ const uploadPlanilha = require("../config_multer/config_multer_planilha");
 const uploadPlanilhaSrv = require("../service/uploadPlanilhaService.js");
 const shared = require("../util/shared.js");
 const { autenticarToken } = require("../middleware/autenticartoken");
+const iconv = require('iconv-lite');
+
 router.use(autenticarToken);
 
 router.post(
@@ -37,10 +39,11 @@ router.post(
         return;
       }
 
+
       const existePlanilha = await shared.verfica_planilha(
         parametros.id_empresa,
         parametros.id_evento,
-        file.originalname,
+        iconv.decode(Buffer.from(file.originalname, 'latin1'), 'utf8')
       );
 
       if (existePlanilha.existe) {
@@ -155,5 +158,73 @@ router.post("/processamentoV2", async function (req, res) {
     }
   }
 });
+
+
+router.post("/checkplanilha", async function(req, res) {
+
+  id_empresa = req.id_empresa;
+  id_usuario = req.id_usuario;
+
+  console.log("planilha req.body:", req.body);
+
+  const { id_evento, fileName, tentativa, maxTentativas } = req.body;
+
+  if (!fileName) {
+    return res.status(400).json({ error: "fileName é obrigatório" });
+  }
+
+   if (Number(tentativa) > Number(maxTentativas)) {
+    return res.status(200).json({
+      status: "exceeded",
+      message: "Limite de tentativas excedido"
+    });
+  }
+
+
+  const par = {
+    id_empresa: id_empresa,
+    id_evento: id_evento,
+    id: 0,
+    arquivo: fileName,
+    status: '',
+    pagina: 0,
+    tamPagina: 50,
+    contador: 'N',
+    orderby: '',
+    sharp: false,
+  };
+
+  const planilhas = await cabPlanilhaSrv.getCabplanilhas(par);
+
+  if (planilhas.length == 0) {
+      return res.status(404).json({
+      status: "failed",
+      message: "Planilha Não Encontrada",
+      total_linhas      : 0,
+      linhas_processadas: 0,
+      total_linhas_erro : 0
+    });
+  }
+
+  if (planilhas.status === '0') {
+    return res.status(200).json({
+      status:  "pending",
+      message: "Planilha Ainda Não Disponível",
+      total_linhas      : 0,
+      linhas_processadas: 0,
+      total_linhas_erro : 0
+    });
+  }
+  
+ 
+  return res.status(200).json({
+    status: "ready",
+    message: "Planilha Disponivel",
+      total_linhas      : planilhas[0].total_linhas,
+      linhas_processadas: planilhas[0].linhas_processadas,
+      total_linhas_erro : planilhas[0].total_linhas_erro
+  });
+});
+
 
 module.exports = router;

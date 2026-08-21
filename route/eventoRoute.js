@@ -60,7 +60,7 @@ router.post("/", async function (req, res) {
       res.status(200).json(registro);
       // Enviar email de liberação do evento
       // Envia o email sem bloquear a resposta
-    funcoes.preparaEmailLiberacao(registro.id_empresa, registro.id)
+      funcoes.preparaEmailLiberacao(registro.id_empresa, registro.id)
       .catch(err => console.error("Erro ao enviar email:", err));
     }
   } catch (err) {

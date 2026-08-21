@@ -18,6 +18,7 @@ app.use(
 );
 
 app.use(express.json());
+
 /*
 const allowCors = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // colocar os dominios permitidos | ex: 127.0.0.1:3000
