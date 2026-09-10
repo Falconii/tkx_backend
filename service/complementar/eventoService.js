@@ -30,10 +30,21 @@ exports.consultaEvento01 = async function (evento) {
 
 
 
-exports.resumoCategoria = async function (evento) {
+exports.resumoCategoria = async function (id_empresa,id_evento) {
   try {
-    return eventoData.resumoCategoria(evento);
+    return eventoData.resumoCategoria(id_empresa,id_evento);
   } catch (err) {
     throw new erroDB.UserException(err.erro, err);
   }
 };
+
+
+exports.resumoOperador = async function (id_empresa,id_evento) {
+  try {
+    return eventoData.resumoOperador(id_empresa,id_evento);
+  } catch (err) {
+    throw new erroDB.UserException(err.erro, err);
+  }
+};
+
+

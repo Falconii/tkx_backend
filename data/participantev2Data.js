@@ -26,7 +26,7 @@ exports.getParticipantev2 = function(id_empresa, id_evento, id) {
 			   participante.id_empresa as  id_empresa  
 			,  participante.id_evento as  id_evento  
 			,  participante.id as  id  
-      ,  participante.id_entrega as  id_entrega
+            ,  participante.id_entrega as  id_entrega
 			,  participante.inscricao as  inscricao  
 			,  participante.nro_peito as  nro_peito  
 			,  participante.id_categoria as  id_categoria  
@@ -39,9 +39,9 @@ exports.getParticipantev2 = function(id_empresa, id_evento, id) {
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
 			,  categoria.descricao as  categoria_descricao    
-      ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
-      ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
-      , coalesce(entrega.tam_camisa,'') as entrega_tam_camisa
+            ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
+            ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
+            , coalesce(entrega.tam_camisa,'') as entrega_tam_camisa
  			FROM participantesv2 participante 	  
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   

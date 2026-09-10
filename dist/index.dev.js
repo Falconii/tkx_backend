@@ -1,24 +1,25 @@
-const cors = require("cors");
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const app = express();
+"use strict";
 
+var cors = require("cors");
+
+var express = require("express");
+
+var fs = require("fs");
+
+var path = require("path");
+
+var app = express();
 /*
   Atualizando Versão 
   */
 
-const PORT = 3000;
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
-
+var PORT = 3000;
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
-
 /*
 const allowCors = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // colocar os dominios permitidos | ex: 127.0.0.1:3000
@@ -47,7 +48,7 @@ app.use("/api/empresa", require("./route/empresaRoute"));
 app.use("/api/usuario", require("./route/usuarioRoute"));
 app.use("/api/grupousuario", require("./route/grupousuarioRoute"));
 app.use("/api/evento", require("./route/eventoRoute"));
-app.use("/api/evento_complementar",require("./route/complementar/eventoRoute.js"));
+app.use("/api/evento_complementar", require("./route/complementar/eventoRoute.js"));
 app.use("/api/participante", require("./route/participanteRoute"));
 app.use("/api/participantev2", require("./route/participantev2Route"));
 app.use("/api/inscrito", require("./route/inscritoRoute"));
@@ -63,27 +64,12 @@ app.use("/api/detplanilha", require("./route/detPlanilhaRoute.js"));
 app.use("/api/uploadfoto", require("./route/fotoRoute.js"));
 app.use("/api/categoriacontador", require("./route/categoriacontadorRoute.js"));
 app.use("/api/usuario_evento", require("./route/usuario_eventoRoute.js"));
-app.use(
-  "/api/categoria_complementar",
-  require("./route/complementar/categoriaRoute"),
-);
+app.use("/api/categoria_complementar", require("./route/complementar/categoriaRoute"));
 app.use("/api/trocaParticipante", require("./route/trocaparticipanteRoute.js"));
-
 app.use("/api/parametro", require("./route/parametroRoute.js"));
-app.use(
-  "/api/parametro/complementar",
-  require("./route/complementar/parametroRoute.js"),
-);
-app.use(
-  "/api/usuario/complementar",
-  require("./route/complementar/usuarioRoute.js"),
-);
-
-app.use(
-  "/api/public",
-  require("./route/publicRoute.js"),
-);
-
-app.listen(PORT, () => {
-  console.log(`Servidor No Ar. Porta ${PORT}`);
+app.use("/api/parametro/complementar", require("./route/complementar/parametroRoute.js"));
+app.use("/api/usuario/complementar", require("./route/complementar/usuarioRoute.js"));
+app.use("/api/public", require("./route/publicRoute.js"));
+app.listen(PORT, function () {
+  console.log("Servidor No Ar. Porta ".concat(PORT));
 });

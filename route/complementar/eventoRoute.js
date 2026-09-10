@@ -156,7 +156,7 @@ router.post("/resumocategoria", async function (req, res) {
     const evento = await eventoService.getEvento(id_empresa, id_evento);
     if (!evento) return response.notFound(res, "Evento", { id_evento });
 
-    const lsRegistros = await eventoSrv.resumoCategoria(evento);
+    const lsRegistros = await eventoSrv.resumoCategoria(id_empresa,id_evento);
 
     if (lsRegistros.length == 0) {
       res.status(409).json({ message: "Evento Nenhum Registro Encontrado!" });
@@ -177,6 +177,56 @@ router.post("/resumocategoria", async function (req, res) {
     }
   }
 });
+
+
+router.post("/resumooperador", async function (req, res) {
+  try {
+    const dados = {
+      id_empresa: req.id_empresa,
+      id_usuario: req.id_usuario,
+      id_evento: req.body.id_evento,
+    };
+
+    const camposObrigatorios = ["id_empresa", "id_usuario", "id_evento"];
+    const camposAusentes = camposObrigatorios.filter((campo) => !dados[campo]);
+
+    if (camposAusentes.length > 0) {
+      return response.validationError(res, camposAusentes);
+    }
+
+    const { id_empresa, id_usuario, id_evento} = dados;
+
+    const empresa = await empresaSrv.getEmpresa(id_empresa);
+    if (!empresa) return response.notFound(res, "Empresa", { id_empresa });
+
+    const usuario = await usuarioSrv.getUsuario(id_empresa, id_usuario);
+    if (!usuario) return response.notFound(res, "Usuario", { id_usuario });
+
+    const evento = await eventoService.getEvento(id_empresa, id_evento);
+    if (!evento) return response.notFound(res, "Evento", { id_evento });
+
+    const lsRegistros = await eventoSrv.resumoOperador(id_empresa,id_evento);
+
+    if (lsRegistros.length == 0) {
+      res.status(409).json({ message: "Evento Nenhum Registro Encontrado!" });
+    } else {
+      res.status(200).json(lsRegistros);
+    }
+
+  } catch (err) {
+    console.log(err);
+    if (err.name == "MyExceptionDB") {
+      res.status(409).json(err);
+    } else {
+      res.status(500).json({
+        erro: "BACK-END",
+        tabela: "Importacao",
+        message: err.message,
+      });
+    }
+  }
+});
+
 
 
 module.exports = router;

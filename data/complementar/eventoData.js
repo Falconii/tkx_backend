@@ -12,7 +12,6 @@ exports.updateStatusEvento = function (evento) {
 };
 
 
-
 exports.consultaEvento01 = function (evento) {
   strSql = `select                  
 					evento.descricao as  evento_descricao
@@ -34,14 +33,26 @@ exports.consultaEvento01 = function (evento) {
   return db.manyOrNone(strSql);
 };
 
-exports.resumoCategoria = function (evento) {
-  strSql = `select  categoria.descricao as  categoria_descricao,count(*) as total
+exports.resumoCategoria = function (id_empresa,id_evento) {
+  strSql = `select  categoria.descricao as  categoria_descricao,count(*)::int4 as total
 				FROM participantesv2 participante
 				inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria
-				left  join entregasv2 entre on entre.id_empresa = participante.id_empresa and entre.id_evento = participante.id_evento and entre.id = participante.id_entrega
-			    where participante.id_empresa = ${evento.id_empresa} and participante.id_evento = ${evento.id}	
+				inner join entregasv2 entre on entre.id_empresa = participante.id_empresa and entre.id_evento = participante.id_evento and entre.id = participante.id_entrega
+			    where participante.id_empresa = ${id_empresa} and participante.id_evento = ${id_evento}	
 				group by  categoria.descricao
 				order by categoria.descricao; `		
+  return db.manyOrNone(strSql);
+};
+
+
+exports.resumoOperador = function (id_empresa,id_evento) {
+  strSql = `
+			select u.razao,count(*)::int4 as total
+			from  entregasv2 e 
+			inner join participantesv2 p on p.id_empresa = 1 and p.id_entrega = e.id 
+			inner join usuarios u on u.id_empresa = e.id_empresa  and u.id = e.user_insert
+			where e.id_empresa = ${id_empresa} and e.id_evento = ${id_evento}
+			group by u.razao `;
   return db.manyOrNone(strSql);
 };
