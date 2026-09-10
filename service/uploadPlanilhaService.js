@@ -336,9 +336,8 @@ function _inscrito(campos) {
     }
     if (
       inscritoModel.cnpj_cpf.trim() !== "" &&
-      ( inscritoModel.cnpj_cpf == null || !shared.isValidCnpjCpf(inscritoModel.cnpj_cpf))
-    ) {
-      inscritoModel.cnpj_cpf = "";
+      !shared.isValidCnpjCpf(inscritoModel.cnpj_cpf.trim()))
+    {
       inscritoModel.mensagem_erro += " -CNPJ/CPF Inválido";
     }
     if (
