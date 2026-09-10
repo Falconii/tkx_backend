@@ -335,9 +335,8 @@ function _inscrito(campos) {
       inscritoModel.mensagem_erro += " -Data Nascimento Inválida";
     }
     if (
-      inscritoModel.cnpj_cpf == null ||
-      inscritoModel.cnpj_cpf.trim() === "" ||
-      !shared.isValidCnpjCpf(inscritoModel.cnpj_cpf)
+      inscritoModel.cnpj_cpf.trim() !== "" &&
+      ( inscritoModel.cnpj_cpf == null || !shared.isValidCnpjCpf(inscritoModel.cnpj_cpf))
     ) {
       inscritoModel.cnpj_cpf = "";
       inscritoModel.mensagem_erro += " -CNPJ/CPF Inválido";
