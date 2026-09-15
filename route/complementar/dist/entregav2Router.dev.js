@@ -24,7 +24,8 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.prev = 0;
+          console.log("entrei na insertentregaparticipante");
+          _context.prev = 1;
           novaEntrega = null;
           parametros = {
             id_empresa: req.id_empresa,
@@ -33,14 +34,14 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
             entregav2: req.body.entregav2
           };
           console.log("parametros", parametros);
-          _context.next = 6;
+          _context.next = 7;
           return regeneratorRuntime.awrap(participanteV2Srv.getParticipantev2(parametros.id_empresa, parametros.entregav2.id_evento, parametros.id_participante));
 
-        case 6:
+        case 7:
           participante = _context.sent;
 
           if (!(participante == null)) {
-            _context.next = 10;
+            _context.next = 11;
             break;
           }
 
@@ -49,53 +50,55 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
           });
           return _context.abrupt("return");
 
-        case 10:
-          _context.next = 12;
+        case 11:
+          _context.next = 13;
           return regeneratorRuntime.awrap(entregav2Srv.getEntregav2(parametros.id_empresa, parametros.entregav2.id_evento, parametros.entregav2.id));
 
-        case 12:
+        case 13:
           entrega = _context.sent;
 
           if (!(entrega == null)) {
-            _context.next = 21;
+            _context.next = 22;
             break;
           }
 
-          _context.next = 16;
+          _context.next = 17;
           return regeneratorRuntime.awrap(entregav2Srv.insertEntregav2(parametros.entregav2));
 
-        case 16:
+        case 17:
           novaEntrega = _context.sent;
           participante.id_entrega = novaEntrega.id;
           registro = participanteV2Srv.updateParticipantev2(participante);
-          _context.next = 26;
+          _context.next = 27;
           break;
 
-        case 21:
-          _context.next = 23;
+        case 22:
+          _context.next = 24;
           return regeneratorRuntime.awrap(entregav2Srv.updateEntregav2(parametros.entregav2));
 
-        case 23:
+        case 24:
           novaEntrega = _context.sent;
           participante.id_entrega = novaEntrega.id;
           _registro = participanteV2Srv.updateParticipantev2(participante);
 
-        case 26:
-          _context.next = 28;
+        case 27:
+          _context.next = 29;
           return regeneratorRuntime.awrap(participanteV2Srv.getParticipantev2(parametros.id_empresa, parametros.entregav2.id_evento, parametros.id_participante));
 
-        case 28:
+        case 29:
           novoParticipante = _context.sent;
+          console.log("Entregav2", novaEntrega);
+          console.log("Participantev2", Participantev2);
           res.status(200).json({
             Entregav2: novaEntrega,
             Participantev2: novoParticipante
           });
-          _context.next = 35;
+          _context.next = 38;
           break;
 
-        case 32:
-          _context.prev = 32;
-          _context.t0 = _context["catch"](0);
+        case 35:
+          _context.prev = 35;
+          _context.t0 = _context["catch"](1);
 
           if (_context.t0.name == 'MyExceptionDB') {
             res.status(409).json(_context.t0);
@@ -107,12 +110,12 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
             });
           }
 
-        case 35:
+        case 38:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 32]]);
+  }, null, null, [[1, 35]]);
 });
 router["delete"]("/deleteentregaparticipante", function _callee2(req, res) {
   var novaEntrega, parametros, participante, novoParticipante;

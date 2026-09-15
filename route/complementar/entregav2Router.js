@@ -11,6 +11,8 @@ router.use(autenticarToken);
 
 /* ROTA INSERT entregav2 com participante */
 router.post("/insertentregaparticipante",async function(req, res) {
+
+console.log("entrei na insertentregaparticipante");
 try 
     {
         
@@ -68,6 +70,10 @@ try
                parametros.entregav2.id_evento,
               parametros.id_participante,
             );
+
+            console.log("Entregav2",novaEntrega);
+
+            console.log("Participantev2",Participantev2);
 
             res.status(200).json({Entregav2: novaEntrega, Participantev2: novoParticipante});
             
