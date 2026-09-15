@@ -45,8 +45,9 @@ exports.getParticipantev2 = function(id_empresa, id_evento, id) {
  			FROM participantesv2 participante 	  
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento
 				 inner join categorias categoria on categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria   
-         left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
+                 left join entregasv2 entrega on entrega.id_empresa = participante.id_empresa and entrega.id_evento = participante.id_evento and entrega.id = participante.id_entrega
 			 where participante.id_empresa = ${id_empresa} and  participante.id_evento = ${id_evento} and  participante.id = ${id}  `;
+             console.log("strSql:",strSql);
     return db.oneOrNone(strSql);
 };
 /* CRUD GET ALL*/
