@@ -73,7 +73,7 @@ try
 
             console.log("Entregav2",novaEntrega);
 
-            console.log("Participantev2",Participantev2);
+            console.log("Participantev2",novoParticipante);
 
             res.status(200).json({Entregav2: novaEntrega, Participantev2: novoParticipante});
             
