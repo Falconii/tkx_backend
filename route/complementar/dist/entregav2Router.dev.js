@@ -58,7 +58,7 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
           entrega = _context.sent;
 
           if (!(entrega == null)) {
-            _context.next = 22;
+            _context.next = 24;
             break;
           }
 
@@ -68,36 +68,44 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
         case 17:
           novaEntrega = _context.sent;
           participante.id_entrega = novaEntrega.id;
-          registro = participanteV2Srv.updateParticipantev2(participante);
-          _context.next = 27;
+          _context.next = 21;
+          return regeneratorRuntime.awrap(participanteV2Srv.updateParticipantev2(participante));
+
+        case 21:
+          registro = _context.sent;
+          _context.next = 31;
           break;
 
-        case 22:
-          _context.next = 24;
+        case 24:
+          _context.next = 26;
           return regeneratorRuntime.awrap(entregav2Srv.updateEntregav2(parametros.entregav2));
 
-        case 24:
+        case 26:
           novaEntrega = _context.sent;
           participante.id_entrega = novaEntrega.id;
-          _registro = participanteV2Srv.updateParticipantev2(participante);
+          _context.next = 30;
+          return regeneratorRuntime.awrap(participanteV2Srv.updateParticipantev2(participante));
 
-        case 27:
-          _context.next = 29;
+        case 30:
+          _registro = _context.sent;
+
+        case 31:
+          _context.next = 33;
           return regeneratorRuntime.awrap(participanteV2Srv.getParticipantev2(parametros.id_empresa, parametros.entregav2.id_evento, parametros.id_participante));
 
-        case 29:
+        case 33:
           novoParticipante = _context.sent;
-          console.log("Entregav2", novaEntrega);
-          console.log("Participantev2", novoParticipante);
+          console.log("novaEntrega", novaEntrega);
+          console.log("novoParticipante", novoParticipante);
           res.status(200).json({
             Entregav2: novaEntrega,
             Participantev2: novoParticipante
           });
-          _context.next = 38;
+          _context.next = 42;
           break;
 
-        case 35:
-          _context.prev = 35;
+        case 39:
+          _context.prev = 39;
           _context.t0 = _context["catch"](1);
 
           if (_context.t0.name == 'MyExceptionDB') {
@@ -110,12 +118,12 @@ router.post("/insertentregaparticipante", function _callee(req, res) {
             });
           }
 
-        case 38:
+        case 42:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 35]]);
+  }, null, null, [[1, 39]]);
 });
 router["delete"]("/deleteentregaparticipante", function _callee2(req, res) {
   var novaEntrega, parametros, participante, novoParticipante;

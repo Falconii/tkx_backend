@@ -53,7 +53,7 @@ try
 
                participante.id_entrega = novaEntrega.id;
 
-               const  registro =  participanteV2Srv.updateParticipantev2(participante);          
+               const  registro =  await participanteV2Srv.updateParticipantev2(participante);          
             }
             else
             {
@@ -61,7 +61,7 @@ try
                 
                  participante.id_entrega = novaEntrega.id;
 
-                 const  registro =  participanteV2Srv.updateParticipantev2(participante);    
+                 const  registro = await participanteV2Srv.updateParticipantev2(participante);    
 
             }
 
@@ -71,9 +71,9 @@ try
               parametros.id_participante,
             );
 
-            console.log("Entregav2",novaEntrega);
+            console.log("novaEntrega",novaEntrega);
 
-            console.log("Participantev2",novoParticipante);
+            console.log("novoParticipante",novoParticipante);
 
             res.status(200).json({Entregav2: novaEntrega, Participantev2: novoParticipante});
             
