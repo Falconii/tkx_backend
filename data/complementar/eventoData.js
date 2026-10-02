@@ -56,3 +56,17 @@ exports.resumoOperador = function (id_empresa,id_evento) {
 			group by u.razao `;
   return db.manyOrNone(strSql);
 };
+
+exports.resumoKit = function (id_empresa,id_evento) {
+  strSql = `
+			select e.tam_camisa , count(*) ::int4 as total
+				from entregasv2 e
+				inner join participantesv2 p
+				on p.id_empresa = e.id_empresa
+				and p.id_evento = e.id_evento
+				and p.id_entrega = e.id
+				where e.id_empresa = ${id_empresa} and e.id_evento = ${id_evento}
+				group by e.tam_camisa 
+				order by e.tam_camisa `;
+  return db.manyOrNone(strSql);
+};

@@ -48,3 +48,12 @@ exports.resumoOperador = async function (id_empresa,id_evento) {
 };
 
 
+exports.resumoKit = async function (id_empresa,id_evento) {
+  try {
+    return eventoData.resumoKit(id_empresa,id_evento);
+  } catch (err) {
+    throw new erroDB.UserException(err.erro, err);
+  }
+};
+
+
