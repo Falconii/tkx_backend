@@ -10,7 +10,7 @@ if (process.env.DATABASE_URL) {
   dbConfig = process.env.DATABASE_URL;
   console.log("Conexão Configurada Para Nuvem");
 } else {
-  var conexao = JSON.parse(fs.readFileSync("./conexoes_nuvem.json", "utf8"));
+  var conexao = JSON.parse(fs.readFileSync("./conexoes_local.json", "utf8"));
   dbConfig = conexao.database_url;
   console.log("Conexão configurada Para Nuveml!");
 }

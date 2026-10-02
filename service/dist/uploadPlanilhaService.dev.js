@@ -503,7 +503,7 @@ function _inscrito(campos) {
     inscritoModel = {
       id_empresa: id_empresa,
       id: 0,
-      cnpj_cpf: shared.limparCnpj_Cpf(campos[4]),
+      cnpj_cpf: shared.limparCnpj_Cpf(campos[4].trim()),
       nome: shared.excluirCaracteres(campos[1]).toUpperCase(),
       estrangeiro: "N",
       sexo: campos[2][0].toUpperCase(),

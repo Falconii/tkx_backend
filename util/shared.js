@@ -308,44 +308,56 @@ exports.isValidCnpjCpf = function(doc) {
 }
 
 function validarCPF(cpf) {
+  cpf = cpf.replace(/\D/g, "");
+
+  if (cpf.length !== 11) return false;
   if (/^(\d)\1+$/.test(cpf)) return false;
 
+  // Primeiro dígito
   let soma = 0;
   for (let i = 0; i < 9; i++) {
     soma += parseInt(cpf[i]) * (10 - i);
   }
+  let resto = soma % 11;
+  let digito1 = resto < 2 ? 0 : 11 - resto;
 
-  let digito1 = (soma * 10) % 11;
-  digito1 = digito1 === 10 ? 0 : digito1;
   if (digito1 !== parseInt(cpf[9])) return false;
 
+  // Segundo dígito
   soma = 0;
   for (let i = 0; i < 10; i++) {
     soma += parseInt(cpf[i]) * (11 - i);
   }
-
-  let digito2 = (soma * 10) % 11;
-  digito2 = digito2 === 10 ? 0 : digito2;
+  resto = soma % 11;
+  let digito2 = resto < 2 ? 0 : 11 - resto;
   return digito2 === parseInt(cpf[10]);
 }
 
 function validarCNPJ(cnpj) {
+  cnpj = cnpj.replace(/\D/g, "");
+
+  if (cnpj.length !== 14) return false;
   if (/^(\d)\1+$/.test(cnpj)) return false;
 
-  const pesos1 = [5,4,3,2,9,8,7,6,5,4,3,2];
-  const pesos2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+  const pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const pesos2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
-  function calcularDigito(base, pesos) {
-    let soma = 0;
-    for (let i = 0; i < pesos.length; i++) {
-      soma += parseInt(base[i]) * pesos[i];
-    }
-    const resto = soma % 11;
-    return resto < 2 ? 0 : 11 - resto;
+  // Primeiro dígito
+  let soma = 0;
+  for (let i = 0; i < 12; i++) {
+    soma += parseInt(cnpj[i]) * pesos1[i];
   }
+  let resto = soma % 11;
+  let digito1 = resto < 2 ? 0 : 11 - resto;
+  if (digito1 !== parseInt(cnpj[12])) return false;
 
-  const digito1 = calcularDigito(cnpj, pesos1);
-  const digito2 = calcularDigito(cnpj, pesos2);
+  // Segundo dígito
+  soma = 0;
+  for (let i = 0; i < 13; i++) {
+    soma += parseInt(cnpj[i]) * pesos2[i];
+  }
+  resto = soma % 11;
+  let digito2 = resto < 2 ? 0 : 11 - resto;
 
-  return digito1 === parseInt(cnpj[12]) && digito2 === parseInt(cnpj[13]);
+  return digito2 === parseInt(cnpj[13]);
 }

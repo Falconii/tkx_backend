@@ -25,6 +25,7 @@ router.post(
       };
 
       console.log("parametros", parametros);
+
       const file = req.file;
 
       const existeEvento = await eventoSrv.getEvento(
