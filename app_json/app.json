@@ -1073,224 +1073,6 @@
           "tablespace": "Producao"
         },
         {
-          "name": "inscritos",
-          "fields": [
-            {
-              "name": "id_empresa",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id",
-              "type": "serial",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "cnpj_cpf",
-              "type": "varchar",
-              "length": 14,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "nome",
-              "type": "varchar",
-              "length": 60,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": [
-                { "key": "check", "value": "true" },
-                { "key": "require", "value": "true" },
-                { "key": "maxLength", "value": 60 }
-              ]
-            },
-            {
-              "name": "estrangeiro",
-              "type": "char",
-              "length": 1,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "N",
-              "validacao": [
-                { "key": "check", "value": "true" },
-                { "key": "require", "value": "false" },
-                { "key": "maxLength", "value": 1 }
-              ]
-            },
-            {
-              "name": "sexo",
-              "type": "char",
-              "length": 1,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "M",
-              "validacao": [
-                { "key": "check", "value": "true" },
-                { "key": "require", "value": "false" },
-                { "key": "maxLength", "value": 1 }
-              ]
-            },
-            {
-              "name": "data_nasc",
-              "type": "date",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": [
-                { "key": "check", "value": "true" },
-                { "key": "require", "value": "true" }
-              ]
-            },
-            {
-              "name": "origem",
-              "type": "char",
-              "length": 1,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": [
-                { "key": "check", "value": "true" },
-                { "key": "require", "value": "true" }
-              ]
-            },
-            {
-              "name": "user_insert",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "user_update",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            }
-          ],
-          "inner_join": [],
-          "left_join": [],
-          "primaryKey": [
-            {
-              "key": "id_empresa"
-            },
-            {
-              "key": "id"
-            }
-          ],
-          "variables": {
-            "getone": "inscrito",
-            "getall": "inscritos",
-            "alias": "inscrito"
-          },
-          "where": {
-            "parametro_01": [
-              {
-                "name": "id_empresa",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "nome",
-                "filtro": "S",
-                "atividador": " !== ''",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "cnpj_cpf",
-                "filtro": "S",
-                "atividador": " !== ''",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "pagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "tamPagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 50
-              },
-              {
-                "name": "contador",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": "N"
-              },
-              {
-                "name": "orderby",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "sharp",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "boolean",
-                "padrao": "false"
-              }
-            ]
-          },
-          "orderby": [
-            {
-              "label": "",
-              "comparativo": " != '' ",
-              "key": "inscrito.id_empresa,inscrito.id"
-            },
-            {
-              "label": "00001",
-              "comparativo": " != 0 ",
-              "key": "inscrito.id_empresa,inscrito.id"
-            },
-            {
-              "label": "00002",
-              "comparativo": " != 0 ",
-              "key": "inscrito.id_empresa,inscrito.cnpj_cpf"
-            },
-            {
-              "label": "00003",
-              "comparativo": " != '' ",
-              "key": "inscrito.id_empresa,inscrito.nome"
-            }
-          ],
-          "tablespace": "Producao"
-        },
-        {
           "name": "categorias",
           "fields": [
             {
@@ -1597,188 +1379,6 @@
               "label": "000000",
               "comparativo": " != '' ",
               "key": "catcon.id_empresa,catcon.id_evento,catcon.id_categoria"
-            }
-          ],
-          "tablespace": "Producao"
-        },
-        {
-          "name": "entregas",
-          "fields": [
-            {
-              "name": "id_empresa",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_evento",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_inscrito",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "rg_retirada",
-              "type": "varchar",
-              "length": 11,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "nome_retirada",
-              "type": "varchar",
-              "length": 60,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "tam_camisa",
-              "type": "varchar",
-              "length": 10,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "data_retirada",
-              "type": "timestamp",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "user_insert",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "user_update",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            }
-          ],
-          "inner_join": [],
-          "left_join": [],
-          "primaryKey": [
-            {
-              "key": "id_empresa"
-            },
-            {
-              "key": "id_evento"
-            },
-            {
-              "key": "id_inscrito"
-            }
-          ],
-          "variables": {
-            "getone": "entrega",
-            "getall": "entregas",
-            "alias": "entrega"
-          },
-          "where": {
-            "parametro_01": [
-              {
-                "name": "id_empresa",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id_evento",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id_inscrito",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "pagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "tamPagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 50
-              },
-              {
-                "name": "contador",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": "N"
-              },
-              {
-                "name": "orderby",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "sharp",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "boolean",
-                "padrao": "false"
-              }
-            ]
-          },
-          "orderby": [
-            {
-              "label": "",
-              "comparativo": " != '' ",
-              "key": "entrega.id_empresa,entrega.id_evento"
-            },
-            {
-              "label": "000000",
-              "comparativo": " != '' ",
-              "key": "entrega.id_empresa,entrega.id_evento"
-            },
-            {
-              "label": "000001",
-              "comparativo": " != '' ",
-              "key": "entrega.id_empresa,entrega.id_evento,kit.id_inscrito"
             }
           ],
           "tablespace": "Producao"
@@ -2362,344 +1962,6 @@
           "tablespace": "Producao"
         },
 
-        {
-          "name": "participantes",
-          "fields": [
-            {
-              "name": "id_empresa",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_evento",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_inscrito",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "inscricao",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "nro_peito",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_categoria",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "id_old_inscrito",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "user_insert",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            },
-            {
-              "name": "user_update",
-              "type": "int4",
-              "length": 0,
-              "precision": 0,
-              "nulo": "N",
-              "padrao": "",
-              "validacao": []
-            }
-          ],
-          "inner_join": [
-            {
-              "name": "eventos",
-              "inner_alias": "evento",
-              "inner_on": "evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento",
-              "inner_fields": [
-                {
-                  "name": "descricao",
-                  "as_col": "evento_descricao",
-                  "tipo": "char"
-                }
-              ]
-            },
-            {
-              "name": "inscritos",
-              "inner_alias": "inscrito",
-              "inner_on": "inscrito.id_empresa = evento.id_empresa and inscrito.id = participante.id_inscrito",
-              "inner_fields": [
-                {
-                  "name": "nome",
-                  "as_col": "inscrito_nome",
-                  "tipo": "char"
-                },
-                {
-                  "name": "cnpj_cpf",
-                  "as_col": "inscrito_cpf",
-                  "tipo": "char"
-                }
-              ]
-            },
-            {
-              "name": "categorias",
-              "inner_alias": "categoria",
-              "inner_on": "categoria.id_empresa = participante.id_empresa and categoria.id = participante.id_categoria",
-              "inner_fields": [
-                {
-                  "name": "descricao",
-                  "as_col": "categoria_descricao",
-                  "tipo": "char"
-                }
-              ]
-            }
-          ],
-          "left_join": [
-            {
-              "name": "links",
-              "left_alias": "link",
-              "left_on": "link.id_empresa = participante.id_empresa and link.id_evento = participante.id_evento and link.id_inscrito = participante.id_old_inscrito",
-              "left_fields": [
-                {
-                  "name": "token",
-                  "as_col": "link_token",
-                  "tipo": "char"
-                },
-                {
-                  "name": "link",
-                  "as_col": "link_link",
-                  "tipo": "char"
-                }
-              ]
-            },
-            {
-              "name": "inscritos",
-              "left_alias": "old",
-              "left_on": "old.id_empresa = participante.id_empresa  and old.id  = participante.id_old_inscrito",
-              "left_fields": [
-                {
-                  "name": "nome",
-                  "as_col": "old_nome",
-                  "tipo": "char"
-                },
-                {
-                  "name": "cnpj_cpf",
-                  "as_col": "old_cpf",
-                  "tipo": "char"
-                }
-              ]
-            }
-          ],
-          "primaryKey": [
-            {
-              "key": "id_empresa"
-            },
-            {
-              "key": "id_evento"
-            },
-            {
-              "key": "id_inscrito"
-            },
-            {
-              "key": "inscricao"
-            }
-          ],
-          "variables": {
-            "getone": "participante",
-            "getall": "participantes",
-            "alias": "participante"
-          },
-          "where": {
-            "parametro_01": [
-              {
-                "name": "id_empresa",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id_evento",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id_inscrito",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "inscricao",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "nro_peito",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "id_categoria",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "evento_descricao",
-                "filtro": "S",
-                "atividador": " !== '' ",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "inscrito_nome",
-                "filtro": "S",
-                "atividador": " !== '' ",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "inscrito_cpf",
-                "filtro": "S",
-                "atividador": " !== '' ",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "categoria_descricao",
-                "filtro": "S",
-                "atividador": " !== '' ",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "id_old_inscrito",
-                "filtro": "S",
-                "atividador": " !== 0 ",
-                "tipo": "number",
-                "padrao": ""
-              },
-              {
-                "name": "pagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 0
-              },
-              {
-                "name": "tamPagina",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "number",
-                "padrao": 50
-              },
-              {
-                "name": "contador",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": "N"
-              },
-              {
-                "name": "orderby",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "string",
-                "padrao": ""
-              },
-              {
-                "name": "sharp",
-                "filtro": "N",
-                "atividador": "",
-                "tipo": "boolean",
-                "padrao": "false"
-              }
-            ]
-          },
-          "orderby": [
-            {
-              "label": "",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.id_inscrito"
-            },
-            {
-              "label": "000000",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.id_inscrito"
-            },
-            {
-              "label": "000001",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.nro_peito"
-            },
-            {
-              "label": "000002",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.id_inscrito,participante.id_categoria"
-            },
-            {
-              "label": "000002",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,particpante.inscrito_nome"
-            },
-            {
-              "label": "000003",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.inscriot_cpf"
-            },
-            {
-              "label": "000003",
-              "comparativo": " != '' ",
-              "key": "participante.id_empresa,participante.id_evento,participante.categoria_participante"
-            }
-          ],
-          "tablespace": "Producao"
-        },
         {
           "name": "participantesv2",
           "fields": [
@@ -3959,7 +3221,252 @@
             }
           ],
           "tablespace": "Producao"
-        }
+        },
+                {
+                    "name": "tarefas",
+                    "fields": [
+                        {
+                            "name": "id_empresa",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "id",
+                            "type": "serial",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "id_usuario",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "id_file",
+                            "type": "varchar",
+                            "length": 255,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "folder_id",
+                            "type": "varchar",
+                            "length": 255,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "name_file",
+                            "type": "varchar",
+                            "length": 255,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "sigla",
+                            "type": "varchar",
+                            "length": 20,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "data_solicitacao",
+                            "type": "varchar",
+                            "length": 20,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "data_conclusao",
+                            "type": "varchar",
+                            "length": 20,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "parametros",
+                            "type": "text",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "status",
+                            "type": "char",
+                            "length": 1,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "0",
+                            "validacao": []
+                        },
+                        {
+                            "name": "mensagem",
+                            "type": "text",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "user_insert",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        },
+                        {
+                            "name": "user_update",
+                            "type": "int4",
+                            "length": 0,
+                            "precision": 0,
+                            "nulo": "N",
+                            "padrao": "",
+                            "validacao": []
+                        }
+                    ],
+                    "inner_join": [],
+                    "left_join": [],
+                    "primaryKey": [
+                        {
+                            "key": "id_empresa"
+                        },
+                        {
+                            "key": "name_file"
+                        }
+                    ],
+                    "variables": {
+                        "getone": "tarefa",
+                        "getall": "tarefas",
+                        "alias": "tarefa"
+                    },
+                    "where": {
+                        "parametro_01": [
+                            {
+                                "name": "id_empresa",
+                                "filtro": "S",
+                                "atividador": " !== 0 ",
+                                "tipo": "number",
+                                "padrao": 0
+                            },
+                            {
+                                "name": "id",
+                                "filtro": "S",
+                                "atividador": " !== 0 ",
+                                "tipo": "number",
+                                "padrao": 0
+                            },
+                            {
+                                "name": "id_usuario",
+                                "filtro": "S",
+                                "atividador": " !== 0 ",
+                                "tipo": "number",
+                                "padrao": 0
+                            },
+                            {
+                                "name": "sigla",
+                                "filtro": "S",
+                                "atividador": " !== '' ",
+                                "tipo": "string",
+                                "padrao": ""
+                            },
+                            {
+                                "name": "name_file",
+                                "filtro": "S",
+                                "atividador": " !== '' ",
+                                "tipo": "string",
+                                "padrao": ""
+                            },
+                            {
+                                "name": "status",
+                                "filtro": "S",
+                                "atividador": " !== '' ",
+                                "tipo": "string",
+                                "padrao": ""
+                            },
+                            {
+                                "name": "pagina",
+                                "filtro": "N",
+                                "atividador": "",
+                                "tipo": "number",
+                                "padrao": 0
+                            },
+                            {
+                                "name": "tamPagina",
+                                "filtro": "N",
+                                "atividador": "",
+                                "tipo": "number",
+                                "padrao": 50
+                            },
+                            {
+                                "name": "contador",
+                                "filtro": "N",
+                                "atividador": "",
+                                "tipo": "string",
+                                "padrao": "N"
+                            },
+                            {
+                                "name": "orderby",
+                                "filtro": "N",
+                                "atividador": "",
+                                "tipo": "string",
+                                "padrao": ""
+                            },
+                            {
+                                "name": "sharp",
+                                "filtro": "N",
+                                "atividador": "",
+                                "tipo": "boolean",
+                                "padrao": "false"
+                            }
+                        ]
+                    },
+                    "orderby": [
+                        {
+                            "label": "",
+                            "comparativo": " != '' ",
+                            "key": "tarefa.id_empresa,tarefa.name_file"
+                        },
+                        {
+                            "label": "000001",
+                            "comparativo": " != '' ",
+                            "key": "tarefa.id_empresa,tarefa.name_file"
+                        },
+                        {
+                            "label": "000002",
+                            "comparativo": " != '' ",
+                            "key": "tarefa.id_empresa,tarefa.id_usuario,tarefa.name_file"
+                        }
+                    ],
+                    "tablespace": "Producao"
+                }
       ],
       "parametros": []
     },

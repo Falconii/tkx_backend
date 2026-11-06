@@ -65,23 +65,23 @@ if (params) {
 	if(params.orderby == '000003') orderby = 'det.id_empresa,det.id_evento,det.inscricao';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `det.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id_evento  !== 0 ){
+	if (params.id_evento != null && params.id_evento !== 0){
 		if (where != "") where += " and "; 
 		where += `det.id_evento = ${params.id_evento} `;
 	}
-	if(params.id_cabec  !== 0 ){
+	if (params.id_cabec != null && params.id_cabec !== 0){
 		if (where != "") where += " and "; 
 		where += `det.id_cabec = ${params.id_cabec} `;
 	}
-	if(params.nro_peito  !== -1 ){
+	if (params.nro_peito != null && params.nro_peito !== -1){
 		if (where != "") where += " and "; 
 		where += `det.nro_peito = ${params.nro_peito} `;
 	}
-	if(params.cnpj_cpf.trim()  !== '' ){
+	if (params.cnpj_cpf != null && params.cnpj_cpf.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `det.cnpj_cpf = '${params.cnpj_cpf}' `;
@@ -90,11 +90,11 @@ if (params) {
 			where += `det.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
 		}
 	}
-	if(params.inscricao  !== -1 ){
+	if (params.inscricao != null && params.inscricao !== -1){
 		if (where != "") where += " and "; 
 		where += `det.inscricao = ${params.inscricao} `;
 	}
-	if(params.nome.trim()  !== '' ){
+	if (params.nome != null && params.nome.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `unaccent(det.nome) = '${shared.semAcento(params.nome.trim())}' `
@@ -103,12 +103,12 @@ if (params) {
 			where += `unaccent(det.nome) like '%${shared.semAcento(params.nome.trim())}%' `;
 		}
 	}
-	if(params.status  !== -1 ){
+	if (params.status != null && params.status !== -1){
 		if (where != "") where += " and "; 
 		where += `det.status = ${params.status} `;
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {

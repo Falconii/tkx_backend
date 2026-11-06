@@ -65,11 +65,11 @@ if (params) {
 	if(params.orderby == '00003') orderby = 'emp.id,emp.cnpj_cpf';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id  !== 0 ){
+	if (params.id != null && params.id !== 0){
 		if (where != "") where += " and "; 
 		where += `emp.id = ${params.id} `;
 	}
-	if(params.razao.trim()  !== ''){
+	if (params.razao != null && params.razao.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `emp.razao = '${params.razao}' `;
@@ -78,7 +78,7 @@ if (params) {
 			where += `emp.razao like '%${params.razao.trim()}%' `;
 		}
 	}
-	if(params.cnpj_cpf.trim()  !== ''){
+	if (params.cnpj_cpf != null && params.cnpj_cpf.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `emp.cnpj_cpf = '${params.cnpj_cpf}' `;
@@ -88,7 +88,7 @@ if (params) {
 		}
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {

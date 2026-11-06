@@ -39,15 +39,15 @@ if (params) {
 	if(params.orderby == '000001') orderby = 'cat.id_empresa,cat.descricao';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `cat.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id  !== 0 ){
+	if (params.id != null && params.id !== 0){
 		if (where != "") where += " and "; 
 		where += `cat.id = ${params.id} `;
 	}
-	if(params.descricao.trim()  !== '' ){
+	if (params.descricao != null && params.descricao.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `cat.descricao = '${params.descricao}' `;
@@ -57,7 +57,7 @@ if (params) {
 		}
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {

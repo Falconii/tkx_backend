@@ -44,37 +44,37 @@ if (params) {
 	orderby = "";
 	paginacao = "";
 
-	if(params.orderby == '') orderby = 'entrega.id_empresa,entrega.id_evento';
-	if(params.orderby == '000000') orderby = 'entrega.id_empresa,entrega.id_evento';
-	if(params.orderby == '000001') orderby = 'entrega.id_empresa,entrega.id_evento,kit.id_inscrito';
+	if(params.orderby == '') orderby = 'entregav2.id_empresa,entregav2.id_evento';
+	if(params.orderby == '000000') orderby = 'entregav2.id_empresa,entregav2.id_evento';
+	if(params.orderby == '000001') orderby = 'entregav2.id_empresa,entregav2.id_evento,entregav2.id_kit';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id_evento  !== 0 ){
+	if (params.id_evento != null && params.id_evento !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id_evento = ${params.id_evento} `;
 	}
-	if(params.id  !== 0 ){
+	if (params.id != null && params.id !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id = ${params.id} `;
 	}
-	if(params.id_recepcao  !== 0 ){
+	if (params.id_recepcao != null && params.id_recepcao !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id_recepcao = ${params.id_recepcao} `;
 	}
-	if(params.id_entrega  !== 0 ){
+	if (params.id_entrega != null && params.id_entrega !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id_entrega = ${params.id_entrega} `;
 	}
-	if(params.id_kit  !== 0 ){
+	if (params.id_kit != null && params.id_kit !== 0){
 		if (where != "") where += " and "; 
 		where += `entregav2.id_kit = ${params.id_kit} `;
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {

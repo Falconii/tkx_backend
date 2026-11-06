@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const cabPlanilhaSrv = require("../service/cabplanilhaService.js");
-const inscritoComplementarSrv = require("../service/complementar/inscritoService.js");
-const inscritoSrv = require("../service/inscritoService.js");
 
 function adicionaZero(numero) {
   if (numero <= 9) return "0" + numero;
@@ -175,84 +173,6 @@ exports.isValidDate = function (dateString) {
     date.getMonth() === month - 1 &&
     date.getDate() === day
   );
-};
-
-exports._incluirInscrito = async function _incluirInscrito(inscrito) {
-  let retornoInscrito = null;
-
-  if (inscrito == null) {
-    throw new Error("Inscrito não pode ser nulo");
-  }
-  if (inscrito.cnpj_cpf == null || inscrito.cnpj_cpf === "") {
-    throw new Error("CNPJ/CPF do inscrito não pode ser vazio");
-  }
-  if (inscrito.nome == null || inscrito.nome === "") {
-    throw new Error("Nome do inscrito não pode ser vazio");
-  }
-  try {
-    const result = await inscritoComplementarSrv.getInscritoByCpf(
-      inscrito.id_empresa,
-      inscrito.cnpj_cpf,
-    );
-
-    if (result == null || result.length == 0) {
-      const inscritoModel = await inscritoSrv.insertInscrito(inscrito);
-
-      if (inscritoModel == null) {
-        throw new Error(`Erro ao inserir inscrito `);
-      } else {
-        retornoInscrito = inscritoModel;
-      }
-    } else {
-      retornoInscrito = result[0];
-    }
-  } catch (err) {
-    throw new Error(`Inscrito: ${err.message}`);
-  }
-
-  return retornoInscrito;
-};
-
-exports._incluirParticipante = async function (participante) {
-  let retornoParticipante = null;
-
-  if (participante == null) {
-    throw new Error("participante não pode ser nulo");
-  }
-  if (participante.id_empresa == null || participante.id_empresa === 0) {
-    throw new Error("ID Empresa não pode ser vazio");
-  }
-  if (participante.id_evento == null || participante.id_evento === 0) {
-    throw new Error("ID Evento não pode ser vazio");
-  }
-  if (participante.id_inscrito == null || participante.id_inscrito === 0) {
-    throw new Error("ID Inscrito não pode ser vazio");
-  }
-  try {
-    const result = await participanteSrv.getParticipante(
-      participante.id_empresa,
-      participante.id_evento,
-      participante.id_inscrito,
-    );
-
-    if (result == null) {
-      const participanteModel =
-        await participanteSrv.insertParticipante(participante);
-
-      retornoParticipante = participanteModel;
-      if (participanteModel == null) {
-        throw new Error(`Erro ao inserir participante`);
-      } else {
-        retornoParticipante = participanteModel;
-      }
-    } else {
-      retornoParticipante = result;
-    }
-  } catch (err) {
-    throw new Error(`Erro ao inserir participante` + err.message);
-  }
-
-  return retornoParticipante;
 };
 
 exports.verifyToken = async function (token, ACCESS_SECRET) {

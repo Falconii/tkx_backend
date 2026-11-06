@@ -104,24 +104,6 @@ CREATE TABLE Public.eventos (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
-/* TABELA inscritos  */
-DROP TABLE IF EXISTS inscritos;
-CREATE TABLE Public.inscritos (
-		id_empresa int4  NOT NULL  , 
-		id serial  NOT NULL  , 
-		cnpj_cpf varchar(14)  NOT NULL  , 
-		nome varchar(60)  NOT NULL  , 
-		estrangeiro char(1)  NOT NULL  , 
-		sexo char(1)  NOT NULL  , 
-		data_nasc date  NOT NULL  , 
-		origem char(1)  NOT NULL  , 
-		user_insert int4  NOT NULL  , 
-		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id) 
-)
- WITHOUT OIDS 
- TABLESPACE "Producao" 
- GO 
 /* TABELA categorias  */
 DROP TABLE IF EXISTS categorias;
 CREATE TABLE Public.categorias (
@@ -147,23 +129,6 @@ CREATE TABLE Public.categoriacontadores (
 		user_insert int4  NOT NULL  , 
 		user_update int4  NOT NULL  , 
 		PRIMARY KEY(id_empresa,id_evento,id_categoria) 
-)
- WITHOUT OIDS 
- TABLESPACE "Producao" 
- GO 
-/* TABELA entregas  */
-DROP TABLE IF EXISTS entregas;
-CREATE TABLE Public.entregas (
-		id_empresa int4  NOT NULL  , 
-		id_evento int4  NOT NULL  , 
-		id_inscrito int4  NOT NULL  , 
-		rg_retirada varchar(11)  NOT NULL  , 
-		nome_retirada varchar(60)  NOT NULL  , 
-		tam_camisa varchar(10)  NOT NULL  , 
-		data_retirada timestamp  NOT NULL  , 
-		user_insert int4  NOT NULL  , 
-		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_inscrito) 
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 
@@ -223,23 +188,6 @@ CREATE TABLE Public.tokens (
  WITHOUT OIDS 
  TABLESPACE "Producao" 
  GO 
-/* TABELA participantes  */
-DROP TABLE IF EXISTS participantes;
-CREATE TABLE Public.participantes (
-		id_empresa int4  NOT NULL  , 
-		id_evento int4  NOT NULL  , 
-		id_inscrito int4  NOT NULL  , 
-		inscricao int4  NOT NULL  , 
-		nro_peito int4  NOT NULL  , 
-		id_categoria int4  NOT NULL  , 
-		id_old_inscrito int4  NOT NULL  , 
-		user_insert int4  NOT NULL  , 
-		user_update int4  NOT NULL  , 
-		PRIMARY KEY(id_empresa,id_evento,id_inscrito,inscricao) 
-)
- WITHOUT OIDS 
- TABLESPACE "Producao" 
- GO 
 /* TABELA participantesv2  */
 DROP TABLE IF EXISTS participantesv2;
 CREATE TABLE Public.participantesv2 (
@@ -261,7 +209,10 @@ CREATE TABLE Public.participantesv2 (
 )
  WITHOUT OIDS 
  TABLESPACE "Producao" 
- GO 
+ GO
+/* Nº do peito unico DENTRO DO EVENTO (ver script/peito_unico.sql) */
+CREATE UNIQUE INDEX IF NOT EXISTS participantesv2_evento_peito_uk ON Public.participantesv2 (id_empresa, id_evento, nro_peito);
+ GO
 /* TABELA cabplanilhas  */
 DROP TABLE IF EXISTS cabplanilhas;
 CREATE TABLE Public.cabplanilhas (
@@ -363,21 +314,15 @@ TRUNCATE TABLE Public.gruposusuarios RESTART IDENTITY;
 GO 
 TRUNCATE TABLE Public.eventos RESTART IDENTITY; 
 GO 
-TRUNCATE TABLE Public.inscritos RESTART IDENTITY; 
-GO 
 TRUNCATE TABLE Public.categorias RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.categoriacontadores RESTART IDENTITY; 
-GO 
-TRUNCATE TABLE Public.entregas RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.entregasv2 RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.links RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.tokens RESTART IDENTITY; 
-GO 
-TRUNCATE TABLE Public.participantes RESTART IDENTITY; 
 GO 
 TRUNCATE TABLE Public.participantesv2 RESTART IDENTITY; 
 GO 
@@ -398,21 +343,15 @@ DROP TABLE IF EXISTS Public.gruposusuarios ;
 GO 
 DROP TABLE IF EXISTS Public.eventos ; 
 GO 
-DROP TABLE IF EXISTS Public.inscritos ; 
-GO 
 DROP TABLE IF EXISTS Public.categorias ; 
 GO 
 DROP TABLE IF EXISTS Public.categoriacontadores ; 
-GO 
-DROP TABLE IF EXISTS Public.entregas ; 
 GO 
 DROP TABLE IF EXISTS Public.entregasv2 ; 
 GO 
 DROP TABLE IF EXISTS Public.links ; 
 GO 
 DROP TABLE IF EXISTS Public.tokens ; 
-GO 
-DROP TABLE IF EXISTS Public.participantes ; 
 GO 
 DROP TABLE IF EXISTS Public.participantesv2 ; 
 GO 

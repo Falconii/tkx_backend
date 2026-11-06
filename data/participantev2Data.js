@@ -81,39 +81,39 @@ exports.getParticipantesv2 = function(params) {
 
         console.log("orderby", orderby);
 
-        if (params.id_empresa !== 0) {
+        if (params.id_empresa != null && params.id_empresa !== 0) {
             if (where != "") where += " and ";
             where += `participante.id_empresa = ${params.id_empresa} `;
         }
-        if (params.id_evento !== 0) {
+        if (params.id_evento != null && params.id_evento !== 0) {
             if (where != "") where += " and ";
             where += `participante.id_evento = ${params.id_evento} `;
         }
-        if (params.id !== 0) {
+        if (params.id != null && params.id !== 0) {
             if (where != "") where += " and ";
             where += `participante.id = ${params.id} `;
         }
-        if (params.id_entrega !== 0) {
+        if (params.id_entrega != null && params.id_entrega !== 0) {
             if (where != "") where += " and ";
             where += `participante.id_entrega = ${params.id_entrega} `;
         }
-        if (params.kit !== false) {
+        if (params.kit != null && params.kit !== false) {
             if (where != "") where += " and ";
             where += `participante.id_entrega > 0 `;
         }
-        if (params.inscricao !== -1) {
+        if (params.inscricao != null && params.inscricao !== -1) {
             if (where != "") where += " and ";
             where += `participante.inscricao = ${params.inscricao} `;
         }
-        if (params.nro_peito !== -1) {
+        if (params.nro_peito != null && params.nro_peito !== -1) {
             if (where != "") where += " and ";
             where += `participante.nro_peito = ${params.nro_peito} `;
         }
-        if (params.id_categoria !== 0) {
+        if (params.id_categoria != null && params.id_categoria !== 0) {
             if (where != "") where += " and ";
             where += `participante.id_categoria = ${params.id_categoria} `;
         }
-        if (params.nome.trim() !== "") {
+        if (params.nome != null && params.nome.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `unaccent(participante.nome) = '${shared.semAcentoparams.nome}' `;
@@ -121,7 +121,7 @@ exports.getParticipantesv2 = function(params) {
                 where += `unaccent(participante.nome) like '%${shared.semAcento(params.nome.trim())}%' `;
             }
         }
-        if (params.cnpj_cpf.trim() !== "") {
+        if (params.cnpj_cpf != null && params.cnpj_cpf.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `participante.cnpj_cpf = '${params.cnpj_cpf}' `;
@@ -129,7 +129,7 @@ exports.getParticipantesv2 = function(params) {
                 where += `participante.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
             }
         }
-        if (params.evento_descricao.trim() !== "") {
+        if (params.evento_descricao != null && params.evento_descricao.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `participante.evento_descricao = '${params.evento_descricao}' `;
@@ -137,7 +137,7 @@ exports.getParticipantesv2 = function(params) {
                 where += `participante.evento_descricao like '%${params.evento_descricao.trim()}%' `;
             }
         }
-        if (params.categoria_descricao.trim() !== "") {
+        if (params.categoria_descricao != null && params.categoria_descricao.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `participante.categoria_descricao = '${params.categoria_descricao}' `;
@@ -146,7 +146,7 @@ exports.getParticipantesv2 = function(params) {
             }
         }
         if (where != "") where = " where " + where;
-        if (params.pagina != 0) {
+        if (params.pagina != null && params.pagina != 0) {
             paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
         }
         if (params.contador == "S") {

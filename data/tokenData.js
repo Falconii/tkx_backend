@@ -94,20 +94,20 @@ exports.getTokens = function(params) {
         paginacao = "";
 
         if (params.orderby == "")
-            orderby = "param.id_empresa,,id_usuario,token,tipo";
+            orderby = "token.id_empresa,token.id_usuario,token.token,token.tipo";
         if (params.orderby == "0001")
-            orderby = "param.id_empresa,,id_usuario,token,tipo";
+            orderby = "token.id_empresa,token.id_usuario,token.token,token.tipo";
 
         if (orderby != "") orderby = " order by " + orderby;
-        if (params.id_empresa !== 0) {
+        if (params.id_empresa != null && params.id_empresa !== 0) {
             if (where != "") where += " and ";
             where += `token.id_empresa = ${params.id_empresa} `;
         }
-        if (params.id_usuario !== 0) {
+        if (params.id_usuario != null && params.id_usuario !== 0) {
             if (where != "") where += " and ";
             where += `token.id_usuario = ${params.id_usuario} `;
         }
-        if (params.token.trim() !== "") {
+        if (params.token != null && params.token.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `token.token = '${params.token}' `;
@@ -115,7 +115,7 @@ exports.getTokens = function(params) {
                 where += `token.token like '%${params.token.trim()}%' `;
             }
         }
-        if (params.tipo.trim() !== "") {
+        if (params.tipo != null && params.tipo.trim() !== "") {
             if (where != "") where += " and ";
             if (params.sharp) {
                 where += `token.tipo = '${params.tipo}' `;

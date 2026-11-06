@@ -47,19 +47,19 @@ if (params) {
 	if(params.orderby == '000001') orderby = 'cab.id_empresa,cab.id_evento,cab.arquivo';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `cab.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id_evento  !== 0 ){
+	if (params.id_evento != null && params.id_evento !== 0){
 		if (where != "") where += " and "; 
 		where += `cab.id_evento = ${params.id_evento} `;
 	}
-	if(params.id  !== 0 ){
+	if (params.id != null && params.id !== 0){
 		if (where != "") where += " and "; 
 		where += `cab.id = ${params.id} `;
 	}
-	if(params.arquivo.trim()  !== '' ){
+	if (params.arquivo != null && params.arquivo.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `cab.arquivo = '${params.arquivo}' `;
@@ -68,7 +68,7 @@ if (params) {
 			where += `cab.arquivo like '%${params.arquivo.trim()}%' `;
 		}
 	}
-	if(params.status.trim()  !== '' ){
+	if (params.status != null && params.status.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `cab.status = '${params.status}' `;
@@ -78,7 +78,7 @@ if (params) {
 		}
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {

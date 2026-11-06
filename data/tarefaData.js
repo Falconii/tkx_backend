@@ -55,19 +55,19 @@ if (params) {
 	if(params.orderby == '000002') orderby = 'tarefa.id_empresa,tarefa.id_usuario,tarefa.name_file';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `tarefa.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id  !== 0 ){
+	if (params.id != null && params.id !== 0){
 		if (where != "") where += " and "; 
 		where += `tarefa.id = ${params.id} `;
 	}
-	if(params.id_usuario  !== 0 ){
+	if (params.id_usuario != null && params.id_usuario !== 0){
 		if (where != "") where += " and "; 
 		where += `tarefa.id_usuario = ${params.id_usuario} `;
 	}
-	if(params.sigla.trim()  !== 0 ){
+	if (params.sigla != null && params.sigla.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `tarefa.sigla = '${params.sigla}' `;
@@ -76,7 +76,7 @@ if (params) {
 			where += `tarefa.sigla like '%${params.sigla.trim()}%' `;
 		}
 	}
-	if(params.name_file.trim()  !== '' ){
+	if (params.name_file != null && params.name_file.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `tarefa.name_file = '${params.name_file}' `;
@@ -85,12 +85,12 @@ if (params) {
 			where += `tarefa.name_file like '%${params.name_file.trim()}%' `;
 		}
 	}
-	if(params.status.trim()  !== '' ){
+	if (params.status != null && params.status.trim() !== ''){
 		if (where != "") where += " and ";
 			 where +=  `tarefa.status = '${params.status}' `;
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {
@@ -110,9 +110,9 @@ if (params) {
 			    tarefa.data_solicitacao as data_solicitacao , 
 			    tarefa.data_conclusao as data_conclusao,  
 				tarefa.parametros      AS parametros,
-				tarefa.status          AS status
+				tarefa.status          AS status,
 				tarefa.user_insert     AS user_insert,
-				tarefa.user_update     AS user_update,
+				tarefa.user_update     AS user_update
 			FROM tarefas tarefa
 			${where} 			${ orderby} ${ paginacao} `;
 			return  db.manyOrNone(strSql);

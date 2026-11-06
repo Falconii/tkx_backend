@@ -48,11 +48,8 @@ app.use("/api/usuario", require("./route/usuarioRoute"));
 app.use("/api/grupousuario", require("./route/grupousuarioRoute"));
 app.use("/api/evento", require("./route/eventoRoute"));
 app.use("/api/evento_complementar",require("./route/complementar/eventoRoute.js"));
-app.use("/api/participante", require("./route/participanteRoute"));
 app.use("/api/participantev2", require("./route/participantev2Route"));
-app.use("/api/inscrito", require("./route/inscritoRoute"));
 app.use("/api/categoria", require("./route/categoriaRoute"));
-app.use("/api/entrega", require("./route/entregaRoute"));
 app.use("/api/entregav2", require("./route/entregav2Route"));
 app.use("/api/entregav2complementar", require("./route/complementar/entregav2Router.js"));
 app.use("/api/link", require("./route/linkRoute"));
@@ -67,7 +64,6 @@ app.use(
   "/api/categoria_complementar",
   require("./route/complementar/categoriaRoute"),
 );
-app.use("/api/trocaParticipante", require("./route/trocaparticipanteRoute.js"));
 
 app.use("/api/parametro", require("./route/parametroRoute.js"));
 app.use(
@@ -84,6 +80,9 @@ app.use(
   require("./route/publicRoute.js"),
 );
 
+app.use("/api/tarefa", require("./route/tarefaRoute.js"));
+
 app.listen(PORT, () => {
   console.log(`Servidor No Ar. Porta ${PORT}`);
+  require("./service/processamentoService").startProcessamentoTarefas(20);
 });

@@ -1,5 +1,5 @@
 const categoriaSrv = require('../service/categoriaService');
-const participanteSrv = require('../service/participanteService');
+const participantev2Srv = require('../service/participantev2Service');
 const erroDB = require('../util/userfunctiondb');
 const shared = require('../util/shared');
 /* REGRA DE NEGOCIO categorias */
@@ -38,25 +38,29 @@ exports.categoria_Exclusao = async function(id_empresa,id) {
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'CATEGORIA', message: `"EXCLUSÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}
+		// Participantes (v2) vinculados a esta categoria. Valores neutros do v2: inscricao/nro_peito = -1
+		// (0 FILTRARIA por "= 0"). contador 'S' so conta, sem carregar milhares de linhas.
 		const par = {
-			"id_empresa":id_empresa, 
-			"id_evento":0, 
-			"id_inscrito":0, 
-			"inscricao":0, 
-			"nro_peito":0, 
-			"id_categoria":id, 
-			"evento_descricao":"", 
-			"inscrito_nome":"", 
-			"inscrito_cpf":"", 
-			"categoria_descricao":"", 
-			"pagina":0, 
-			"tamPagina":50, 
-			"contador":"N", 
-			"orderby":"", 
+			"id_empresa":id_empresa,
+			"id_evento":0,
+			"id":0,
+			"id_entrega":0,
+			"kit":false,
+			"inscricao":-1,
+			"nro_peito":-1,
+			"id_categoria":id,
+			"nome":"",
+			"cnpj_cpf":"",
+			"evento_descricao":"",
+			"categoria_descricao":"",
+			"pagina":0,
+			"tamPagina":50,
+			"contador":"S",
+			"orderby":"",
 			"sharp":false
 		};
-		const participantes = await participanteSrv.getParticipantes(par);
-		if (participantes.length > 0) { 
+		const vinculados = await participantev2Srv.getParticipantesv2(par);
+		if (Number(vinculados.total) > 0) {
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'CATEGORIA', message: `"EXCLUSÃO" Categoria Possui Participantes Vinculados.!` }]);
 		}
 	} catch (err) { 

@@ -45,6 +45,8 @@ exports.ParseCVS = function(padrao, linha, delimiter) {
     }
     if (emAnalise) {
         retorno.push(campo);
+    } else if (!entreAspas && linha.charAt(linha.length - 1) == delimiter) {
+        retorno.push(''); // a linha termina em delimitador: o ultimo campo e vazio (ex.: "a;b;" tem 3 campos)
     }
     return retorno;
 }

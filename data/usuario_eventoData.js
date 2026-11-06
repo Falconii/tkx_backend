@@ -45,15 +45,15 @@ if (params) {
 	if(params.orderby == '000001') orderby = 'usuario_evento.id_empresa,usuario_evento.id_evento,usuario_evento.razao';
 
 	if (orderby != "") orderby = " order by " + orderby;
-	if(params.id_empresa  !== 0 ){
+	if (params.id_empresa != null && params.id_empresa !== 0){
 		if (where != "") where += " and "; 
 		where += `usuario_evento.id_empresa = ${params.id_empresa} `;
 	}
-	if(params.id_evento  !== 0 ){
+	if (params.id_evento != null && params.id_evento !== 0){
 		if (where != "") where += " and "; 
 		where += `usuario_evento.id_evento = ${params.id_evento} `;
 	}
-	if(params.cnpj_cpf.trim()  !== '' ){
+	if (params.cnpj_cpf != null && params.cnpj_cpf.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `usuario_evento.cnpj_cpf = '${params.cnpj_cpf}' `;
@@ -62,7 +62,7 @@ if (params) {
 			where += `usuario_evento.cnpj_cpf like '%${params.cnpj_cpf.trim()}%' `;
 		}
 	}
-	if(params.razao.trim()  !== '' ){
+	if (params.razao != null && params.razao.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `usuario_evento.razao = '${params.razao}' `;
@@ -71,11 +71,11 @@ if (params) {
 			where += `usuario_evento.razao like '%${params.razao.trim()}%' `;
 		}
 	}
-	if(params.id_usuario  !== 0 ){
+	if (params.id_usuario != null && params.id_usuario !== 0){
 		if (where != "") where += " and "; 
 		where += `usuario_evento.id_usuario = ${params.id_usuario} `;
 	}
-	if(params.ativo.trim()  !== '' ){
+	if (params.ativo != null && params.ativo.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
 			 where +=  `usuario_evento.ativo = '${params.ativo}' `;
@@ -85,7 +85,7 @@ if (params) {
 		}
 	}
 	if (where != "") where = " where " + where;
-	 if (params.pagina != 0) {
+	 if (params.pagina != null && params.pagina != 0) {
 		paginacao = `limit ${params.tamPagina} offset((${params.pagina} -1) * ${params.tamPagina})`;
 	}
 	if (params.contador == 'S') {
