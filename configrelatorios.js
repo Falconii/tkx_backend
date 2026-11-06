@@ -40,7 +40,7 @@ const force = args.includes("--force");
 const iEmp = args.indexOf("--empresa");
 const idEmpresa = iEmp >= 0 ? Number(args[iEmp + 1]) : 1;
 
-if (!sigla || !RELATORIOS[sigla]) {
+if (!sigla || !RELATORIOS[sigla] || RELATORIOS[sigla].gerador) {
   if (sigla) console.log(`Sigla desconhecida: ${sigla}\n`);
   console.log("Siglas disponiveis:");
   Object.keys(RELATORIOS).forEach((s) => console.log("  " + s));

@@ -50,10 +50,10 @@ if (params) {
 	if (params.descricao != null && params.descricao.trim() !== ''){
 		if (where != "") where += " and ";
 		if (params.sharp) { 
-			 where +=  `cat.descricao = '${params.descricao}' `;
+			 where +=  `upper(cat.descricao) = upper('${params.descricao.replace(/'/g, "''")}') `;
 		} else 
 		{
-			where += `cat.descricao like '%${params.descricao.trim()}%' `;
+			where += `cat.descricao ilike '%${params.descricao.trim().replace(/'/g, "''")}%' `;
 		}
 	}
 	if (where != "") where = " where " + where;

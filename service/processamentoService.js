@@ -58,6 +58,13 @@ async function processar(tarefa) {
     const relatorio = relatorios.obter(tarefa.sigla);
     const params = montarParametros(tarefa);
 
+    if (relatorio.gerar) {
+      const linhas = await relatorio.gerar(params, caminhoArquivo(tarefa.name_file));
+      if (!linhas) await tarefaData.encerrar(tarefa.id, STATUS.SEM_DADOS, "Consulta sem resultados");
+      else await tarefaData.encerrar(tarefa.id, STATUS.CONCLUIDA, "");
+      return;
+    }
+
     const rows = await relatorio.consulta(params);
 
     if (!Array.isArray(rows) || rows.length === 0) {

@@ -33,6 +33,16 @@ UPDATE public.detplanilhas d
                 WHERE c.id_empresa = d.id_empresa AND c.id_evento = d.id_evento
                   AND c.id = d.id_cabec AND c.status = '1');
 
+-- 3) REGRA: linha com erro e aviso fica como ERRO. Inscricao invalida (0) e erro; se a linha esta como aviso/OK, volta a erro
+UPDATE public.detplanilhas d
+   SET status = 9,
+       mensagem_erro = left(CASE WHEN d.mensagem_erro ~ '^Aviso' THEN 'Inscrição Inválida | ' || d.mensagem_erro ELSE 'Inscrição Inválida' END, 100)
+ WHERE d.status IN (0, 1)
+   AND d.inscricao <= 0
+   AND EXISTS (SELECT 1 FROM public.cabplanilhas c
+                WHERE c.id_empresa = d.id_empresa AND c.id_evento = d.id_evento
+                  AND c.id = d.id_cabec AND c.status = '1');
+
 /*
   CONFERENCIA (execute separadamente): linhas por situacao nas planilhas ainda nao processadas
 

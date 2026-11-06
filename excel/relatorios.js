@@ -30,6 +30,8 @@ const RELATORIOS = {
   token01: { titulo: "Tokens", servico: "service/tokenService", funcao: "getTokens" },
   parametro01: { titulo: "Parâmetros", servico: "service/parametroService", funcao: "getParametros" },
   tarefa01: { titulo: "Tarefas", servico: "service/tarefaService", funcao: "getTarefas" },
+  // relatorio com gerador proprio (nao e uma listagem de CRUD): gerar(params, caminho) -> n. de linhas
+  resumoevento01: { titulo: "Resumo Do Evento", gerador: "excel/resumoevento" },
 };
 
 function existe(sigla) {
@@ -40,6 +42,11 @@ function existe(sigla) {
 function obter(sigla) {
   if (!existe(sigla)) throw new Error(`Relatório desconhecido: "${sigla}"`);
   const r = RELATORIOS[sigla];
+
+  // gerador proprio: monta o arquivo inteiro (varias abas), sem consulta/config de colunas
+  if (r.gerador) {
+    return { titulo: r.titulo, gerar: require(path.join(RAIZ, r.gerador)).gerar };
+  }
 
   let config;
   try {

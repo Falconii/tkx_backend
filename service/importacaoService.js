@@ -117,6 +117,7 @@ function validarLinha(campos, ctx) {
   const nro_peito = inteiroPositivo(peitoBruto);
   if (!gerarPeito && !nro_peito) erros.push("Nro Do Peito Inválido");
   const inscricao = inteiroPositivo(campos[0]);
+  if (!inscricao) erros.push("Inscrição Inválida");
 
   const sexoSigla = texto(campos[2]);
   const sigla = sexoSigla.substring(1).toUpperCase();
