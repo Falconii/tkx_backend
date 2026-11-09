@@ -53,7 +53,7 @@ try
 
                participante.id_entrega = novaEntrega.id;
 
-               const  registro =  await participanteV2Srv.updateParticipantev2(participante);          
+               const  registro =  await participanteV2Srv.updateParticipantev2(participante, { origem: 'entrega' });          
             }
             else
             {
@@ -61,7 +61,7 @@ try
                 
                  participante.id_entrega = novaEntrega.id;
 
-                 const  registro = await participanteV2Srv.updateParticipantev2(participante);    
+                 const  registro = await participanteV2Srv.updateParticipantev2(participante, { origem: 'entrega' });    
 
             }
 
@@ -127,7 +127,7 @@ try
 
             participante.id_entrega = 0;
 
-            await participanteV2Srv.updateParticipantev2(participante);
+            await participanteV2Srv.updateParticipantev2(participante, { origem: 'entrega' });
 
             const novoParticipante = await participanteV2Srv.getParticipantev2(
               parametros.id_empresa,

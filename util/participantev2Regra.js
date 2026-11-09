@@ -2,6 +2,22 @@ const participantev2Srv = require('../service/participantev2Service');
 const erroDB = require('../util/userfunctiondb');
 const shared = require('../util/shared');
 const peitoSrv = require('../service/peitoService');
+const eventoSrv = require('../service/eventoService');
+
+/*
+  Participante so pode ser ALTERADO ou EXCLUIDO enquanto o evento estiver em 0 (Aguardando Liberacao)
+  ou 1 (Aguardando Importacao). Excecao: a retirada do kit (rota de entrega) grava o id_entrega do
+  participante com o evento ATIVO; esse chamador informa opcoes.origem = 'entrega'.
+*/
+async function exigeEventoEditavel(id_empresa, id_evento, acao) {
+	const evento = await eventoSrv.getEvento(id_empresa, id_evento);
+	if (evento == null) {
+		throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"${acao}" Evento Não Existe Na Base De Dados.!` }]);
+	}
+	if (evento.status !== '0' && evento.status !== '1') {
+		throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"${acao}" O participante só pode ser ${acao === 'EXCLUSÃO' ? 'excluído' : 'alterado'} quando o evento estiver Aguardando Liberação ou Aguardando Importação.` }]);
+	}
+}
 /* REGRA DE NEGOCIO participantesv2 */
 
 exports.participantev2_Inclusao = async function(participantev2) {
@@ -9,6 +25,14 @@ exports.participantev2_Inclusao = async function(participantev2) {
 		const obj = await participantev2Srv.getParticipantev2(participantev2.id_empresa,participantev2.id_evento,participantev2.id);
 		if (obj != null) {
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"INCLUSÃO" Registro Já Existe Na Base De Dados.!` }]);
+		}
+		// evento encerrado (4) nao recebe novos participantes
+		const evento = await eventoSrv.getEvento(participantev2.id_empresa,participantev2.id_evento);
+		if (evento == null) {
+		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"INCLUSÃO" Evento Não Existe Na Base De Dados.!` }]);
+		}
+		if (evento.status === '4') {
+		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"INCLUSÃO" Evento Encerrado. Não é possível incluir novos participantes.` }]);
 		}
 		await peitoDaInclusao(participantev2);
 	} catch (err) {
@@ -19,8 +43,11 @@ exports.participantev2_Inclusao = async function(participantev2) {
 	return;
 }
 
-exports.participantev2_Alteracao = async function(participantev2) {
+exports.participantev2_Alteracao = async function(participantev2, opcoes = {}) {
 	try {
+		if (opcoes.origem !== 'entrega') {
+			await exigeEventoEditavel(participantev2.id_empresa, participantev2.id_evento, 'ALTERAÇÃO');
+		}
 		const obj = await participantev2Srv.getParticipantev2(participantev2.id_empresa,participantev2.id_evento,participantev2.id);
 		if (obj == null) {
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"ALTERAÇÃO" Registro Não Existe Na Base De Dados.!` }]);
@@ -73,6 +100,7 @@ exports.participantev2_Exclusao = async function(id_empresa,id_evento,id) {
 		if (obj == null) { 
 		   throw new erroDB.UserException('Regra de negócio', [{ tabela: 'PARTICIPANTEV2', message: `"EXCLUSÃO" Registro Não Existe Na Base De Dados.!` }]);
 		}
+		await exigeEventoEditavel(id_empresa, id_evento, 'EXCLUSÃO');
 	} catch (err) { 
 		throw err; 
 	}

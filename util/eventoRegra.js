@@ -3,6 +3,29 @@ const erroDB = require("../util/userfunctiondb");
 const shared = require("../util/shared");
 /* REGRA DE NEGOCIO eventos */
 
+/*
+  Evento so pode ser ALTERADO ou EXCLUIDO nas situacoes 0 (Aguardando Liberacao) e 1 (Aguardando Importacao).
+  Unica excecao: a TROCA DE SITUACAO (liberar, standby, ativar, encerrar), que grava o mesmo registro com
+  apenas o status diferente. Os campos de controle (qtd_*, user_*) nao entram na comparacao.
+*/
+const SITUACOES_EDITAVEIS = ["0", "1"];
+const CAMPOS_EDITAVEIS = ["descricao", "id_responsavel", "rua", "nro", "complemento", "bairro", "cidade", "uf", "cep", "inicio", "final", "obs"];
+const CAMPOS_DATA = ["inicio", "final"];
+
+function normaliza(campo, valor) {
+  if (valor === null || valor === undefined) return "";
+  if (CAMPOS_DATA.includes(campo)) {
+    const t = new Date(valor).getTime();
+    return Number.isNaN(t) ? String(valor).trim() : t;
+  }
+  return String(valor).trim();
+}
+
+function mudouCampos(atual, novo) {
+  return CAMPOS_EDITAVEIS.some((c) => normaliza(c, atual[c]) !== normaliza(c, novo[c]));
+}
+exports.mudouCamposEvento = mudouCampos;
+
 exports.evento_Inclusao = async function (evento) {
   try {
     const obj = await eventoSrv.getEvento(evento.id_empresa, evento.id);
@@ -40,6 +63,17 @@ exports.evento_Alteracao = async function (evento) {
         },
       ]);
     }
+    if (!SITUACOES_EDITAVEIS.includes(String(obj.status))) {
+      const trocaDeSituacao = String(evento.status) !== String(obj.status) && !mudouCampos(obj, evento);
+      if (!trocaDeSituacao) {
+        throw new erroDB.UserException("Regra de negócio", [
+          {
+            tabela: "EVENTO",
+            message: `"ALTERAÇÃO" O evento só pode ser alterado nas situações Aguardando Liberação ou Aguardando Importação.`,
+          },
+        ]);
+      }
+    }
   } catch (err) {
     throw err;
   }
@@ -58,11 +92,11 @@ exports.evento_Exclusao = async function (id_empresa, id) {
         },
       ]);
     }
-    if (obj.status == "2" || obj.status == "3" || obj.status == "4") {
+    if (!SITUACOES_EDITAVEIS.includes(String(obj.status))) {
       throw new erroDB.UserException("Regra de negócio", [
         {
           tabela: "EVENTO",
-          message: `"EXCLUSÃO" Nesta Situação O Evento Não Pode Ser Excluído!`,
+          message: `"EXCLUSÃO" O evento só pode ser excluído nas situações Aguardando Liberação ou Aguardando Importação.`,
         },
       ]);
     }

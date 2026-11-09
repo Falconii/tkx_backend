@@ -27,9 +27,9 @@ catch (err)
 }
  };
 //* CRUD - UPDATE - SERVICE */
- exports.updateParticipantev2 = async function(participantev2){try 
+ exports.updateParticipantev2 = async function(participantev2, opcoes = {}){try 
 {
-	await regras.participantev2_Alteracao(participantev2);
+	await regras.participantev2_Alteracao(participantev2, opcoes);
 	validacao.Validacao(TABELA,participantev2, parametros.participantesv2());
 	return participantev2Data.updateParticipantev2(participantev2);
 }

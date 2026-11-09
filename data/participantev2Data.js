@@ -38,6 +38,7 @@ exports.getParticipantev2 = function(id_empresa, id_evento, id) {
 			,  participante.user_insert as  user_insert  
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
+			,  evento.status as  evento_status  
 			,  categoria.descricao as  categoria_descricao    
             ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
             ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
@@ -174,6 +175,7 @@ exports.getParticipantesv2 = function(params) {
 			,  participante.user_insert as  user_insert  
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
+			,  evento.status as  evento_status  
 			,  categoria.descricao as  categoria_descricao   
       ,  coalesce(entrega.rg_retirada,'') as entrega_rg_retirada
       ,  coalesce(entrega.nome_retirada,'') as entrega_nome_retirada
@@ -203,6 +205,7 @@ exports.getParticipantesv2 = function(params) {
 			,  participante.user_insert as  user_insert  
 			,  participante.user_update as  user_update  
 			,  evento.descricao as  evento_descricao  
+			,  evento.status as  evento_status  
 			,  categoria.descricao as  categoria_descricao    
 			FROM participantesv2 participante			   
 				 inner join eventos evento on evento.id_empresa = participante.id_empresa and evento.id = participante.id_evento

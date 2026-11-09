@@ -12,6 +12,7 @@
 */
 const ExcelJS = require("exceljs");
 const fs = require("fs");
+const path = require("path");
 const db = require("../infra/database");
 
 const COR_CABEC = "FF3F51B5";
@@ -184,6 +185,8 @@ async function gerar(params, caminhoArquivo) {
   abaParticipantes(wb, participantes);
   abaResumos(wb, { kits, colaboradores, categorias, totais });
 
+  // a pasta de destino pode nao existir (ex.: servidor novo na nuvem)
+  await fs.promises.mkdir(path.dirname(caminhoArquivo), { recursive: true });
   const tmp = `${caminhoArquivo}.tmp`;
   try {
     await wb.xlsx.writeFile(tmp);
