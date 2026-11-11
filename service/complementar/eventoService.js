@@ -20,6 +20,10 @@ exports.updateStatusEvento = async function (evento) {
 
 
 
+exports.eventosDoDashboard = async function (id_empresa, id_usuario, operador) {
+  return eventoData.eventosDoDashboard(id_empresa, id_usuario, operador);
+};
+
 exports.consultaEvento01 = async function (evento) {
   try {
     return eventoData.consultaEvento01(evento);

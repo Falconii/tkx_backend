@@ -14,6 +14,27 @@ const fs = require('fs');
 const { gerarRelatorioParticipantes } = require('../../excel/eventorelatorio01.js');
 
 router.use(autenticarToken);
+
+const GRUPO_OPERADOR = 4;
+
+/*
+  DASHBOARD: eventos que o usuario logado pode ver (so ATIVOS).
+    OPERADOR (grupo 4): apenas os eventos em que esta vinculado em usuarios_eventos.
+    Demais usuarios:    todos os eventos ativos.
+  O grupo vem do cadastro do usuario do token (nunca do cliente). Sem eventos = lista vazia (200).
+*/
+router.get("/dashboard", async function (req, res) {
+  try {
+    const usuario = await usuarioSrv.getUsuario(req.id_empresa, req.id_usuario);
+    if (!usuario) return response.notFound(res, "Usuário", { id_usuario: req.id_usuario });
+    const operador = Number(usuario.grupo) === GRUPO_OPERADOR;
+    const eventos = await eventoSrv.eventosDoDashboard(req.id_empresa, req.id_usuario, operador);
+    return res.status(200).json(eventos);
+  } catch (err) {
+    console.error("dashboard:", err);
+    return res.status(500).json({ erro: "BAK-END", tabela: "Evento", message: err.message });
+  }
+});
 /* ROTA UPDATE evento */
 
 router.put("/updateStatusEvento", async function (req, res) {

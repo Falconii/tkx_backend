@@ -41,6 +41,9 @@ function lerId(req) {
 }
 
 /* nome unico do arquivo: evento01_20261105-142530_a1b2c3.xlsx */
+const GRUPO_OPERADOR = 4;
+const SIGLAS_SEM_OPERADOR = ["resumoevento01"];
+
 function gerarNomeArquivo(sigla) {
   const d = new Date();
   const p = (n) => String(n).padStart(2, "0");
@@ -59,6 +62,15 @@ router.post("/", async function (req, res) {
 
     if (typeof sigla !== "string" || !relatorios.existe(sigla)) {
       return response.error(res, "Relatório desconhecido", 400, { sigla });
+    }
+
+    // Resumo Do Evento: usuario do grupo OPERADOR (4) nao tem acesso (403, nunca 401: o front desloga em 401)
+    if (SIGLAS_SEM_OPERADOR.includes(sigla)) {
+      const usuario = await usuarioSrv.getUsuario(req.id_empresa, req.id_usuario);
+      if (!usuario) return response.error(res, "Usuário não encontrado", 404);
+      if (Number(usuario.grupo) === GRUPO_OPERADOR) {
+        return response.error(res, "Operador não tem acesso a este relatório", 403);
+      }
     }
 
     // aceita o filtro como objeto ou como JSON em texto

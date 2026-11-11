@@ -12,6 +12,46 @@ exports.updateStatusEvento = function (evento) {
 };
 
 
+/*
+  Eventos que o usuario pode ver no DASHBOARD (sempre so os ATIVOS, status '3'):
+    operador = true  -> so os eventos em que ele esta vinculado em usuarios_eventos (ativo = 'S')
+    operador = false -> todos os eventos ativos da empresa
+  Mesmas colunas de data/eventoData.getEventos (o dashboard usa o EventoModel).
+*/
+exports.eventosDoDashboard = function (id_empresa, id_usuario, operador, executor = db) {
+  const vinculo = operador
+    ? `and exists (select 1 from usuarios_eventos ue
+                   where ue.id_empresa = evento.id_empresa and ue.id_evento = evento.id
+                     and ue.id_usuario = $2 and ue.ativo = 'S')`
+    : "";
+  const strSql = `select
+        evento.id_empresa as id_empresa
+      , evento.id as id
+      , evento.descricao as descricao
+      , evento.id_responsavel as id_responsavel
+      , evento.rua as rua
+      , evento.nro as nro
+      , evento.complemento as complemento
+      , evento.bairro as bairro
+      , evento.cidade as cidade
+      , evento.uf as uf
+      , evento.cep as cep
+      , to_char(evento.inicio,'DD/MM/YYYY') as inicio
+      , to_char(evento.final,'DD/MM/YYYY') as final
+      , evento.obs as obs
+      , evento.status as status
+      , evento.user_insert as user_insert
+      , evento.user_update as user_update
+      , evento.qtd_participantes as qtd_participantes
+      , evento.qtd_kits as qtd_kits
+      , usuario.razao as usuario_razao
+    from eventos evento
+    left join usuarios usuario on usuario.id_empresa = evento.id_empresa and usuario.id = evento.id_responsavel
+   where evento.id_empresa = $1 and evento.status = '3' ${vinculo}
+   order by evento.descricao, evento.id`;
+  return executor.manyOrNone(strSql, [id_empresa, id_usuario]);
+};
+
 exports.consultaEvento01 = function (evento) {
   strSql = `select                  
 					evento.descricao as  evento_descricao
