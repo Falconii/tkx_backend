@@ -110,3 +110,22 @@ exports.resumoKit = function (id_empresa,id_evento) {
 				order by e.tam_camisa `;
   return db.manyOrNone(strSql);
 };
+/*
+  O evento esta liberado para o usuario operar a ENTREGA DE KITS? (mesma regra do dashboard)
+    - evento ATIVO (status '3');
+    - OPERADOR: alem disso precisa estar vinculado e ativo em usuarios_eventos.
+  Devolve { existe, ativo, vinculado } para a rota escolher a mensagem.
+*/
+exports.situacaoEventoParaEntrega = async function (id_empresa, id_usuario, id_evento, executor = db) {
+  const rows = await executor.any(
+    `select evento.status,
+            exists (select 1 from usuarios_eventos ue
+                     where ue.id_empresa = evento.id_empresa and ue.id_evento = evento.id
+                       and ue.id_usuario = $3 and ue.ativo = 'S') as vinculado
+       from eventos evento
+      where evento.id_empresa = $1 and evento.id = $2`,
+    [id_empresa, id_evento, id_usuario],
+  );
+  if (rows.length === 0) return { existe: false, ativo: false, vinculado: false };
+  return { existe: true, ativo: rows[0].status === "3", vinculado: rows[0].vinculado };
+};

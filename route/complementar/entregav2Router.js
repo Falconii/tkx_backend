@@ -5,6 +5,7 @@ const router = express.Router();
 const { autenticarToken} = require('../../middleware/autenticartoken');
 const entregav2Srv = require('../../service/entregav2Service');
 const participanteV2Srv = require('../../service/participantev2Service');
+const { motivoBloqueioEntrega } = require('../../util/entregaAcesso');
 
 router.use(autenticarToken);
 
@@ -27,6 +28,16 @@ try
       
             console.log("parametros", parametros);
       
+            const bloqueio = await motivoBloqueioEntrega(
+              parametros.id_empresa,
+              parametros.id_usuario,
+              parametros.entregav2.id_evento,
+            );
+            if (bloqueio) {
+              res.status(409).json({ erro: 'Regra de negócio', tabela: 'ENTREGAV2', message: bloqueio });
+              return;
+            }
+
             let participante = await participanteV2Srv.getParticipantev2(
               parametros.id_empresa,
               parametros.entregav2.id_evento,
@@ -106,6 +117,16 @@ try
       
             console.log("parametros", parametros);
       
+            const bloqueio = await motivoBloqueioEntrega(
+              parametros.id_empresa,
+              parametros.id_usuario,
+              parametros.entregav2.id_evento,
+            );
+            if (bloqueio) {
+              res.status(409).json({ erro: 'Regra de negócio', tabela: 'ENTREGAV2', message: bloqueio });
+              return;
+            }
+
             let participante = await participanteV2Srv.getParticipantev2(
               parametros.id_empresa,
               parametros.entregav2.id_evento,
