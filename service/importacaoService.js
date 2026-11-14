@@ -25,7 +25,7 @@
 
   mensagem_erro das linhas: erro (status 9) comeca com "Linha N: ..."; aviso (status 1) comeca com "Aviso (linha N): ...".
 
-  status da linha (detplanilhas): 0 = ok | 1 = ok com aviso | 9 = com erro | 2 = ja processada
+  status da linha (detplanilhas, char(1)): '0' = ok | '1' = ok com aviso | '9' = com erro | '2' = ja processada
   status da planilha (cabplanilhas): '1' = carregada | '2' = processada
   status do evento: '1' = liberado para importacao | '2' = apos o processamento
 */
@@ -164,7 +164,7 @@ function finalizarRegistros(registros) {
   for (const r of registros) {
     const avisos = r.avisos || [];
     // 9 = erro | 1 = OK com aviso (processavel, filtravel na tela) | 0 = OK
-    r.status = r.erros.length > 0 ? 9 : avisos.length > 0 ? 1 : 0;
+    r.status = r.erros.length > 0 ? "9" : avisos.length > 0 ? "1" : "0"; // detplanilhas.status e char(1)
     let msg = "";
     if (r.erros.length > 0) {
       msg = `Linha ${r.linha}: ${r.erros.join("; ")}`;
@@ -378,7 +378,7 @@ async function carregarPlanilha({ id_empresa, id_usuario, id_evento, arquivo, co
     return {
       cabec: final,
       total_linhas: final.total_linhas,
-      linhas_ok: registros.filter((r) => r.status !== 9).length, // OK = sem erro (inclui as com aviso)
+      linhas_ok: registros.filter((r) => r.status !== "9").length, // OK = sem erro (inclui as com aviso)
       total_linhas_erro: final.total_linhas_erro,
       linhas_ignoradas: ignoradas,
       peitos_gerados: gerados,
@@ -413,7 +413,7 @@ async function processarPlanilha({ id_empresa, id_usuario, id_evento, id_planilh
     }
 
     const comErro = await t.one(
-      "SELECT count(*)::int AS n FROM detplanilhas WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status = 9",
+      "SELECT count(*)::int AS n FROM detplanilhas WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status = '9'",
       [id_empresa, id_evento, id_planilha],
     );
     if (comErro.n > 0) {
@@ -421,7 +421,7 @@ async function processarPlanilha({ id_empresa, id_usuario, id_evento, id_planilh
     }
 
     const detalhes = await t.any(
-      "SELECT * FROM detplanilhas WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status IN (0, 1) ORDER BY nro_peito",
+      "SELECT * FROM detplanilhas WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status IN ('0', '1') ORDER BY nro_peito",
       [id_empresa, id_evento, id_planilha],
     );
     if (detalhes.length === 0) throw new ErroImportacao(409, "A planilha não contém linhas para processar.");
@@ -459,7 +459,7 @@ async function processarPlanilha({ id_empresa, id_usuario, id_evento, id_planilh
     await inserirEmLotes(t, participantes, colunasPart, H);
 
     await t.none(
-      "UPDATE detplanilhas SET status = 2, user_update = $4 WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status IN (0, 1)",
+      "UPDATE detplanilhas SET status = '2', user_update = $4 WHERE id_empresa = $1 AND id_evento = $2 AND id_cabec = $3 AND status IN ('0', '1')",
       [id_empresa, id_evento, id_planilha, id_usuario],
     );
     const cabFinal = await t.one(

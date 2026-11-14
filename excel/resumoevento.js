@@ -7,6 +7,9 @@
   Segue o mesmo esquema dos relatorios de cadastro: roda dentro da tarefa (tabela "tarefas"),
   grava em <arquivo>.tmp e so renomeia para o nome final quando estiver completo.
 
+  As 2 abas tem a faixa com o logo e o titulo nas linhas 1-3 (excel/faixaLogo.js) e as linhas dos titulos
+  ficam congeladas: Participantes = faixa + cabecalho (linha 4); Resumos = faixa + titulo e cabecalho dos blocos (linha 5).
+
   gerar(params, caminhoArquivo) -> numero de participantes (0 = evento sem participantes = "sem dados")
   params: { id_empresa, id_evento }   (id_empresa vem sempre da tarefa, nunca do cliente)
 */
@@ -14,6 +17,7 @@ const ExcelJS = require("exceljs");
 const fs = require("fs");
 const path = require("path");
 const db = require("../infra/database");
+const faixaLogo = require("./faixaLogo");
 
 const COR_CABEC = "FF3F51B5";
 const COR_TOTAL = "FFE8EAF6";
@@ -76,14 +80,15 @@ function cabecalho(ws, linha, colunaInicial, textos) {
   });
 }
 
-/* escreve um bloco "rotulo | quantidade" a partir da coluna informada; devolve a linha do TOTAL */
-function bloco(ws, colunaInicial, titulos, itens) {
+/* escreve um bloco "rotulo | quantidade" a partir da coluna e da linha (topo) informadas; devolve o total */
+function bloco(ws, colunaInicial, titulos, itens, topo) {
   const [c1, c2] = [colunaInicial, colunaInicial + 1];
   const letra = (n) => ws.getColumn(n).letter;
-  titulo(ws, `${letra(c1)}1:${letra(c2)}1`, titulos.bloco);
-  cabecalho(ws, 2, c1, [titulos.rotulo, "QTD"]);
+  titulo(ws, `${letra(c1)}${topo}:${letra(c2)}${topo}`, titulos.bloco);
+  cabecalho(ws, topo + 1, c1, [titulos.rotulo, "QTD"]);
 
-  let linha = 3;
+  const primeira = topo + 2;
+  let linha = primeira;
   for (const it of itens) {
     ws.getCell(linha, c1).value = it.rotulo;
     ws.getCell(linha, c2).value = it.qtd;
@@ -93,7 +98,7 @@ function bloco(ws, colunaInicial, titulos, itens) {
   }
   const total = itens.reduce((s, i) => s + i.qtd, 0);
   ws.getCell(linha, c1).value = "TOTAL";
-  ws.getCell(linha, c2).value = { formula: `SUM(${letra(c2)}3:${letra(c2)}${linha - 1 < 3 ? 3 : linha - 1})`, result: total };
+  ws.getCell(linha, c2).value = { formula: `SUM(${letra(c2)}${primeira}:${letra(c2)}${Math.max(linha - 1, primeira)})`, result: total };
   for (const col of [c1, c2]) {
     const c = ws.getCell(linha, col);
     c.font = { bold: true };
@@ -103,9 +108,9 @@ function bloco(ws, colunaInicial, titulos, itens) {
   return total;
 }
 
-function abaParticipantes(wb, participantes) {
+function abaParticipantes(wb, participantes, tituloBase) {
   const ws = wb.addWorksheet("Participantes");
-  ws.columns = [
+  const colunas = [
     { header: "Evento", key: "evento", width: 32 },
     { header: "inscricao", key: "inscricao", width: 12 },
     { header: "nome", key: "nome", width: 44 },
@@ -118,9 +123,19 @@ function abaParticipantes(wb, participantes) {
     { header: "kit_nome", key: "kit_nome", width: 28 },
     { header: "kit_tam_camisa", key: "kit_tam_camisa", width: 16 },
   ];
-  const cab = ws.getRow(1);
-  cab.font = { bold: true, color: { argb: "FFFFFFFF" } };
-  cab.fill = { type: "pattern", pattern: "solid", fgColor: { argb: COR_CABEC } };
+  // o cabecalho vai na linha 4 (abaixo da faixa); aqui so chave, largura e formato das colunas
+  ws.columns = colunas.map(({ header, ...resto }) => resto);
+
+  faixaLogo.aplicarFaixa(ws, { larguras: colunas.map((c) => c.width), titulo: `${tituloBase}   |   Participantes` });
+  faixaLogo.adicionarLogo(wb, ws);
+
+  const cab = ws.getRow(faixaLogo.LINHA_CABECALHO);
+  colunas.forEach((c, i) => {
+    const cell = cab.getCell(i + 1);
+    cell.value = c.header;
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: COR_CABEC } };
+  });
 
   for (const p of participantes) {
     ws.addRow({
@@ -131,36 +146,45 @@ function abaParticipantes(wb, participantes) {
         : p.data_nasc,
     });
   }
-  ws.views = [{ state: "frozen", ySplit: 1 }];
-  ws.autoFilter = { from: "A1", to: "K1" };
+  ws.views = [{ state: "frozen", ySplit: faixaLogo.LINHA_CABECALHO }]; // faixa + cabecalho fixos
+  ws.autoFilter = { from: `A${faixaLogo.LINHA_CABECALHO}`, to: `K${faixaLogo.LINHA_CABECALHO}` };
 }
 
-function abaResumos(wb, d) {
+function abaResumos(wb, d, tituloBase) {
   const ws = wb.addWorksheet("Resumos");
-  [18, 10, 3, 38, 10, 3, 24, 10, 3, 24, 10].forEach((w, i) => (ws.getColumn(i + 1).width = w));
+  const larguras = [18, 10, 3, 38, 10, 3, 24, 10, 3, 24, 10];
+  larguras.forEach((w, i) => (ws.getColumn(i + 1).width = w));
 
-  bloco(ws, 1, { bloco: "KITS", rotulo: "TAM" }, d.kits.map((k) => ({ rotulo: k.tam, qtd: k.qtd })));
-  bloco(ws, 4, { bloco: "COLABORADOR", rotulo: "USUÁRIO" }, d.colaboradores.map((c) => ({ rotulo: c.usuario, qtd: c.qtd })));
-  bloco(ws, 7, { bloco: "CATEGORIAS", rotulo: "CATEGORIA" }, d.categorias.map((c) => ({ rotulo: c.categoria, qtd: c.qtd })));
+  // faixa nas linhas 1-3; os blocos comecam logo abaixo (linha 4 = titulos, linha 5 = cabecalhos)
+  faixaLogo.aplicarFaixa(ws, { larguras, titulo: `${tituloBase}   |   Resumos` });
+  faixaLogo.adicionarLogo(wb, ws);
+  const topo = faixaLogo.LINHA_CABECALHO;
 
-  titulo(ws, "J1:K1", "RESUMO GERAL");
+  bloco(ws, 1, { bloco: "KITS", rotulo: "TAM" }, d.kits.map((k) => ({ rotulo: k.tam, qtd: k.qtd })), topo);
+  bloco(ws, 4, { bloco: "COLABORADOR", rotulo: "USUÁRIO" }, d.colaboradores.map((c) => ({ rotulo: c.usuario, qtd: c.qtd })), topo);
+  bloco(ws, 7, { bloco: "CATEGORIAS", rotulo: "CATEGORIA" }, d.categorias.map((c) => ({ rotulo: c.categoria, qtd: c.qtd })), topo);
+
+  titulo(ws, `J${topo}:K${topo}`, "RESUMO GERAL");
   const linhas = [
     ["QTD PARTICIPANTES", d.totais.participantes],
     ["QTD KITS", d.totais.kits],
   ];
   linhas.forEach(([rotulo, valor], i) => {
-    ws.getCell(2 + i, 10).value = rotulo;
-    ws.getCell(2 + i, 11).value = valor;
+    ws.getCell(topo + 1 + i, 10).value = rotulo;
+    ws.getCell(topo + 1 + i, 11).value = valor;
   });
-  ws.getCell(4, 10).value = "SALDO";
-  ws.getCell(4, 11).value = { formula: "K2-K3", result: d.totais.participantes - d.totais.kits };
-  for (let r = 2; r <= 4; r++) {
+  ws.getCell(topo + 3, 10).value = "SALDO";
+  ws.getCell(topo + 3, 11).value = { formula: `K${topo + 1}-K${topo + 2}`, result: d.totais.participantes - d.totais.kits };
+  for (let r = topo + 1; r <= topo + 3; r++) {
     for (const col of [10, 11]) {
       const c = ws.getCell(r, col);
       c.border = BORDAS;
-      if (col === 10 || r === 4) c.font = { bold: true };
+      if (col === 10 || r === topo + 3) c.font = { bold: true };
     }
   }
+
+  // congela a faixa e os titulos/cabecalhos dos blocos (linhas 1 a 5)
+  ws.views = [{ state: "frozen", ySplit: topo + 1 }];
 }
 
 async function gerar(params, caminhoArquivo) {
@@ -182,8 +206,9 @@ async function gerar(params, caminhoArquivo) {
   const wb = new ExcelJS.Workbook();
   wb.creator = "TKX";
   wb.created = new Date();
-  abaParticipantes(wb, participantes);
-  abaResumos(wb, { kits, colaboradores, categorias, totais });
+  const tituloBase = `Resumo Do Evento - ${participantes[0].evento}`;
+  abaParticipantes(wb, participantes, tituloBase);
+  abaResumos(wb, { kits, colaboradores, categorias, totais }, tituloBase);
 
   // a pasta de destino pode nao existir (ex.: servidor novo na nuvem)
   await fs.promises.mkdir(path.dirname(caminhoArquivo), { recursive: true });

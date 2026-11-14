@@ -284,12 +284,12 @@ router.post("/redefinepassword", async function (req, res) {
       return res.status(400).json({ message: "Token não informado" });
     }
 
-    // 1. Validar token
+    // 1. Validar token: precisa ser o token do link de NOVA SENHA (token de login ou de liberacao nao serve)
     let payload;
     try {
-      payload = await tokenService.verifyToken(token);
+      payload = tokenService.verifyTokenFinalidade(token, tokenService.FINALIDADE_REDEFINE_SENHA);
     } catch (err) {
-      return res.status(401).json({ message: "Token inválido ou expirado" });
+      return res.status(err.http || 400).json({ message: err.message });
     }
     // 2. Extrair dados do token
     const { id_empresa, id_usuario } = payload;

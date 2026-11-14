@@ -7,19 +7,6 @@ const regras = require("../../util/eventoRegra");
 const TABELA = "EVENTOS";
 /* CRUD GET SERVICE */
 
-//* CRUD - UPDATE - SERVICE */
-exports.updateStatusEvento = async function (evento) {
-  try {
-    await regras.evento_Alteracao(evento);
-    validacao.Validacao(TABELA, evento, parametros.eventos());
-    return eventoData.updateStatusEvento(evento);
-  } catch (err) {
-    throw new erroDB.UserException(err.erro, err);
-  }
-};
-
-
-
 exports.eventosDoDashboard = async function (id_empresa, id_usuario, operador) {
   return eventoData.eventosDoDashboard(id_empresa, id_usuario, operador);
 };

@@ -5,6 +5,7 @@ const router = express.Router();
 const { autenticarToken } = require("../middleware/autenticartoken");
 const eventoSrv = require("../service/eventoService");
 const funcoes = require("../email/funcoes.js");
+const liberacao = require("../util/liberacaoEvento");
 router.use(autenticarToken);
 /* ROTA GETONE evento */
 router.get("/:id_empresa/:id", async function (req, res) {
@@ -53,6 +54,8 @@ router.get("/", async function (req, res) {
 router.post("/", async function (req, res) {
   try {
     const evento = req.body;
+    // o evento nasce em 0 (Aguardando Liberacao); outra situacao so master/TI
+    await liberacao.validarMudancaDeSituacao(req.id_empresa, req.id_usuario, evento.status, null);
     const registro = await eventoSrv.insertEvento(evento);
     if (registro == null) {
       res.status(409).json({ message: "Evento Cadastrado!" });
@@ -64,6 +67,9 @@ router.post("/", async function (req, res) {
       .catch(err => console.error("Erro ao enviar email:", err));
     }
   } catch (err) {
+    if (err instanceof liberacao.ErroLiberacao) {
+      return res.status(err.http).json({ erro: "Regra de negócio", tabela: "EVENTO", message: err.message });
+    }
     if (err.name == "MyExceptionDB") {
       res.status(409).json(err);
     } else {
@@ -77,6 +83,9 @@ router.post("/", async function (req, res) {
 router.put("/", async function (req, res) {
   try {
     const evento = req.body;
+    // quem pode trocar a situacao (liberar, ativar, standby, encerrar): regra no servidor, pelo grupo do usuario do token
+    const atual = await eventoSrv.getEvento(req.id_empresa, evento.id);
+    if (atual) await liberacao.validarMudancaDeSituacao(req.id_empresa, req.id_usuario, evento.status, atual.status);
     const registro = await eventoSrv.updateEvento(evento);
     if (registro == null) {
       res.status(409).json({ message: "Evento Alterado Com Sucesso!" });
@@ -84,6 +93,9 @@ router.put("/", async function (req, res) {
       res.status(200).json(registro);
     }
   } catch (err) {
+    if (err instanceof liberacao.ErroLiberacao) {
+      return res.status(err.http).json({ erro: "Regra de negócio", tabela: "EVENTO", message: err.message });
+    }
     if (err.name == "MyExceptionDB") {
       res.status(409).json(err);
     } else {

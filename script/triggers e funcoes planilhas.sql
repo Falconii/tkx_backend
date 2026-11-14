@@ -47,7 +47,7 @@ EXECUTE FUNCTION function_cabplanilhas();
        IF  (TG_OP = 'INSERT') THEN
            _linha_processada := 0;
            _linha_erro      := 0;
-           if (new.status = 9) then
+           if (new.status = '9') then
               begin
                  _linha_erro := 1;
               end;
@@ -69,7 +69,7 @@ EXECUTE FUNCTION function_cabplanilhas();
            _old_linha_erro      := 0;
            _linha_processada := 0;
            _linha_erro      := 0;
-           if (old.status = 9) then
+           if (old.status = '9') then
               begin
                  _old_linha_erro := 1;
               end;
@@ -79,7 +79,7 @@ EXECUTE FUNCTION function_cabplanilhas();
              end;   
            end if;  
            
-           if (new.status = 9) then
+           if (new.status = '9') then
               begin
                  _linha_erro := 1;
               end;
@@ -98,7 +98,7 @@ EXECUTE FUNCTION function_cabplanilhas();
        IF  (TG_OP = 'DELETE') THEN
            _linha_processada := 0;
            _linha_erro      := 0;
-           if (old.status = 9) then
+           if (old.status = '9') then
               begin
                  _linha_erro := 1;
               end;

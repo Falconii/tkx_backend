@@ -134,10 +134,47 @@ exports.createTokenByDate = function(id_empresa, id_usuario, date) {
     return token;
 };
 
+/*
+  Tokens TEMPORARIOS (15 min) de link de e-mail. Cada um so serve para a sua finalidade (claim "finalidade"):
+    - redefinesenha : link de nova senha
+    - liberaevento  : link de liberacao de UM evento (tambem leva o id_evento)
+  Um token de login (7 dias), ou de outra finalidade, nao e aceito nessas rotas publicas.
+*/
+const FINALIDADE_REDEFINE_SENHA = "redefinesenha";
+const FINALIDADE_LIBERA_EVENTO = "liberaevento";
+exports.FINALIDADE_REDEFINE_SENHA = FINALIDADE_REDEFINE_SENHA;
+exports.FINALIDADE_LIBERA_EVENTO = FINALIDADE_LIBERA_EVENTO;
+
 exports.generateTempoToken = function (user) {
   return jwt.sign(
-    { id_empresa: user.id_empresa, id_usuario: user.id },
+    { id_empresa: user.id_empresa, id_usuario: user.id, finalidade: FINALIDADE_REDEFINE_SENHA },
     ACCESS_SECRET,
     { expiresIn: "15m" },
   );
+};
+
+exports.generateLiberacaoToken = function (user, id_evento) {
+  return jwt.sign(
+    { id_empresa: user.id_empresa, id_usuario: user.id, finalidade: FINALIDADE_LIBERA_EVENTO, id_evento: Number(id_evento) },
+    ACCESS_SECRET,
+    { expiresIn: "15m" },
+  );
+};
+
+/* Devolve o payload do token da finalidade pedida ou lanca Error com .http (400 invalido/expirado, 403 finalidade errada). */
+exports.verifyTokenFinalidade = function (token, finalidade) {
+  let payload;
+  try {
+    payload = jwt.verify(token, ACCESS_SECRET);
+  } catch (err) {
+    const e = new Error(err.name === "TokenExpiredError" ? "Token expirado" : "Token inválido ou expirado");
+    e.http = 400;
+    throw e;
+  }
+  if (payload.finalidade !== finalidade) {
+    const e = new Error("Este token não vale para esta operação");
+    e.http = 403;
+    throw e;
+  }
+  return payload;
 };

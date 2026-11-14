@@ -93,8 +93,8 @@ module.exports = {
       "header": "status",
       "key": "status",
       "width": 8,
-      "align": "right",
-      "format": "0"
+      "align": "left",
+      "format": null
     },
     {
       "header": "mensagem_erro",

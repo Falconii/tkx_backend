@@ -72,7 +72,7 @@ async function processar(tarefa) {
       return;
     }
 
-    await gerarExcelGenerico(rows, relatorio.config, caminhoArquivo(tarefa.name_file));
+    await gerarExcelGenerico(rows, { ...relatorio.config, titulo: relatorio.titulo }, caminhoArquivo(tarefa.name_file));
     await tarefaData.encerrar(tarefa.id, STATUS.CONCLUIDA, "");
   } catch (err) {
     console.error(`Tarefa ${tarefa.id} (${tarefa.sigla}) falhou:`, err);

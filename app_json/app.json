@@ -2651,8 +2651,8 @@
             },
             {
               "name": "status",
-              "type": "int4",
-              "length": 0,
+              "type": "char",
+              "length": 1,
               "precision": 0,
               "nulo": "N",
               "padrao": "",
@@ -2774,9 +2774,9 @@
               {
                 "name": "status",
                 "filtro": "S",
-                "atividador": " !== -1 ",
-                "tipo": "number",
-                "padrao": -1
+                "atividador": " !== '' ",
+                "tipo": "string",
+                "padrao": ""
               },
               {
                 "name": "pagina",

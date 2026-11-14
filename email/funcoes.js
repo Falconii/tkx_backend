@@ -533,13 +533,14 @@ exports.preparaEmailLiberacao = async function(id_empresa, id_evento) {
         sharp: false,
     };
 
-    const usuarios = await usuarioSrv.getUsuarios(par)
+    // so MASTER (grupo 1), ativo e com e-mail cadastrado
+    const usuarios = (await usuarioSrv.getUsuarios(par)).filter((u) => Number(u.grupo) === 1 && u.ativo === "S" && u.email);
 
 
 
 const promessas = usuarios.map(async (user) => {
     try {
-        const token = tokenSrv.generateTempoToken(user);
+        const token = tokenSrv.generateLiberacaoToken(user, id_evento); // so serve para liberar ESTE evento
         await enviarEmailLiberacaoEvento(evento, user, token);
         return { user, status: 'ok' };
     } catch (err) {

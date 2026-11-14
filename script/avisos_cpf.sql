@@ -1,7 +1,8 @@
 /*
-  AVISO DE CPF/CNPJ INVALIDO  (detplanilhas.status = 1  "Importado Com Aviso")
+  AVISO DE CPF/CNPJ INVALIDO  (detplanilhas.status = '1'  "Importado Com Aviso")
 
-  Situacoes da linha: 0 Importado | 1 Importado Com Aviso | 2 Processado | 3 Erro Na Planilha CSV | 9 Erro De Informacao
+  Situacoes da linha (detplanilhas.status e char(1)): '0' Importado | '1' Importado Com Aviso | '2' Processado | '3' Erro Na Planilha CSV | '9' Erro De Informacao
+  ATENCAO: rode ANTES o detplanilha_status_char.sql (este script ja usa a coluna como texto).
   A linha com aviso conta como OK (processavel); so o status 9 e erro. Os totais da planilha (cabplanilhas) sao
   mantidos pelo trigger de detplanilhas, entao este script nao mexe neles diretamente.
 
@@ -11,8 +12,8 @@
 
 -- 1) linhas OK que ja tinham o aviso gravado na mensagem (status 0 + 'Aviso...') -> situacao 1
 UPDATE public.detplanilhas
-   SET status = 1
- WHERE status = 0
+   SET status = '1'
+ WHERE status = '0'
    AND mensagem_erro LIKE 'Aviso%'
    AND EXISTS (SELECT 1 FROM public.cabplanilhas c
                 WHERE c.id_empresa = detplanilhas.id_empresa AND c.id_evento = detplanilhas.id_evento
@@ -20,13 +21,13 @@ UPDATE public.detplanilhas
 
 -- 2) linhas que, pela regra antiga, eram ERRO somente por CPF/CNPJ invalido (e o documento existe) -> aviso
 UPDATE public.detplanilhas d
-   SET status = 1,
+   SET status = '1',
        mensagem_erro = CASE
                          WHEN d.mensagem_erro ~ '^Linha [0-9]+:'
                          THEN 'Aviso (linha ' || substring(d.mensagem_erro from '^Linha ([0-9]+):') || '): CPF/CNPJ Inválido'
                          ELSE 'Aviso: CPF/CNPJ Inválido'
                        END
- WHERE d.status = 9
+ WHERE d.status = '9'
    AND d.mensagem_erro ~ '^(Linha [0-9]+: *| *-? *)C(NPJ/CPF|PF/CNPJ) Inválido *$'
    AND btrim(d.cnpj_cpf) <> ''
    AND EXISTS (SELECT 1 FROM public.cabplanilhas c
@@ -35,9 +36,9 @@ UPDATE public.detplanilhas d
 
 -- 3) REGRA: linha com erro e aviso fica como ERRO. Inscricao invalida (0) e erro; se a linha esta como aviso/OK, volta a erro
 UPDATE public.detplanilhas d
-   SET status = 9,
+   SET status = '9',
        mensagem_erro = left(CASE WHEN d.mensagem_erro ~ '^Aviso' THEN 'Inscrição Inválida | ' || d.mensagem_erro ELSE 'Inscrição Inválida' END, 100)
- WHERE d.status IN (0, 1)
+ WHERE d.status IN ('0', '1')
    AND d.inscricao <= 0
    AND EXISTS (SELECT 1 FROM public.cabplanilhas c
                 WHERE c.id_empresa = d.id_empresa AND c.id_evento = d.id_evento

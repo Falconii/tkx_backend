@@ -8,6 +8,7 @@ const usuarioSrv = require("../../service/usuarioService");
 const eventoService = require('../../service/eventoService');
 const eventoSrv = require("../../service/complementar/eventoService");
 const response = require("../../util/respostaPadrao");
+const trocaSituacao = require("../../util/trocaSituacaoEvento");
 const funcoes = require("../../email/funcoes");
 const path = require('path');
 const fs = require('fs');
@@ -35,25 +36,26 @@ router.get("/dashboard", async function (req, res) {
     return res.status(500).json({ erro: "BAK-END", tabela: "Evento", message: err.message });
   }
 });
-/* ROTA UPDATE evento */
-
+/*
+  TROCAR SITUACAO DO EVENTO (so MASTER/TI; para 2 StandBy, 3 Ativo ou 4 Encerrado)  body: { id_evento, status }
+  O grupo vem do usuario do token (nunca do cliente). Regras em util/trocaSituacaoEvento.js.
+*/
 router.put("/updateStatusEvento", async function (req, res) {
   try {
-    const evento = req.body;
-    const registro = await eventoSrv.updateStatusEvento(evento);
-    if (registro == null) {
-      res.status(409).json({ message: "Situação Alterada Com Sucesso!" });
-    } else {
-      res.status(200).json(registro);
-    }
+    const registro = await db.tx((t) =>
+      trocaSituacao.trocarSituacao(t, {
+        id_empresa: req.id_empresa,
+        id_usuario: req.id_usuario,
+        id_evento: req.body.id_evento,
+        status: req.body.status,
+      }),
+    );
+    return res.status(200).json(registro);
   } catch (err) {
-    if (err.name == "MyExceptionDB") {
-      res.status(409).json(err);
-    } else {
-      res
-        .status(500)
-        .json({ erro: "BAK-END", tabela: "Evento", message: err.message });
+    if (err instanceof trocaSituacao.ErroTrocaSituacao) {
+      return res.status(err.http).json({ erro: "Regra de negócio", tabela: "EVENTO", message: err.message });
     }
+    return res.status(500).json({ erro: "BAK-END", tabela: "Evento", message: err.message });
   }
 });
 

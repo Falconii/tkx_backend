@@ -103,9 +103,11 @@ if (params) {
 			where += `unaccent(det.nome) like '%${shared.semAcento(params.nome.trim())}%' `;
 		}
 	}
-	if (params.status != null && params.status !== -1){
+	// status e char(1); aceita '' / -1 (sem filtro) e valor numerico ou texto ('0','1','2','9')
+	const filtroStatus = params.status == null ? '' : String(params.status).trim();
+	if (filtroStatus !== '' && filtroStatus !== '-1'){
 		if (where != "") where += " and "; 
-		where += `det.status = ${params.status} `;
+		where += `det.status = '${filtroStatus.replace(/'/g, "''")}' `;
 	}
 	if (where != "") where = " where " + where;
 	 if (params.pagina != null && params.pagina != 0) {
@@ -200,7 +202,7 @@ if (params) {
 		 ,   ${detPlanilha.nro_peito} 
 		 ,   ${detPlanilha.id_categoria} 
 		 ,   ${detPlanilha.id_inscrito} 
-		 ,   ${detPlanilha.status} 
+		 ,   '${String(detPlanilha.status ?? '0').replace(/'/g, "''")}' 
 		 ,   '${detPlanilha.mensagem_erro}' 
 		 ,   ${detPlanilha.user_insert} 
 		 ,   ${detPlanilha.user_update} 
@@ -219,7 +221,7 @@ if (params) {
  		 ,   inscricao = ${detPlanilha.inscricao} 
  		 ,   id_categoria = ${detPlanilha.id_categoria} 
  		 ,   id_inscrito = ${detPlanilha.id_inscrito} 
- 		 ,   status = ${detPlanilha.status} 
+ 		 ,   status = '${String(detPlanilha.status ?? '0').replace(/'/g, "''")}' 
  		 ,   mensagem_erro = '${detPlanilha.mensagem_erro}' 
  		 ,   user_insert = ${detPlanilha.user_insert} 
  		 ,   user_update = ${detPlanilha.user_update} 

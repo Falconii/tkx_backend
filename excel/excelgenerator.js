@@ -15,11 +15,15 @@
     completo; quem consulta o status/arquivo nunca ve uma planilha pela metade.
   - Usa o WorkbookWriter (streaming): nao carrega a planilha inteira na memoria.
   - Colunas com "hidden: true" no config nao saem no Excel.
+  - Faixa com o logo e o titulo nas linhas 1-3, cabecalho na linha 4 e as 4 primeiras linhas congeladas
+    (excel/faixaLogo.js). "faixa: false" no config volta ao layout antigo (cabecalho na linha 1).
+    config.titulo = texto da faixa (o job passa o titulo do relatorio).
 */
 const ExcelJS = require("exceljs");
 const fs = require("fs");
 const path = require("path");
 const { finished } = require("stream/promises");
+const faixaLogo = require("./faixaLogo");
 
 const LINHAS_POR_LOTE = 500;
 const FORMATO_DATA =/d{1,2}[\/.-]m{1,2}|yy|hh|mm\/|\bdd\b/i;
@@ -88,24 +92,40 @@ async function gerarExcelGenerico(rows, config, caminhoArquivo) {
     useSharedStrings: false,
   });
 
+  const faixa = config.faixa !== false;
+  const linhaCabecalho = faixa ? faixaLogo.LINHA_CABECALHO : 1;
+
   try {
     const worksheet = workbook.addWorksheet(nomeAba(config.sheetName), {
-      views: config.freezeHeader === false ? [] : [{ state: "frozen", ySplit: 1 }],
+      views: config.freezeHeader === false ? [] : [{ state: "frozen", ySplit: linhaCabecalho }],
     });
 
     worksheet.columns = colunas.map((col) => {
       const style = {};
       if (col.align) style.alignment = { horizontal: col.align };
       if (col.format) style.numFmt = col.format;
-      return { header: col.header ?? col.key, key: col.key, width: col.width || 20, style };
+      // com a faixa, o cabecalho e escrito a mao na linha 4 (o ExcelJS escreveria "header" na linha 1)
+      const definicao = { key: col.key, width: col.width || 20, style };
+      if (!faixa) definicao.header = col.header ?? col.key;
+      return definicao;
     });
 
+    if (faixa) {
+      const agora = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
+      faixaLogo.aplicarFaixa(worksheet, {
+        larguras: colunas.map((c) => c.width || 20),
+        titulo: `${config.titulo || "Relatório"}   |   Gerado em ${agora}`,
+        commit: true,
+      });
+    }
+
     if (config.autoFilter !== false) {
-      worksheet.autoFilter = { from: "A1", to: `${numeroParaColunaExcel(colunas.length)}1` };
+      worksheet.autoFilter = { from: `A${linhaCabecalho}`, to: `${numeroParaColunaExcel(colunas.length)}${linhaCabecalho}` };
     }
 
     // cabecalho: negrito, centralizado e com fundo cinza
-    const cabecalho = worksheet.getRow(1);
+    const cabecalho = worksheet.getRow(linhaCabecalho);
+    if (faixa) colunas.forEach((col, i) => (cabecalho.getCell(i + 1).value = col.header ?? col.key));
     cabecalho.eachCell((cell) => {
       cell.font = { bold: true };
       cell.alignment = { horizontal: "center", vertical: "middle" };
@@ -128,6 +148,10 @@ async function gerarExcelGenerico(rows, config, caminhoArquivo) {
     worksheet.commit();
     await workbook.commit();
     await finished(saida); // espera o arquivo fechar de verdade antes do rename
+    if (faixa) {
+      // o streaming nao aceita imagem: acrescenta o logo ao arquivo pronto. Se falhar, o relatorio sai sem o logo.
+      await faixaLogo.injetarLogoNoArquivo(caminhoTmp).catch((e) => console.error("Logo nao inserido no relatorio:", e.message));
+    }
     await fs.promises.rename(caminhoTmp, caminhoArquivo);
   } catch (err) {
     saida.destroy();
